@@ -17,7 +17,7 @@ OpenSource 外部平台验收可双击 **tools/run_external_validation.cmd**：�
 
 外部入口结束后还会生成并打开独立的 `index.html` 汇总页，包含验证状态、可拖动三维航迹、逐帧记录、图片和下载链接。页面位于 `results/external_review/`，最近路径保存在本目录 `outputs/latest_external_report.txt`。
 
-双击 **open_control_panel.cmd** 可在桌面窗口中调整导航误差、飞行/采样、A/B 扰动和资源参数，并启动仿真或完整验收；窗口内提供实时日志、图表和逐帧位姿查看。详见 [上位机说明](docs/CONTROL_PANEL.md)。
+双击 **open_control_panel.cmd** 可在桌面窗口中调整导航误差、飞行/采样、A/B 扰动和资源参数，并启动仿真或完整验收；窗口内提供实时日志、图表和逐帧位姿查看。操作步骤见 [上位机详细使用说明](docs/CONTROL_PANEL_USER_GUIDE.md)，实现细节见 [上位机技术说明](docs/CONTROL_PANEL.md)。
 
 本目录是人工验收入口。默认运行**完整双航次、全长 20.48 s 采集、自动化测试、20,000 s OU 统计、1600/3200/6400 Hz 收敛、MATLAB 导航/几何/回波接口**，最后自动打开本地验收页面。沿用主工程的物理与误差模型，不另造一套演示数据。
 
