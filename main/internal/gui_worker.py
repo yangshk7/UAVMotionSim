@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import os
 import traceback
 from pathlib import Path
 
@@ -11,6 +12,7 @@ from review_report import create_report
 
 from uavsim.cli import main as core_main
 from uavsim.config.loader import load_config
+from uavsim.runtime.progress import report_progress
 from uavsim.sar_adapter.matlab_export import load_exported_pass, write_json
 
 
@@ -57,6 +59,7 @@ def main(argv=None) -> int:
             data_root = Path(summary["data_directory"]) if summary.get("data_directory") else report_root
             status = summary["status"]
         else:
+            os.environ["UAVSIM_GUI_PROGRESS"] = "1"
             code = core_main(
                 [
                     "run",
@@ -79,6 +82,7 @@ def main(argv=None) -> int:
                 for i in range(1, args.passes + 1)
             }
             print("[上位机] 生成导航对照、天线几何与执行器结果图。", flush=True)
+            report_progress(percent=95, stage="生成导航对照与天线图表")
             plot_pose_comparisons(result, data_root)
             plot_geometry_and_actuators(result, data_root, config)
             report_root = root
@@ -131,6 +135,7 @@ def main(argv=None) -> int:
                 ],
             }
             write_json(root / "acceptance.json", summary)
+            report_progress(percent=98, stage="生成离线报告")
             create_report(root, summary, result)
             status = "simulated" if not code and validation["passed"] else "failed"
         payload = {

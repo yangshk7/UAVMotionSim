@@ -13,6 +13,7 @@ from uavsim.navigation.position_error import navigation_estimate
 from uavsim.navigation.resampling import resample_navigation
 from uavsim.navigation.state_error import navigation_pose
 from uavsim.runtime.memory import peak_working_set_bytes
+from uavsim.runtime.progress import report_progress
 from uavsim.sar_adapter.antenna_geometry import antenna_geometry
 from uavsim.sar_adapter.pulse_sync import sample_indices
 from uavsim.trajectory.reference_manager import build_reference
@@ -60,7 +61,10 @@ def _simulate(config, pass_seed: int, pass_index: int) -> dict:
     motor_commands = np.empty((count, 6))
     allocation_residuals = np.empty((count, 4))
     fields = ["position_N_m", "velocity_N_mps", "acceleration_N_mps2", "yaw_rad", "yaw_rate_radps"]
+    progress_stride = max(1, (count - 1) // 100)
     for index in range(count):
+        if index % progress_stride == 0:
+            report_progress(pass_index=pass_index, fraction=index / count)
         current = {key: reference[key][index] for key in fields}
         for key, offset in [
             ("position_N_m", "position_offset_N_m"),
@@ -90,6 +94,7 @@ def _simulate(config, pass_seed: int, pass_index: int) -> dict:
                 (force[2 * index], force[2 * index + 1], force[2 * index + 2]),
                 (torque[2 * index], torque[2 * index + 1], torque[2 * index + 2]),
             )
+    report_progress(pass_index=pass_index, fraction=1.0)
     truth_full = {
         "time_s": time,
         "position_N_m": states[:, :3],

@@ -97,6 +97,11 @@ def main():
         )
         wait_for_job(root, app, 90)
         assert app.result is not None and app.result["status"] == "simulated", app.log.get("1.0", "end")
+        assert float(app.progress["value"]) == 100
+        assert app.progress_text.get().startswith("100%")
+        events = (first / "worker.log").read_text(encoding="utf-8")
+        assert '"fraction":' in events and '"percent": 98' in events
+        report["checks"]["simulation_progress_events_and_completion"] = "passed"
         assert len(app.pose_table.get_children()) == 5
         assert app.image is not None and app.photo is not None
         assert app.track_canvas.get_tk_widget().winfo_exists()

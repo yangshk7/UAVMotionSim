@@ -192,6 +192,8 @@ class ControlPanel:
         ).pack(anchor="w")
         self.progress = ttk.Progressbar(self.monitor, mode="indeterminate")
         self.progress.pack(fill="x", pady=10)
+        self.progress_text = tk.StringVar(value="尚未开始")
+        ttk.Label(self.monitor, textvariable=self.progress_text).pack(anchor="w", pady=(0, 8))
         self.log = tk.Text(
             self.monitor,
             wrap="word",
@@ -665,7 +667,12 @@ class ControlPanel:
         self.run_button.configure(state="disabled")
         self.accept_button.configure(state="disabled")
         self.stop_button.configure(state="normal")
-        self.progress.start(12)
+        self.progress_values = [0.0] * passes
+        self.progress_percent = 0.0
+        self.progress.configure(value=0, maximum=100, mode="determinate" if mode == "simulate" else "indeterminate")
+        self.progress_text.set("0% · 初始化仿真" if mode == "simulate" else "完整验收运行中，详见阶段日志")
+        if mode == "acceptance":
+            self.progress.start(12)
         self.status.set(
             "正在"
             + ("运行完整验收" if mode == "acceptance" else "运行参数仿真")
@@ -709,6 +716,21 @@ class ControlPanel:
 
         threading.Thread(target=stop_background, daemon=True).start()
 
+    def _update_progress(self, event):
+        if "percent" in event:
+            percent = event["percent"]
+            stage = event.get("stage", "处理中")
+        else:
+            index = event["pass_index"]
+            if index >= len(self.progress_values):
+                return
+            self.progress_values[index] = max(self.progress_values[index], event["fraction"])
+            percent = 80 * sum(self.progress_values) / len(self.progress_values)
+            stage = f"计算航次 {index + 1} · 该航次 {event['fraction']:.0%}"
+        self.progress_percent = max(self.progress_percent, percent)
+        self.progress.configure(value=self.progress_percent)
+        self.progress_text.set(f"{self.progress_percent:.0f}% · {stage}")
+
     def _poll(self):
         try:
             while True:
@@ -724,7 +746,9 @@ class ControlPanel:
                 elif kind == "hardware":
                     self._display_hardware(value)
                 elif kind == "event":
-                    if value["type"] == "result":
+                    if value["type"] == "progress":
+                        self._update_progress(value)
+                    elif value["type"] == "result":
                         self.result = value
                     else:
                         self.log.insert("end", "任务错误：" + value["message"] + "\n")
@@ -750,6 +774,11 @@ class ControlPanel:
                     self.status.set(
                         f"{state} · 用时 {time.monotonic() - self.started:.1f} s · {self.active_job.name}"
                     )
+                    if self.result and self.result["status"] in ("simulated", "passed") and not self.cancel_requested:
+                        self.progress.configure(mode="determinate", value=100)
+                        self.progress_text.set("100% · " + state)
+                    else:
+                        self.progress_text.set(state)
                     (self.active_job / "session.json").write_text(
                         json.dumps(
                             {"status": state, "returncode": value, "result": self.result},

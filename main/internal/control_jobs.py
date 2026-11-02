@@ -105,6 +105,15 @@ def parse_event(line: str) -> dict | None:
     if not line.startswith(EVENT_PREFIX):
         return None
     event = json.loads(line[len(EVENT_PREFIX) :])
-    if not isinstance(event, dict) or event.get("type") not in ("result", "error"):
+    if not isinstance(event, dict) or event.get("type") not in ("result", "error", "progress"):
         raise ValueError("Invalid GUI event")
+    if event["type"] == "progress":
+        import math
+
+        key = "percent" if "percent" in event else "fraction"
+        value = event.get(key)
+        if not isinstance(value, (int, float)) or not math.isfinite(value) or not 0 <= value <= (100 if key == "percent" else 1):
+            raise ValueError("Invalid progress value")
+        if key == "fraction" and (type(event.get("pass_index")) is not int or event["pass_index"] < 0):
+            raise ValueError("Invalid progress pass index")
     return event

@@ -102,8 +102,13 @@ def main(argv=None) -> int:
             flush=True,
         )
         result = run_experiment(config, args.passes, plan)
+        from uavsim.runtime.progress import report_progress
+
+        report_progress(percent=80, stage="检查运动与有效航段")
         result["validation"] = experiment_metrics(result, config)
+        report_progress(percent=82, stage="保存 MAT / CSV 数据")
         export_experiment(result, root)
+        report_progress(percent=90, stage="生成运动图表")
         if config.output.save_plots:
             _plots(result, root)
         if args.command == "validate":

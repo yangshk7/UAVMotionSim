@@ -71,6 +71,21 @@ def test_worker_protocol_rejects_unknown_event_types():
         parse_event(EVENT_PREFIX + '{"type":"run_shell"}')
 
 
+def test_progress_protocol_and_parallel_pass_aggregation():
+    for payload in ['{"type":"progress","percent":101}', '{"type":"progress","fraction":0.2,"pass_index":-1}']:
+        with pytest.raises(ValueError):
+            parse_event(EVENT_PREFIX + payload)
+    panel = SimpleNamespace(
+        progress_values=[0.0, 0.0], progress_percent=0.0,
+        progress=SimpleNamespace(configure=lambda **kwargs: None),
+        progress_text=SimpleNamespace(set=lambda value: None),
+    )
+    for index, fraction, expected in [(1, 1.0, 40), (0, 0.5, 60), (0, 0.2, 60), (0, 1.0, 80)]:
+        event = parse_event(EVENT_PREFIX + json.dumps({"type": "progress", "pass_index": index, "fraction": fraction}))
+        control_panel.ControlPanel._update_progress(panel, event)
+        assert panel.progress_percent == expected
+
+
 @pytest.mark.parametrize("mode", ["simulate", "acceptance", "direct"])
 def test_find_report_from_navigation_data_directory(tmp_path, mode):
     if mode == "simulate":
