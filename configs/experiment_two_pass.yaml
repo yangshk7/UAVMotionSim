@@ -1,0 +1,17 @@
+extends: hex_x_12kg.yaml
+# 指令尺度来自规范候选值，未经实测标定。
+disturbances:
+  translation:
+    x: {enabled: true}
+    y: {enabled: true}
+    z: {enabled: true}
+  attitude:
+    roll: {enabled: true}
+    pitch: {enabled: true}
+    yaw: {enabled: true}
+  navigation_position_error:
+    enabled: true
+  navigation_velocity_error:
+    enabled: true
+  navigation_attitude_error:
+    enabled: true

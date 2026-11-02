@@ -1,0 +1,11 @@
+# 上位机默认按目标航线长度规划完整输出时长；原验收基准保留在 config.yaml。
+extends: config.yaml
+simulation:
+  duration_mode: route_length
+  duration_margin_s: 10.0
+trajectory:
+  route_length_m: 204.8
+  speed_tolerance_fraction: 0.1
+antenna:
+  # 两份原始仿真文档一致的工程安装值；FRD：前、右、下。
+  phase_center_frd_m: [0.0, 0.1, 0.2]

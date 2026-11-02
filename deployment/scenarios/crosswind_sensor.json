@@ -1,0 +1,19 @@
+{
+  "name": "crosswind_sensor",
+  "seed": 20261101,
+  "sitl": {
+    "wind_speed_mps": 2.0,
+    "wind_from_deg": 90.0,
+    "wind_turbulence": 0.2,
+    "accel_noise_mps2": 0.05,
+    "momentum_drag": 0.1
+  },
+  "gazebo": {
+    "wind_velocity_enu_mps": [-2.0, 0.0, 0.0],
+    "wind_force_scale": 0.1,
+    "wind_gust_fraction": 0.1,
+    "wind_gust_period_s": 8.0,
+    "imu_gyro_noise_scale": 2.0,
+    "imu_accel_noise_scale": 2.0
+  }
+}

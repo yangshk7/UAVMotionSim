@@ -1,0 +1,14 @@
+{
+  "passed": false,
+  "model": "x500",
+  "diagnostic_reference_only": true,
+  "scope": "PX4/XTDrone2 5 m flight smoke",
+  "timestamp_reference": "PX4 DDS timestamp synchronized to ROS clock; seconds",
+  "position_reference": "local EKF NED origin, Z negated to up; not APC or SAR pulse truth",
+  "armed": true,
+  "landing_requested": true,
+  "max_relative_height_m": 4.2895002365112305,
+  "position_samples": 8001,
+  "attitude_samples": 8000,
+  "xtdrone_state_samples": 987
+}

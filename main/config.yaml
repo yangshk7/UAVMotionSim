@@ -1,0 +1,6 @@
+# 人工验收默认运行完整双航次；在这里调整参数，不修改原始基准。
+extends: ../configs/rotorpy_hex_x12.yaml
+output:
+  save_mat: true
+  save_csv: true
+  save_plots: true

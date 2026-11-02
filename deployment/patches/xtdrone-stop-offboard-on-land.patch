@@ -1,0 +1,10 @@
+diff --git a/xtd2_communication/xtd2_communication/multirotor_communication.py b/xtd2_communication/xtd2_communication/multirotor_communication.py
+--- a/xtd2_communication/xtd2_communication/multirotor_communication.py
++++ b/xtd2_communication/xtd2_communication/multirotor_communication.py
+@@ -323,4 +323,6 @@ class MultirotorCommunication(Node):
+     def land(self):
++        self.OFFBOARD_STATE = "DISABLED"
++        self.cmd = None
+         # | Empty
+         # | Empty
+         # | Empty

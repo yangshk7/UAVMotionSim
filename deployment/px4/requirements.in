@@ -1,0 +1,20 @@
+# PX4 v1.15.4 code generation/build environment; kept separate from ROS Python.
+empy==3.3.4
+numpy==1.26.4
+pyros-genmsg
+jinja2
+kconfiglib
+jsonschema
+packaging
+pyyaml
+sympy
+setuptools
+future
+lxml
+pyserial
+pyulog
+psutil
+requests
+toml
+cerberus
+pkgconfig

@@ -1,0 +1,4 @@
+# 可直接运行的一段 100 s 航迹示例；其余参数继承 RotorPy 基准。
+extends: rotorpy_hex_x12.yaml
+simulation:
+  acquisition_duration_s: 100.0

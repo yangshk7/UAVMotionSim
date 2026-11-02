@@ -1,0 +1,48 @@
+{
+  "source_sha256": "56d4b44c024f44afc256153bf5d2dd597eb38c2d86b70fa10163442af3e023de",
+  "git_revision_at_run": null,
+  "fingerprint_scope": "src/**/*.py, configs/**/*.yaml, matlab/**/*.m, pyproject.toml, uv.lock",
+  "version": "0.1.0",
+  "python": "3.11.15",
+  "created_utc": "2026-10-30T04:08:00.626929+00:00",
+  "packages": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "pydantic": "2.14.2",
+    "PyYAML": "6.0.3"
+  },
+  "resource_plan": {
+    "hardware": {
+      "os": "Windows-10-10.0.26200-SP0",
+      "cpu_name": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+      "logical_cpus": 24,
+      "physical_cores": null,
+      "memory_total_bytes": 34191130624,
+      "memory_available_bytes": 8377774080,
+      "gpus": [
+        {
+          "name": "NVIDIA GeForce RTX 3060 Laptop GPU",
+          "total_memory_bytes": 12884901888,
+          "free_memory_bytes": 8613003264,
+          "driver": "610.47",
+          "source": "nvidia-smi"
+        }
+      ],
+      "probe_notes": [
+        "CIM CPU query returned no data; using logical CPU count"
+      ]
+    },
+    "workers": 2,
+    "blas_threads_per_worker": 1,
+    "memory_budget_bytes": 5026664448,
+    "estimated_retained_bytes_per_pass": 105671952,
+    "estimated_working_bytes_per_worker": 372802816,
+    "estimated_peak_bytes": 1302511168,
+    "backend": "cpu",
+    "gpu_used": false,
+    "backend_reason": "19-state sequential feedback RK4 uses float64 CPU; independent passes run in processes. No verified GPU integration kernel is installed; GPU memory is detected and recorded.",
+    "note": ""
+  },
+  "elapsed_s": 12.443376600000192,
+  "coordinates": "Internal NED/FRD; external SAR X-forward Y-right Z-up; q_NB wxyz; SI"
+}

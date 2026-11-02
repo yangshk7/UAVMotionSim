@@ -1,0 +1,24 @@
+{
+  "pass1": {
+    "samples": 16385,
+    "apc_max_error_m": 0,
+    "orthogonality_max_error": 2.2204460492503131E-16,
+    "navigation_pose_samples": 2049,
+    "passed": true
+  },
+  "pass2": {
+    "samples": 16385,
+    "apc_max_error_m": 0,
+    "orthogonality_max_error": 2.2204460492503131E-16,
+    "navigation_pose_samples": 2049,
+    "passed": true
+  },
+  "passed": true,
+  "echo": {
+    "range_samples": 4096,
+    "pulses": 16385,
+    "range_max_error_m": 5.6843418860808015E-14,
+    "passed": true,
+    "limitation": "Existing beam_weight uses fixed nominal beam; exported body beam is not consumed."
+  }
+}

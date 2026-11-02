@@ -1,0 +1,2 @@
+# Keep package cache inside the independent project.
+cache-dir = ".cache"

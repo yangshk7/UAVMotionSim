@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "model": "hex_x12",
+  "scope": "PX4/XTDrone2 5 m flight smoke",
+  "armed": true,
+  "landing_requested": true,
+  "max_relative_height_m": 4.512768745422363,
+  "position_samples": 7746,
+  "attitude_samples": 7746,
+  "xtdrone_state_samples": 997
+}

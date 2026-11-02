@@ -1,0 +1,11 @@
+# 1000 m 有效直线航段、10 m/s 名义速度、额外 10 s；无物理扰动基准。
+extends: hex_x_12kg.yaml
+runtime:
+  backend: rotorpy
+simulation:
+  duration_mode: route_length
+  duration_margin_s: 10.0
+trajectory:
+  speed_mps: 10.0
+  route_length_m: 1000.0
+  speed_tolerance_fraction: 0.1

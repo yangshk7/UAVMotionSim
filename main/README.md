@@ -1,0 +1,77 @@
+# Manual Acceptance
+
+## 桌面参数上位机
+
+OpenSource 外部平台验收可双击 **run_external_validation.cmd**：依次运行 ArduPilot SITL 与 XTDrone2/PX4/Gazebo 的 Hex-X 起降并生成中文航迹图。该入口已串联运行通过；运行范围和原始记录见 [外部平台部署](../deployment/README.md)。
+
+完整 300 m 采集航段可双击 **run_external_route.cmd**，两平台分别飞越 20.48 s 航段并生成独立的交互验收页；双平台一键串联入口已实际运行通过。结果范围与指标见 [部署说明](../deployment/README.md)。
+
+外部入口结束后还会生成并打开独立的 `index.html` 汇总页，包含验证状态、可拖动三维航迹、逐帧记录、图片和下载链接。页面位于 `results/external_review/`，最近路径保存在本目录 `latest_external_report.txt`。
+
+双击 **open_control_panel.cmd** 可在桌面窗口中调整导航误差、飞行/采样、A/B 扰动和资源参数，并启动仿真或完整验收；窗口内提供实时日志、图表和逐帧位姿查看。详见 [上位机说明](CONTROL_PANEL.md)。
+
+本目录是人工验收入口。默认运行**完整双航次、全长 20.48 s 采集、自动化测试、20,000 s OU 统计、1600/3200/6400 Hz 收敛、MATLAB 导航/几何/回波接口**，最后自动打开本地验收页面。沿用主工程的物理与误差模型，不另造一套演示数据。
+
+## 一键运行
+
+Windows 直接双击 **run.cmd**。也可在本目录运行：
+
+```powershell
+.\run.ps1
+```
+
+在项目根目录可运行：
+
+```powershell
+uv run --no-sync python main/run.py
+```
+
+首次使用先在项目根目录执行 `scripts/setup.ps1`。当前机器已完成 uv 环境部署。验收程序根据可用 CPU/RAM 选择 worker 数，记录 GPU/显存；当前动力学为 CPU 后端。
+
+## 结果位置
+
+每次创建 `main/outputs/acceptance_<Shanghai_timestamp>/`，不覆盖历史结果：
+
+```text
+acceptance_<timestamp>/
+  index.html                  # 人工验收总页，双击即可离线查看
+  acceptance.json             # 本次每个检查的真实状态和资源信息
+  resolved_config.yaml        # 本次完整配置
+  run.log                     # 全流程日志
+  logs/matlab_output.txt       # MATLAB 输出
+  validate_<timestamp>/       # 原始 MAT/CSV、测试、收敛和图表
+```
+
+`latest_report.txt` 记录最近生成的页面路径。MAT/CSV 保留原始精度；页面逐帧数据仅为显示舍入。页面不依赖外网或本地服务器。
+
+## 人工查看顺序
+
+1. 查看验收状态、脉冲数量、导航数量、测试与数值收敛。未执行项显示“未执行”，不会伪装为通过。
+2. 在时间滑块选择任一 100 Hz 导航采样时刻，对照位置、速度、Roll/Pitch/Yaw、wxyz 四元数与 APC；可切换两个航次、播放记录。三维 APC 航迹可拖动旋转、滚轮缩放和切换真实比例，蓝色真值与橙色导航估计均来自本次验收数据。
+3. 查看位置/速度/姿态真值与估计逐轴图、导航误差、APC 轨迹、运动状态、天线杆臂和波束、旋翼边界、四元数模、扰动、OU 和收敛图，共 12 张。
+4. 打开主要导航 MAT/CSV，核对字段、单位与坐标。主要位置是**质心**；APC 单独输出。角速度与加速度的 truth_ 字段仍为真值。
+5. 根据实验目的确认动力学参数、扰动幅度和导航误差初值合理，再将产出用于后续 SAR 实验。
+
+## 调参和运行选项
+
+编辑本目录的 `config.yaml`；OpenSource 版本继承 `configs/rotorpy_hex_x12.yaml`，默认实际调用 RotorPy 后端。为保证人工可检查，入口强制保留 MAT、CSV 和图表，不改动原配置文件。
+
+```powershell
+# 指定进程上限，内存约束仍然生效
+.\run.ps1 -Workers 1
+
+# 只生成报告，不自动弹出浏览器
+.\run.ps1 -NoOpen
+
+# 没有 MATLAB 时允许先检查 Python 结果，整体状态显示 partial
+.\run.ps1 -Matlab skip
+
+# 要求 MATLAB 必须存在且通过
+.\run.ps1 -Matlab required
+```
+
+Python 入口还支持 `--matlab-exe <path>`、`--sar-project <directory>`、`--config <yaml>`。
+
+默认自动检测 MATLAB，并读取相邻既有 L 波段工程进行完整单点回波接口验证。原 SAR 工程不写入；若无 MATLAB、无原回波工程或显式跳过，整体只能标为部分完成。任何数值检查失败均保留日志并停止后续接口验收。
+
+**验收边界**：本入口覆盖 RotorPy/Python 与 MATLAB 本地链路，不自动执行独立部署的 ArduPilot/XTDrone2 验证。外部平台入口、补丁和验证范围见 `../deployment/README.md`。Simscape、实机标定及新 GPU 积分后端尚未完成。原回波仍采用固定名义波束权重，尚未消费姿态变化波束。

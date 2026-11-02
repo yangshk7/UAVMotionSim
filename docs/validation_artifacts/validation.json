@@ -1,0 +1,60 @@
+{
+  "pass1": {
+    "position_derivative_rms_mps": 9.006727436241083e-08,
+    "velocity_derivative_rms_mps2": 1.0613843861280391e-05,
+    "rotation_derivative_rms_per_s": 4.3356517510083245e-07,
+    "quaternion_norm_max_error": 2.220446049250313e-16,
+    "rotation_determinant_max_error": 4.440892098500626e-16,
+    "rotation_orthogonality_max_error": 2.220446049250313e-16,
+    "finite": true,
+    "sar_samples": 16385,
+    "navigation_samples": 2049,
+    "truth_full_samples": 81537,
+    "sar_time_exact": true,
+    "rotor_min_radps": 244.82910450827225,
+    "rotor_max_radps": 645.2434672390588,
+    "allocation_residual_max": 8.526512829121202e-14,
+    "apc_position_nominal_difference_rms_m": 0.8860334340589638,
+    "kinematics_passed": true,
+    "navigation_pose_samples": 2049,
+    "navigation_position_error_rms_m": 0.06544521521902515,
+    "navigation_velocity_error_rms_mps": 0.032712792804530356,
+    "navigation_attitude_rotvec_error_rms_rad": 0.0016394843072957772,
+    "navigation_quaternion_norm_max_error": 2.220446049250313e-16,
+    "passed": true
+  },
+  "pass2": {
+    "position_derivative_rms_mps": 9.387260681811403e-08,
+    "velocity_derivative_rms_mps2": 1.0184018122498132e-05,
+    "rotation_derivative_rms_per_s": 4.6805287153958783e-07,
+    "quaternion_norm_max_error": 2.220446049250313e-16,
+    "rotation_determinant_max_error": 4.440892098500626e-16,
+    "rotation_orthogonality_max_error": 2.220446049250313e-16,
+    "finite": true,
+    "sar_samples": 16385,
+    "navigation_samples": 2049,
+    "truth_full_samples": 81537,
+    "sar_time_exact": true,
+    "rotor_min_radps": 195.61412687964275,
+    "rotor_max_radps": 652.5056825468134,
+    "allocation_residual_max": 7.105427357601002e-14,
+    "apc_position_nominal_difference_rms_m": 1.1091519674738157,
+    "kinematics_passed": true,
+    "navigation_pose_samples": 2049,
+    "navigation_position_error_rms_m": 0.061042342726918705,
+    "navigation_velocity_error_rms_mps": 0.04242122086977963,
+    "navigation_attitude_rotvec_error_rms_rad": 0.0017293307959162854,
+    "navigation_quaternion_norm_max_error": 1.1102230246251565e-16,
+    "passed": true
+  },
+  "two_pass": {
+    "nominal_baseline_sar_m": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "actual_difference_rms_m": 1.8810593035637657,
+    "difference_after_nominal_baseline_rms_m": 1.8810593035637657
+  },
+  "passed": true
+}

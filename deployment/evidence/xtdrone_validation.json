@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "model": "hex_x12",
+  "diagnostic_reference_only": false,
+  "scope": "PX4/XTDrone2 5 m flight smoke",
+  "timestamp_reference": "PX4 DDS timestamp synchronized to ROS clock; seconds",
+  "position_reference": "local EKF NED origin, Z negated to up; not APC or SAR pulse truth",
+  "armed": true,
+  "landing_requested": true,
+  "max_relative_height_m": 4.622076988220215,
+  "position_samples": 3088,
+  "attitude_samples": 3089,
+  "xtdrone_state_samples": 481,
+  "xtdrone_offboard_state_end": "DISABLED"
+}

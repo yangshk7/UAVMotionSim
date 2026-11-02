@@ -1,0 +1,11 @@
+extends: experiment_two_pass.yaml
+disturbances:
+  translation:
+    x: {level: small}
+    y: {level: small}
+    z: {level: small}
+  attitude:
+    roll: {level: small}
+    pitch: {level: small}
+    yaw: {level: small}
+  navigation_position_error: {level: small}

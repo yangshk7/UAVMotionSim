@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-31",
+  "powershell_version": "5.1.26100.8875",
+  "project_path_contains_chinese": true,
+  "native_wsl_file_access": {
+    "code_page_936": "passed",
+    "code_page_65001": "passed",
+    "script": "tests/windows_wsl_path_smoke.ps1"
+  },
+  "full_entry_test": {
+    "entry": "main/run_external_validation.cmd --no-pause",
+    "console_code_page": 936,
+    "exit_code": 0,
+    "sitl_result": "results/sitl/sitl_20261031_174849_164626/validation.json",
+    "xtdrone_result": "results/xtdrone/xtdrone_20261031_174911_457491/validation.json",
+    "sitl_passed": true,
+    "xtdrone_passed": true,
+    "both_plots_generated": true
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "duration_s": 20.48,
+  "elapsed_s_by_requested_workers": {
+    "1": 21.28677929999685,
+    "2": 12.191240699998161
+  },
+  "serial_over_parallel_ratio": 1.7460716118909918,
+  "bitwise_identical_states": true,
+  "parallel_resource_plan": {
+    "hardware": {
+      "os": "Windows-10-10.0.26200-SP0",
+      "cpu_name": "Intel64 Family 6 Model 183 Stepping 1, GenuineIntel",
+      "logical_cpus": 24,
+      "physical_cores": null,
+      "memory_total_bytes": 34191130624,
+      "memory_available_bytes": 9459314688,
+      "gpus": [
+        {
+          "name": "NVIDIA GeForce RTX 3060 Laptop GPU",
+          "total_memory_bytes": 12884901888,
+          "free_memory_bytes": 8696889344,
+          "driver": "610.47",
+          "source": "nvidia-smi"
+        }
+      ],
+      "probe_notes": [
+        "CIM CPU query returned no data; using logical CPU count"
+      ]
+    },
+    "workers": 2,
+    "blas_threads_per_worker": 1,
+    "memory_budget_bytes": 5675588812,
+    "estimated_retained_bytes_per_pass": 105671952,
+    "estimated_working_bytes_per_worker": 372802816,
+    "estimated_peak_bytes": 1302511168,
+    "backend": "cpu",
+    "gpu_used": false,
+    "backend_reason": "19-state sequential feedback RK4 uses float64 CPU; independent passes run in processes. No verified GPU integration kernel is installed; GPU memory is detected and recorded.",
+    "note": ""
+  },
+  "worker_peak_working_set_bytes": [
+    253632512,
+    253833216
+  ]
+}

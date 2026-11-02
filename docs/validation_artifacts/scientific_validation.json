@@ -1,0 +1,133 @@
+{
+  "state_checks": {
+    "pass1": {
+      "position_derivative_rms_mps": 9.006727436241083e-08,
+      "velocity_derivative_rms_mps2": 1.0613843861280391e-05,
+      "rotation_derivative_rms_per_s": 4.3356517510083245e-07,
+      "quaternion_norm_max_error": 2.220446049250313e-16,
+      "rotation_determinant_max_error": 4.440892098500626e-16,
+      "rotation_orthogonality_max_error": 2.220446049250313e-16,
+      "finite": true,
+      "sar_samples": 16385,
+      "navigation_samples": 2049,
+      "truth_full_samples": 81537,
+      "sar_time_exact": true,
+      "rotor_min_radps": 244.82910450827225,
+      "rotor_max_radps": 645.2434672390588,
+      "allocation_residual_max": 8.526512829121202e-14,
+      "apc_position_nominal_difference_rms_m": 0.8860334340589638,
+      "kinematics_passed": true,
+      "navigation_pose_samples": 2049,
+      "navigation_position_error_rms_m": 0.06544521521902515,
+      "navigation_velocity_error_rms_mps": 0.032712792804530356,
+      "navigation_attitude_rotvec_error_rms_rad": 0.0016394843072957772,
+      "navigation_quaternion_norm_max_error": 2.220446049250313e-16,
+      "passed": true
+    },
+    "pass2": {
+      "position_derivative_rms_mps": 9.387260681811403e-08,
+      "velocity_derivative_rms_mps2": 1.0184018122498132e-05,
+      "rotation_derivative_rms_per_s": 4.6805287153958783e-07,
+      "quaternion_norm_max_error": 2.220446049250313e-16,
+      "rotation_determinant_max_error": 4.440892098500626e-16,
+      "rotation_orthogonality_max_error": 2.220446049250313e-16,
+      "finite": true,
+      "sar_samples": 16385,
+      "navigation_samples": 2049,
+      "truth_full_samples": 81537,
+      "sar_time_exact": true,
+      "rotor_min_radps": 195.61412687964275,
+      "rotor_max_radps": 652.5056825468134,
+      "allocation_residual_max": 7.105427357601002e-14,
+      "apc_position_nominal_difference_rms_m": 1.1091519674738157,
+      "kinematics_passed": true,
+      "navigation_pose_samples": 2049,
+      "navigation_position_error_rms_m": 0.061042342726918705,
+      "navigation_velocity_error_rms_mps": 0.04242122086977963,
+      "navigation_attitude_rotvec_error_rms_rad": 0.0017293307959162854,
+      "navigation_quaternion_norm_max_error": 1.1102230246251565e-16,
+      "passed": true
+    },
+    "two_pass": {
+      "nominal_baseline_sar_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actual_difference_rms_m": 1.8810593035637657,
+      "difference_after_nominal_baseline_rms_m": 1.8810593035637657
+    },
+    "passed": true
+  },
+  "pytest_returncode": 0,
+  "ou_statistics": {
+    "seed": 937,
+    "samples": 400000,
+    "duration_s": 20000.0,
+    "dt_s": 0.05,
+    "tau_slow_s": 2.5,
+    "tau_fast_s": 0.35,
+    "slow_variance_fraction": 0.7,
+    "mean": 0.0002093606237696497,
+    "variance": 0.9930133256902395,
+    "acf_max_error_0_to_10s": 0.009337284765202403,
+    "independent_stream_correlation": 0.0015502905527278704,
+    "psd_integrated_variance": 0.9928999903600507,
+    "limits": {
+      "absolute_mean": 0.05,
+      "variance_absolute_error": 0.08,
+      "acf_max_error": 0.06,
+      "absolute_cross_correlation": 0.08
+    },
+    "passed": true
+  },
+  "convergence": {
+    "rates_hz": [
+      1600,
+      3200,
+      6400
+    ],
+    "input_grid_hz": 6400,
+    "seed": 98231,
+    "target_sar_m": [
+      0.0,
+      251.729889353184,
+      0.0
+    ],
+    "duration_s": 20.48,
+    "wavelength_m": 0.24982704833333333,
+    "stimulus": "FRD y force std 2 N; roll torque std 0.1 N*m; same continuous OU splines",
+    "comparisons_to_6400_hz": {
+      "1600": {
+        "position_N_m_rms": 5.2389166678742536e-06,
+        "velocity_N_mps_rms": 6.941552474593302e-06,
+        "acceleration_N_mps2_rms": 1.3950330877146342e-05,
+        "omega_B_radps_rms": 7.884372464713626e-06,
+        "apc_position_sar_m_rms": 5.433384262223352e-06,
+        "attitude_geodesic_rms_rad": 2.4624344606347373e-06,
+        "slant_range_rms_m": 5.924131609271708e-06,
+        "slant_range_max_m": 1.2681899477229308e-05,
+        "two_way_phase_rms_rad": 0.00029798548182428914
+      },
+      "3200": {
+        "position_N_m_rms": 1.3660538964669284e-06,
+        "velocity_N_mps_rms": 2.0576874016965962e-06,
+        "acceleration_N_mps2_rms": 3.921828002988457e-06,
+        "omega_B_radps_rms": 2.2102950968710254e-06,
+        "apc_position_sar_m_rms": 1.4193235821998846e-06,
+        "attitude_geodesic_rms_rad": 6.922585728512724e-07,
+        "slant_range_rms_m": 1.5548809575266734e-06,
+        "slant_range_max_m": 4.45785525471365e-06,
+        "two_way_phase_rms_rad": 7.821094834943383e-05
+      }
+    },
+    "limit_slant_range_rms_m": 0.001,
+    "passed": true
+  },
+  "external_validation": {
+    "matlab": "Run matlab/run_matlab_validation.m explicitly",
+    "SITL": "Not performed by this command",
+    "Simscape": "Not performed by this command"
+  },
+  "passed": true
+}

@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-31",
+  "environment": "WSL2 Ubuntu-24.04",
+  "deployment_status": "installed_and_started",
+  "ardupilot": {
+    "version": "4.7.2",
+    "flight_validation": "passed",
+    "evidence": "../results/sitl/sitl_20261031_154519_105217/validation.json",
+    "max_relative_height_m": 10.012984275817871,
+    "position_samples": 2671,
+    "attitude_samples": 4630
+  },
+  "xtdrone2": {
+    "built_packages": 8,
+    "communication_validation": "passed",
+    "takeoff_and_land_command": "observed",
+    "full_flight_validation": "passed",
+    "evidence": "../results/xtdrone/xtdrone_20261031_162949_483003/validation.json",
+    "max_relative_height_m": 4.622076988220215,
+    "position_samples": 3088,
+    "attitude_samples": 3089,
+    "xtdrone_state_samples": 481,
+    "fixed_issue": "Stopped stale Offboard trajectory publication before sending LAND; no protection bypass applied."
+  },
+  "python_tests": {"passed": 68, "failed": 0},
+  "external_logs_are_sar_pulse_truth": false,
+  "one_click_validation": {
+    "entry": "main/run_external_validation.cmd --no-pause",
+    "exit_code": 0,
+    "sitl": "../results/sitl/sitl_20261031_162926_289887/validation.json",
+    "xtdrone": "../results/xtdrone/xtdrone_20261031_162949_483003/validation.json"
+  }
+}

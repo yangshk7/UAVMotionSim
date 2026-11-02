@@ -1,0 +1,5 @@
+extends: rotorpy_hex_x12.yaml
+simulation:
+  pre_stabilization_s: 0.1
+  acquisition_duration_s: 0.2
+  dynamics_rate_hz: 1600

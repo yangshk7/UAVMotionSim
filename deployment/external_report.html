@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>__TITLE__</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f0f5f8;color:#1b354c;font:15px/1.65 "Microsoft YaHei",system-ui,sans-serif}header{background:#153550;color:white;padding:30px max(24px,calc((100vw - 1240px)/2))}h1{margin:4px 0;font-size:29px}h2{font-size:21px;margin:0 0 10px}header p{margin:5px 0;color:#d4e5ef}.wrap{max-width:1288px;margin:auto;padding:24px}.panel{background:white;border:1px solid #d8e3eb;border-radius:12px;padding:22px;margin-bottom:20px}.status{padding:15px 20px;border-radius:9px;margin-bottom:20px;border-left:5px solid #26805b;background:#e7f4ed}.status.failed{background:#ffeded;border-color:#b83a48}.status.partial{background:#fff4db;border-color:#b17b1d}.hint{color:#62768a;font-size:13px}.controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}button,select{font:inherit;color:inherit;background:#fff;border:1px solid #cbd9e4;border-radius:7px;padding:7px 12px}button{cursor:pointer}input[type=range]{flex:1;min-width:200px;accent-color:#236c9c}canvas{display:block;width:100%;height:430px;background:#f9fcff;border:1px solid #e0e9ef;border-radius:8px;touch-action:none;cursor:grab}.badge{display:inline-block;font-size:13px;border-radius:20px;padding:2px 12px;background:#e3f3e9;color:#246f4b}.badge.failed{background:#ffe6e9;color:#ae3541}.badge.partial{background:#fff0d3;color:#96671d}table{border-collapse:collapse;width:100%;margin-top:15px}td,th{padding:10px;text-align:left;border-bottom:1px solid #e1e8ed}th{color:#62768a;font-weight:500}td{font-family:Consolas,monospace;overflow-wrap:anywhere}.downloads{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}a{color:#1d669b}a:hover{color:#10456b}.downloads a{padding:6px 12px;border:1px solid #d6e2eb;border-radius:6px;text-decoration:none}.panel img{width:100%;height:auto;display:block;margin-top:15px}.stamp{font-size:12px;overflow-wrap:anywhere}#plot-hint{min-height:24px}@media(max-width:650px){.wrap{padding:12px}.panel{padding:14px}h1{font-size:23px}canvas{height:340px}table{font-size:12px}td,th{padding:7px}}
+</style></head><body>
+<header><p>UAV Motion Sim OpenSource</p><h1>__TITLE__</h1><p>__MODE__</p><p class="stamp">生成时间：__GENERATED__</p></header>
+<main class="wrap"><div class="status __STATUS__"><b>__STATUS_TEXT__</b><div class="hint">__SCOPE_NOTE__</div></div>
+<section class="panel"><h2>可拖动三维航迹与逐帧查看</h2>
+<div class="controls"><select id="platform" aria-label="选择平台"></select><label><input id="equal" type="checkbox" __FULL_CHECKED__> 真实比例</label><button id="reset">重置视角</button></div>
+<p class="hint">按住鼠标拖动旋转，滚轮缩放。__FULL_SCALE_NOTE__</p>
+<canvas id="track" aria-label="实际导航记录三维航迹"></canvas><p id="plot-hint" class="hint"></p>
+<div class="controls"><button id="play">播放</button><input id="time" type="range" min="0" max="0" value="0" step="1"><b id="clock">—</b></div>
+<table><thead><tr><th>实际记录字段 / 单位</th><th>数值</th></tr></thead><tbody id="pose"></tbody></table>
+<p class="hint">显示的是导航估计，局部 Z 不是离地真值或 APC 高度。长日志的页面绘图最多取 4000 个实际采样点，完整精度请下载原始 CSV。姿态按最近的原始消息显示，并明确给出时间差；没有插值生成“同步真值”。负 Z 和漂移按原始记录显示。</p></section>
+__ROUTE_PANEL__
+__CARDS__
+<section class="panel"><h2>如何解释这些结果</h2><p>通过表示此处所记录的解锁、起飞、降落与停桨检查完成。平台物理参数和传感器尚未经实机标定，不能据此声称导航误差达到某个精度。</p><p class="hint">位置、速度采用局部 X 前/Y 右/Z 上。姿态为 NED/FRD；ArduPilot 显示滚转、俯仰、偏航角，PX4 显示标量在前的 wxyz 四元数。原始 CSV、日志和验证 JSON 保持原样。页面支持离线打开，无需联网或本地服务器。</p><a href="report_summary.json">打开本页汇总 JSON</a></section>
+</main><script id="report-data" type="application/json">__PAYLOAD__</script><script>__SCRIPT__</script><script>__ROUTE_SCRIPT__</script></body></html>

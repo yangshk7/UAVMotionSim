@@ -1,0 +1,2 @@
+deployment/**/*.sh text eol=lf
+deployment/**/*.patch text eol=lf

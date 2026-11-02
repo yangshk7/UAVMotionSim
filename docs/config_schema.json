@@ -1,0 +1,1299 @@
+{
+  "$defs": {
+    "AntennaConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "phase_center_frd_m": {
+          "default": [
+            0.0,
+            0.1,
+            0.2
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Phase Center Frd M",
+          "type": "array"
+        },
+        "look_angle_deg": {
+          "default": 50.0,
+          "exclusiveMaximum": 90,
+          "exclusiveMinimum": 0,
+          "title": "Look Angle Deg",
+          "type": "number"
+        },
+        "right_looking": {
+          "const": true,
+          "default": true,
+          "title": "Right Looking",
+          "type": "boolean"
+        },
+        "squint_angle_deg": {
+          "default": 0.0,
+          "exclusiveMaximum": 90,
+          "exclusiveMinimum": -90,
+          "title": "Squint Angle Deg",
+          "type": "number"
+        }
+      },
+      "title": "AntennaConfig",
+      "type": "object"
+    },
+    "AttitudeErrorConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "correlation_time_s": {
+          "default": 5.0,
+          "exclusiveMinimum": 0,
+          "title": "Correlation Time S",
+          "type": "number"
+        },
+        "bias_std_body_deg": {
+          "default": [
+            0.05,
+            0.05,
+            0.1
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Bias Std Body Deg",
+          "type": "array"
+        },
+        "noise_std_body_deg": {
+          "default": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Noise Std Body Deg",
+          "type": "array"
+        },
+        "random_seed": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Random Seed"
+        }
+      },
+      "title": "AttitudeErrorConfig",
+      "type": "object"
+    },
+    "ControllerConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "position_rate_hz": {
+          "default": 20,
+          "exclusiveMinimum": 0,
+          "title": "Position Rate Hz",
+          "type": "integer"
+        },
+        "velocity_rate_hz": {
+          "default": 50,
+          "exclusiveMinimum": 0,
+          "title": "Velocity Rate Hz",
+          "type": "integer"
+        },
+        "attitude_rate_hz": {
+          "default": 200,
+          "exclusiveMinimum": 0,
+          "title": "Attitude Rate Hz",
+          "type": "integer"
+        },
+        "angular_rate_hz": {
+          "default": 200,
+          "exclusiveMinimum": 0,
+          "title": "Angular Rate Hz",
+          "type": "integer"
+        },
+        "kp_position_per_s": {
+          "default": [
+            0.6,
+            0.6,
+            0.8
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Kp Position Per S",
+          "type": "array"
+        },
+        "kp_velocity_per_s": {
+          "default": [
+            1.5,
+            1.5,
+            2.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Kp Velocity Per S",
+          "type": "array"
+        },
+        "ki_velocity_per_s2": {
+          "default": [
+            0.12,
+            0.12,
+            0.25
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Ki Velocity Per S2",
+          "type": "array"
+        },
+        "velocity_integral_limit_m": {
+          "default": [
+            2.0,
+            2.0,
+            2.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Velocity Integral Limit M",
+          "type": "array"
+        },
+        "kp_attitude_per_s": {
+          "default": [
+            4.0,
+            4.0,
+            3.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Kp Attitude Per S",
+          "type": "array"
+        },
+        "kp_rate_per_s": {
+          "default": [
+            12.0,
+            12.0,
+            10.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Kp Rate Per S",
+          "type": "array"
+        },
+        "ki_rate_per_s2": {
+          "default": [
+            1.0,
+            1.0,
+            0.5
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Ki Rate Per S2",
+          "type": "array"
+        },
+        "rate_integral_limit_rad": {
+          "default": [
+            0.4,
+            0.4,
+            0.4
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Rate Integral Limit Rad",
+          "type": "array"
+        },
+        "max_speed_mps": {
+          "default": 12.0,
+          "exclusiveMinimum": 0,
+          "title": "Max Speed Mps",
+          "type": "number"
+        },
+        "max_horizontal_acceleration_mps2": {
+          "default": 2.5,
+          "exclusiveMinimum": 0,
+          "title": "Max Horizontal Acceleration Mps2",
+          "type": "number"
+        },
+        "max_vertical_acceleration_mps2": {
+          "default": 2.0,
+          "exclusiveMinimum": 0,
+          "title": "Max Vertical Acceleration Mps2",
+          "type": "number"
+        },
+        "max_tilt_deg": {
+          "default": 25.0,
+          "exclusiveMaximum": 85,
+          "exclusiveMinimum": 0,
+          "title": "Max Tilt Deg",
+          "type": "number"
+        },
+        "max_body_rate_radps": {
+          "default": 1.5,
+          "exclusiveMinimum": 0,
+          "title": "Max Body Rate Radps",
+          "type": "number"
+        },
+        "max_torque_Nm": {
+          "default": [
+            8.0,
+            8.0,
+            2.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Max Torque Nm",
+          "type": "array"
+        },
+        "allocation_weights": {
+          "default": [
+            1.0,
+            2.0,
+            2.0,
+            4.0
+          ],
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Allocation Weights",
+          "type": "array"
+        }
+      },
+      "title": "ControllerConfig",
+      "type": "object"
+    },
+    "DisturbanceConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "all_enabled": {
+          "default": false,
+          "title": "All Enabled",
+          "type": "boolean"
+        },
+        "tau_slow_s": {
+          "default": 2.5,
+          "exclusiveMinimum": 0,
+          "title": "Tau Slow S",
+          "type": "number"
+        },
+        "tau_fast_s": {
+          "default": 0.35,
+          "exclusiveMinimum": 0,
+          "title": "Tau Fast S",
+          "type": "number"
+        },
+        "slow_variance_fraction": {
+          "default": 0.7,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Slow Variance Fraction",
+          "type": "number"
+        },
+        "input_rate_hz": {
+          "default": 3200,
+          "exclusiveMinimum": 0,
+          "title": "Input Rate Hz",
+          "type": "integer"
+        },
+        "command_filter_cutoff_hz": {
+          "default": 1.0,
+          "description": "Third-order Butterworth before command derivatives",
+          "exclusiveMinimum": 0,
+          "title": "Command Filter Cutoff Hz",
+          "type": "number"
+        },
+        "translation": {
+          "additionalProperties": {
+            "$ref": "#/$defs/FactorConfig"
+          },
+          "title": "Translation",
+          "type": "object"
+        },
+        "attitude": {
+          "additionalProperties": {
+            "$ref": "#/$defs/FactorConfig"
+          },
+          "title": "Attitude",
+          "type": "object"
+        },
+        "navigation_position_error": {
+          "$ref": "#/$defs/NavigationConfig"
+        },
+        "navigation_velocity_error": {
+          "$ref": "#/$defs/VelocityErrorConfig"
+        },
+        "navigation_attitude_error": {
+          "$ref": "#/$defs/AttitudeErrorConfig"
+        }
+      },
+      "title": "DisturbanceConfig",
+      "type": "object"
+    },
+    "FactorConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "injection_mode": {
+          "default": "command",
+          "enum": [
+            "command",
+            "dynamics"
+          ],
+          "title": "Injection Mode",
+          "type": "string"
+        },
+        "level": {
+          "default": "medium",
+          "enum": [
+            "small",
+            "medium",
+            "large"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "profile": {
+          "default": "ou",
+          "enum": [
+            "ou",
+            "constant"
+          ],
+          "title": "Profile",
+          "type": "string"
+        },
+        "start_time_s": {
+          "default": 0.0,
+          "title": "Start Time S",
+          "type": "number"
+        },
+        "end_time_s": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Time S"
+        },
+        "ramp_s": {
+          "default": 0.5,
+          "exclusiveMinimum": 0,
+          "title": "Ramp S",
+          "type": "number"
+        },
+        "amplitude": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "OU stationary std, or constant magnitude; see unit",
+          "title": "Amplitude"
+        },
+        "unit": {
+          "default": "auto",
+          "enum": [
+            "auto",
+            "m",
+            "m/s",
+            "deg",
+            "N",
+            "N*m"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "random_seed": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Random Seed"
+        }
+      },
+      "title": "FactorConfig",
+      "type": "object"
+    },
+    "GeometryConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "translation": {
+          "default": "actual",
+          "enum": [
+            "actual",
+            "ideal"
+          ],
+          "title": "Translation",
+          "type": "string"
+        },
+        "attitude": {
+          "default": "actual",
+          "enum": [
+            "actual",
+            "ideal"
+          ],
+          "title": "Attitude",
+          "type": "string"
+        }
+      },
+      "title": "GeometryConfig",
+      "type": "object"
+    },
+    "NavigationConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "level": {
+          "default": "medium",
+          "enum": [
+            "small",
+            "medium",
+            "large"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "correlation_time_s": {
+          "default": 8.0,
+          "exclusiveMinimum": 0,
+          "title": "Correlation Time S",
+          "type": "number"
+        },
+        "bias_std_sar_m": {
+          "anyOf": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bias Std Sar M"
+        },
+        "noise_std_sar_m": {
+          "default": [
+            0.01,
+            0.01,
+            0.02
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Noise Std Sar M",
+          "type": "array"
+        },
+        "random_seed": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Random Seed"
+        }
+      },
+      "title": "NavigationConfig",
+      "type": "object"
+    },
+    "OutputConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "save_mat": {
+          "default": true,
+          "title": "Save Mat",
+          "type": "boolean"
+        },
+        "save_csv": {
+          "default": true,
+          "title": "Save Csv",
+          "type": "boolean"
+        },
+        "save_plots": {
+          "default": true,
+          "title": "Save Plots",
+          "type": "boolean"
+        }
+      },
+      "title": "OutputConfig",
+      "type": "object"
+    },
+    "RuntimeConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "max_workers": {
+          "default": 0,
+          "description": "0 selects automatic safe concurrency",
+          "minimum": 0,
+          "title": "Max Workers",
+          "type": "integer"
+        },
+        "memory_fraction": {
+          "default": 0.6,
+          "exclusiveMinimum": 0,
+          "maximum": 0.9,
+          "title": "Memory Fraction",
+          "type": "number"
+        },
+        "reserve_memory_gb": {
+          "default": 2.0,
+          "minimum": 0,
+          "title": "Reserve Memory Gb",
+          "type": "number"
+        },
+        "backend": {
+          "default": "auto",
+          "enum": [
+            "auto",
+            "cpu"
+          ],
+          "title": "Backend",
+          "type": "string"
+        },
+        "blas_threads_per_worker": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Blas Threads Per Worker",
+          "type": "integer"
+        }
+      },
+      "title": "RuntimeConfig",
+      "type": "object"
+    },
+    "SimulationConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "dynamics_rate_hz": {
+          "default": 3200,
+          "exclusiveMinimum": 0,
+          "title": "Dynamics Rate Hz",
+          "type": "integer"
+        },
+        "sar_rate_hz": {
+          "default": 800,
+          "exclusiveMinimum": 0,
+          "title": "Sar Rate Hz",
+          "type": "integer"
+        },
+        "navigation_rate_hz": {
+          "default": 100,
+          "exclusiveMinimum": 0,
+          "title": "Navigation Rate Hz",
+          "type": "integer"
+        },
+        "pre_stabilization_s": {
+          "default": 5.0,
+          "minimum": 0,
+          "title": "Pre Stabilization S",
+          "type": "number"
+        },
+        "acquisition_duration_s": {
+          "default": 20.48,
+          "exclusiveMinimum": 0,
+          "title": "Acquisition Duration S",
+          "type": "number"
+        },
+        "integrator": {
+          "const": "RK4",
+          "default": "RK4",
+          "title": "Integrator",
+          "type": "string"
+        },
+        "initial_position_error_sar_m": {
+          "default": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Initial Position Error Sar M",
+          "type": "array"
+        },
+        "initial_velocity_error_sar_mps": {
+          "default": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Initial Velocity Error Sar Mps",
+          "type": "array"
+        },
+        "initial_attitude_error_rpy_deg": {
+          "default": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Initial Attitude Error Rpy Deg",
+          "type": "array"
+        },
+        "initial_body_rate_radps": {
+          "default": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Initial Body Rate Radps",
+          "type": "array"
+        }
+      },
+      "title": "SimulationConfig",
+      "type": "object"
+    },
+    "TrajectoryConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "default": "straight_constant_velocity",
+          "enum": [
+            "straight_constant_velocity",
+            "waypoint",
+            "time_series",
+            "segmented_velocity"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "speed_mps": {
+          "default": 10.0,
+          "minimum": 0,
+          "title": "Speed Mps",
+          "type": "number"
+        },
+        "apc_height_m": {
+          "default": 300.0,
+          "exclusiveMinimum": 0,
+          "title": "Apc Height M",
+          "type": "number"
+        },
+        "yaw_deg": {
+          "default": 0.0,
+          "title": "Yaw Deg",
+          "type": "number"
+        },
+        "center_aperture": {
+          "default": true,
+          "title": "Center Aperture",
+          "type": "boolean"
+        },
+        "times_s": {
+          "default": [],
+          "items": {
+            "type": "number"
+          },
+          "title": "Times S",
+          "type": "array"
+        },
+        "positions_sar_m": {
+          "default": [],
+          "items": {
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Positions Sar M",
+          "type": "array"
+        },
+        "velocities_sar_mps": {
+          "default": [],
+          "items": {
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Velocities Sar Mps",
+          "type": "array"
+        },
+        "yaw_series_deg": {
+          "default": [],
+          "items": {
+            "type": "number"
+          },
+          "title": "Yaw Series Deg",
+          "type": "array"
+        }
+      },
+      "title": "TrajectoryConfig",
+      "type": "object"
+    },
+    "VehicleConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "const": "HexX12",
+          "default": "HexX12",
+          "title": "Model",
+          "type": "string"
+        },
+        "mass_kg": {
+          "default": 12.0,
+          "exclusiveMinimum": 0,
+          "title": "Mass Kg",
+          "type": "number"
+        },
+        "inertia_kg_m2": {
+          "default": [
+            [
+              0.55,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.6,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "maxItems": 3,
+              "minItems": 3,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            }
+          ],
+          "title": "Inertia Kg M2",
+          "type": "array"
+        },
+        "arm_length_m": {
+          "default": 0.55,
+          "exclusiveMinimum": 0,
+          "title": "Arm Length M",
+          "type": "number"
+        },
+        "max_rotor_thrust_N": {
+          "default": 42.0,
+          "exclusiveMinimum": 0,
+          "title": "Max Rotor Thrust N",
+          "type": "number"
+        },
+        "kf": {
+          "default": 8e-05,
+          "description": "N/(rad/s)^2",
+          "exclusiveMinimum": 0,
+          "title": "Kf",
+          "type": "number"
+        },
+        "km": {
+          "default": 2.4e-06,
+          "description": "N m/(rad/s)^2",
+          "minimum": 0,
+          "title": "Km",
+          "type": "number"
+        },
+        "motor_time_constant_s": {
+          "default": 0.1,
+          "exclusiveMinimum": 0,
+          "title": "Motor Time Constant S",
+          "type": "number"
+        },
+        "gravity_mps2": {
+          "default": 9.81,
+          "exclusiveMinimum": 0,
+          "title": "Gravity Mps2",
+          "type": "number"
+        },
+        "drag_enabled": {
+          "default": false,
+          "title": "Drag Enabled",
+          "type": "boolean"
+        },
+        "air_density_kg_m3": {
+          "default": 1.225,
+          "exclusiveMinimum": 0,
+          "title": "Air Density Kg M3",
+          "type": "number"
+        },
+        "drag_cd_area_m2": {
+          "default": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Drag Cd Area M2",
+          "type": "array"
+        }
+      },
+      "title": "VehicleConfig",
+      "type": "object"
+    },
+    "VelocityErrorConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "correlation_time_s": {
+          "default": 3.0,
+          "exclusiveMinimum": 0,
+          "title": "Correlation Time S",
+          "type": "number"
+        },
+        "bias_std_sar_mps": {
+          "default": [
+            0.02,
+            0.02,
+            0.04
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Bias Std Sar Mps",
+          "type": "array"
+        },
+        "noise_std_sar_mps": {
+          "default": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Noise Std Sar Mps",
+          "type": "array"
+        },
+        "random_seed": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Random Seed"
+        }
+      },
+      "title": "VelocityErrorConfig",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "base_seed": {
+      "default": 20260604,
+      "minimum": 0,
+      "title": "Base Seed",
+      "type": "integer"
+    },
+    "pass_seeds": {
+      "default": [
+        20260604,
+        20260605
+      ],
+      "items": {
+        "type": "integer"
+      },
+      "title": "Pass Seeds",
+      "type": "array"
+    },
+    "nominal_baseline_sar_m": {
+      "default": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maxItems": 3,
+      "minItems": 3,
+      "prefixItems": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Nominal Baseline Sar M",
+      "type": "array"
+    },
+    "vehicle": {
+      "$ref": "#/$defs/VehicleConfig"
+    },
+    "simulation": {
+      "$ref": "#/$defs/SimulationConfig"
+    },
+    "controller": {
+      "$ref": "#/$defs/ControllerConfig"
+    },
+    "trajectory": {
+      "$ref": "#/$defs/TrajectoryConfig"
+    },
+    "antenna": {
+      "$ref": "#/$defs/AntennaConfig"
+    },
+    "disturbances": {
+      "$ref": "#/$defs/DisturbanceConfig"
+    },
+    "geometry": {
+      "$ref": "#/$defs/GeometryConfig"
+    },
+    "runtime": {
+      "$ref": "#/$defs/RuntimeConfig"
+    },
+    "output": {
+      "$ref": "#/$defs/OutputConfig"
+    }
+  },
+  "title": "Config",
+  "type": "object"
+}

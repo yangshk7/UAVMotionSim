@@ -1,0 +1,25 @@
+{
+  "command": [
+    "/opt/uav_motion/sitl/4.7.2/bin/arducopter",
+    "-I",
+    "20",
+    "--model",
+    "hexax:hex_x12.json",
+    "--defaults",
+    "copter.parm,hex_x12.parm",
+    "--speedup",
+    "5",
+    "--home",
+    "-35.363261,149.165230,584,0",
+    "-w"
+  ],
+  "binary_sha256": "caed35e4cb796ec06cac40b09566a18251771486b1cbac5e2bf16b7a5ed5045d",
+  "passed": true,
+  "scope": "12 kg Hex-X 10 m takeoff/land smoke; not SAR-rate truth",
+  "armed": true,
+  "takeoff_command_sent": true,
+  "landing_requested": true,
+  "max_relative_height_m": 10.012984275817871,
+  "position_samples": 2671,
+  "attitude_samples": 4630
+}
