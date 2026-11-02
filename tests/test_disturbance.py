@@ -1,10 +1,12 @@
 import numpy as np
 from numpy.testing import assert_allclose, assert_array_equal
+from scipy.interpolate import CubicSpline
 from scipy.signal import welch
 
 from uavsim.config.validator import Config
 from uavsim.disturbances.injection_manager import DisturbanceInputs
 from uavsim.disturbances.ou_process import dual_ou, ou_process
+from uavsim.disturbances.translation import translation_command
 
 
 def test_ou_stationary_statistics():
@@ -47,6 +49,14 @@ def test_channel_independence_and_units():
     assert_allclose(force, 0)
     assert_allclose(torque, 0)
     assert_allclose(a.command_arrays(t)["position_offset_N_m"][:2], 0, atol=1e-12)
+
+
+def test_x_velocity_disturbance_does_not_move_position_target():
+    spline = CubicSpline([0.0, 1.0, 2.0], [0.5, 0.5, 0.5])
+    position, velocity, acceleration = translation_command([spline, None, None], np.array([0.0, 1.0, 2.0]))
+    assert_allclose(position, 0.0)
+    assert_allclose(velocity[:, 0], 0.5)
+    assert_allclose(acceleration, 0.0, atol=1e-12)
 
 
 def test_dynamics_input_is_newton_not_position():
