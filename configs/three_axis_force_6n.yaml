@@ -1,0 +1,8 @@
+# 可选三轴 FRD 外力方案；保持上位机 1000 m 航线和其余参数。
+# 6 N/轴为未经实飞标定的工程初值，不与位置目标扰动的 0.15 m 混用。
+extends: ../main/motion_config.yaml
+disturbances:
+  translation:
+    x: {injection_mode: dynamics, amplitude: 6.0, unit: N}
+    y: {injection_mode: dynamics, amplitude: 6.0, unit: N}
+    z: {injection_mode: dynamics, amplitude: 6.0, unit: N}

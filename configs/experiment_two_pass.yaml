@@ -1,10 +1,10 @@
 extends: hex_x_12kg.yaml
-# 指令尺度来自规范候选值，未经实测标定。
+# A 三轴统一位置目标扰动，中等等级各轴 0.15 m OU 标准差；未经实测标定。
 disturbances:
   translation:
-    x: {enabled: true}
-    y: {enabled: true}
-    z: {enabled: true}
+    x: {enabled: true, unit: m}
+    y: {enabled: true, unit: m}
+    z: {enabled: true, unit: m}
   attitude:
     roll: {enabled: true}
     pitch: {enabled: true}

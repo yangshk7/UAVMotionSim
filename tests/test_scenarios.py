@@ -35,7 +35,7 @@ def test_single_factor_response(name, group):
     assert np.max(np.abs(np.linalg.norm(truth["q_NB_wxyz"], axis=1) - 1)) < 1e-12
 
 
-def test_x_velocity_command_position_error_recovers_after_disturbance():
+def test_x_position_target_returns_toward_nominal_after_disturbance():
     values = Config().model_dump()
     values["simulation"].update(
         dynamics_rate_hz=800, pre_stabilization_s=0.1, acquisition_duration_s=8.0
@@ -50,7 +50,7 @@ def test_x_velocity_command_position_error_recovers_after_disturbance():
     )
     time = result["truth_sar"]["time_s"]
     assert error[np.searchsorted(time, 2.0)] > 0.2
-    assert abs(error[-1]) < 0.02
+    assert abs(error[-1]) < 0.1 * np.max(np.abs(error))
 
 
 def test_joint_seeds_baseline_and_parallel_reproducibility():

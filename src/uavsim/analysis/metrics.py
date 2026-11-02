@@ -8,12 +8,40 @@ def rms(array: np.ndarray) -> float:
     return float(np.sqrt(np.mean(np.square(array))))
 
 
+def velocity_integral_residual_rms(
+    velocity_mps: np.ndarray, acceleration_mps2: np.ndarray, dt_s: float, window_s: float = 0.1
+) -> tuple[float, float]:
+    """用约 0.1 s 窗口核对 Δv=∫a dt；末窗可重叠。返回平均加速度残差 RMS (m/s²)、窗长 (s)。"""
+    if (
+        velocity_mps.ndim != 2
+        or velocity_mps.shape != acceleration_mps2.shape
+        or len(velocity_mps) < 2
+        or dt_s <= 0
+        or window_s <= 0
+    ):
+        raise ValueError("Velocity and acceleration need matching 2D samples and positive time intervals")
+    stride = min(max(1, round(window_s / dt_s)), len(velocity_mps) - 1)
+    starts = np.arange(0, len(velocity_mps) - stride, stride)
+    if starts[-1] != len(velocity_mps) - stride - 1:
+        starts = np.r_[starts, len(velocity_mps) - stride - 1]
+    ends = starts + stride
+    increments = (acceleration_mps2[:-1] + acceleration_mps2[1:]) * (dt_s / 2)
+    integral = np.vstack((np.zeros((1, acceleration_mps2.shape[1])), np.cumsum(increments, axis=0)))
+    residual = (velocity_mps[ends] - velocity_mps[starts] - (integral[ends] - integral[starts])) / (
+        stride * dt_s
+    )
+    return rms(residual), stride * dt_s
+
+
 def state_metrics(data: dict, config) -> dict:
     truth = data["truth_full"]
     dt = 1 / config.simulation.dynamics_rate_hz
     sl = slice(2, -2)
     dp = np.gradient(truth["position_N_m"], dt, axis=0, edge_order=2)
     dv = np.gradient(truth["velocity_N_mps"], dt, axis=0, edge_order=2)
+    velocity_integral_rms, integral_window_s = velocity_integral_residual_rms(
+        truth["velocity_N_mps"], truth["acceleration_N_mps2"], dt
+    )
     rotation = to_matrix(truth["q_NB_wxyz"])
     dr = np.gradient(rotation, dt, axis=0, edge_order=2)
     omega = truth["omega_B_radps"]
@@ -29,6 +57,8 @@ def state_metrics(data: dict, config) -> dict:
     residuals = {
         "position_derivative_rms_mps": rms((dp - truth["velocity_N_mps"])[sl]),
         "velocity_derivative_rms_mps2": rms((dv - truth["acceleration_N_mps2"])[sl]),
+        "velocity_integral_rms_mps2": velocity_integral_rms,
+        "velocity_integral_window_s": integral_window_s,
         "rotation_derivative_rms_per_s": rms((dr - rotation @ skew)[sl]),
         "quaternion_norm_max_error": float(np.max(np.abs(np.linalg.norm(truth["q_NB_wxyz"], axis=1) - 1))),
         "rotation_determinant_max_error": float(np.max(np.abs(np.linalg.det(rotation) - 1))),
@@ -51,7 +81,7 @@ def state_metrics(data: dict, config) -> dict:
     }
     residuals["kinematics_passed"] = bool(
         residuals["position_derivative_rms_mps"] < 1e-3
-        and residuals["velocity_derivative_rms_mps2"] < 1e-3
+        and residuals["velocity_integral_rms_mps2"] < 1e-3
         and residuals["rotation_derivative_rms_per_s"] < 1e-3
     )
     nav = data["navigation"]

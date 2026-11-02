@@ -219,7 +219,7 @@ class DisturbanceConfig(StrictModel):
         if self.command_filter_cutoff_hz >= self.input_rate_hz / 2:
             raise ValueError("Command filter cutoff must be below input Nyquist")
         for mapping, keys, command_units, dynamic_unit in [
-            (self.translation, ("x", "y", "z"), ("m/s", "m", "m"), "N"),
+            (self.translation, ("x", "y", "z"), ("m", "m", "m"), "N"),
             (self.attitude, ("roll", "pitch", "yaw"), ("deg", "deg", "deg"), "N*m"),
         ]:
             if set(mapping) != set(keys):

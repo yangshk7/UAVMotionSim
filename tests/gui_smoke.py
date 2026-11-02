@@ -39,6 +39,12 @@ def main():
     root.update()
     report = {"tk_version": tk.TkVersion, "checks": {}}
     try:
+        for axis in "xyz":
+            prefix = f"disturbances.translation.{axis}"
+            assert app.bindings[prefix + ".injection_mode"][0].get() == "command"
+            assert app.bindings[prefix + ".level"][0].get() == "medium"
+            assert app.bindings[prefix + ".unit"][0].get() == "m"
+        report["checks"]["equal_three_axis_position_target_defaults"] = "passed"
         path = "disturbances.navigation_position_error.bias_std_sar_m"
         app.auto_vectors[path].set(False)
         app.bindings[path][0].set(".2")

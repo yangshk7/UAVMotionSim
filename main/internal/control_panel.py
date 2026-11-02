@@ -314,6 +314,12 @@ class ControlPanel:
         ).pack(anchor="w")
 
     def _build_disturbances(self, parent):
+        ttk.Label(
+            parent,
+            text="默认 A 平移 X/Y/Z 都扰动 SAR 位置目标，单位 m；中等等级各轴 OU 标准差为 0.15 m。外力模式可单独加载配置，单位 N。",
+            style="Hint.TLabel",
+            wraplength=1100,
+        ).pack(anchor="w", pady=(0, 12))
         group = self._group(parent, "总体开关与 OU 时间特性")
         for field in [
             Field("disturbances.all_enabled", "强制全部开启（覆盖各单项开关）", "bool"),
@@ -354,7 +360,7 @@ class ControlPanel:
                     Field(prefix + ".random_seed", "独立随机种子", "int", nullable=True),
                 ]:
                     self._field(group, field)
-                command_unit = ("m/s", "m", "m")[axis] if group_name == "translation" else "deg"
+                command_unit = "m" if group_name == "translation" else "deg"
                 dynamic_unit = "N" if group_name == "translation" else "N*m"
 
                 def mode_changed(*_, p=prefix, m=mode, unit=unit_var, cu=command_unit, du=dynamic_unit):
@@ -580,7 +586,7 @@ class ControlPanel:
                 prefix = f"disturbances.{group}.{name}"
                 mode = get_value(data, prefix + ".injection_mode")
                 unit = (
-                    (("m/s", "m", "m")[axis] if group == "translation" else "deg")
+                    ("m" if group == "translation" else "deg")
                     if mode == "command"
                     else ("N" if group == "translation" else "N*m")
                 )
