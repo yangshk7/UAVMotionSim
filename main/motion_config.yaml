@@ -4,7 +4,7 @@ simulation:
   duration_mode: route_length
   duration_margin_s: 10.0
 trajectory:
-  route_length_m: 204.8
+  route_length_m: 1000.0
   speed_tolerance_fraction: 0.1
 antenna:
   # 两份原始仿真文档一致的工程安装值；FRD：前、右、下。

@@ -7,7 +7,7 @@
 | `run.cmd` | 一键运行完整双航次验收，最后打开离线结果页。 |
 | `open_control_panel.cmd` | 打开上位机，调整参数并运行单航次仿真或完整验收。 |
 
-`config.yaml` 是完整验收配置，`motion_config.yaml` 是上位机默认配置。`internal/` 存放程序实现，`tools/` 存放外部平台和 PowerShell 辅助入口，`docs/` 存放详细记录；这些目录中的脚本不是日常主入口。结果写入 `outputs/` 和 `gui_outputs/`。
+`config.yaml` 是完整验收配置，`motion_config.yaml` 是上位机默认配置，目标有效航线长度为 1000 m。`internal/` 存放程序实现，`tools/` 存放外部平台和 PowerShell 辅助入口，`docs/` 存放详细记录；这些目录中的脚本不是日常主入口。结果写入 `outputs/` 和 `gui_outputs/`。
 
 ## 其他运行方式
 
