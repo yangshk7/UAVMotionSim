@@ -39,6 +39,15 @@ PROJECT = Path(__file__).resolve().parents[2]
 MAIN = PROJECT / "main"
 
 
+def find_report_path(data_dir: Path) -> Path | None:
+    """定位数据目录对应的离线报告；支持直接验收和上位机任务目录。"""
+    for directory in (data_dir, data_dir.parent, data_dir.parent.parent):
+        report = directory / "index.html"
+        if report.is_file():
+            return report
+    return None
+
+
 class ScrollForm(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -786,7 +795,7 @@ class ControlPanel:
                 "所选目录没有完整导航位姿 CSV，请选择包含 navigation_pass1.csv 和对应真值的数据目录。"
             )
         self.data_dir = data_dir
-        self.report_path = report
+        self.report_path = report if report and report.is_file() else find_report_path(data_dir)
         self.result_label.set(str(data_dir))
         self.image = None
         self.photo = None
@@ -848,11 +857,8 @@ class ControlPanel:
         )
         if directory:
             data = Path(directory)
-            report = data / "index.html"
-            if not report.exists():
-                report = data.parent / "index.html"
             try:
-                self.load_result(data, report if report.exists() else None)
+                self.load_result(data)
             except Exception as error:
                 messagebox.showerror("读取结果失败", str(error), parent=self.root)
 
@@ -929,10 +935,20 @@ class ControlPanel:
 
     def open_report(self):
         report = getattr(self, "report_path", None)
-        if report and report.exists():
-            webbrowser.open(report.resolve().as_uri())
-        else:
+        if not report or not report.is_file():
             messagebox.showinfo("结果尚未就绪", "先运行任务或加载带报告的结果目录。", parent=self.root)
+            return
+        try:
+            if os.name == "nt":
+                os.startfile(str(report.resolve()))
+            elif not webbrowser.open(report.resolve().as_uri()):
+                raise OSError("系统未能启动默认浏览器")
+        except OSError as error:
+            messagebox.showerror(
+                "无法打开离线报告",
+                f"系统未能打开报告：{error}\n请在文件夹中双击：\n{report.resolve()}",
+                parent=self.root,
+            )
 
     def open_folder(self):
         directory = getattr(self, "data_dir", None) or self.active_job

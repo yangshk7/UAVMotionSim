@@ -1,12 +1,16 @@
 import json
+import os
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "main" / "internal"))
+import control_panel
 from control_jobs import EVENT_PREFIX, create_job, parse_event
 from control_model import Field, apply_fields, parse_value
+from control_panel import find_report_path
 
 from uavsim.config.loader import load_config
 from uavsim.config.validator import Config
@@ -65,3 +69,45 @@ def test_worker_protocol_rejects_unknown_event_types():
     assert parse_event(EVENT_PREFIX + '{"type":"result","status":"simulated"}')["status"] == "simulated"
     with pytest.raises(ValueError):
         parse_event(EVENT_PREFIX + '{"type":"run_shell"}')
+
+
+@pytest.mark.parametrize("mode", ["simulate", "acceptance", "direct"])
+def test_find_report_from_navigation_data_directory(tmp_path, mode):
+    if mode == "simulate":
+        job = tmp_path / "simulate_1"
+        data = job / "artifacts" / "run_1"
+        report = job / "index.html"
+    elif mode == "acceptance":
+        job = tmp_path / "acceptance_1" / "artifacts" / "acceptance_2"
+        data = job / "validate_1"
+        report = job / "index.html"
+    else:
+        job = tmp_path / "outputs" / "acceptance_1"
+        data = job / "validate_1"
+        report = job / "index.html"
+    data.mkdir(parents=True)
+    report.write_text("report", encoding="utf-8")
+    assert find_report_path(data) == report
+
+
+def test_open_report_uses_system_file_handler_and_shows_failure(tmp_path, monkeypatch):
+    report = tmp_path / "index.html"
+    report.write_text("report", encoding="utf-8")
+    errors = []
+    monkeypatch.setattr(control_panel.messagebox, "showerror", lambda *args, **kwargs: errors.append(args))
+    opened = []
+    if os.name == "nt":
+        monkeypatch.setattr(control_panel.os, "startfile", lambda path: opened.append(path))
+    else:
+        monkeypatch.setattr(control_panel.webbrowser, "open", lambda url: opened.append(url) or True)
+    panel = SimpleNamespace(report_path=report, root=None)
+    control_panel.ControlPanel.open_report(panel)
+    assert len(opened) == 1
+    assert not errors
+
+    if os.name == "nt":
+        monkeypatch.setattr(control_panel.os, "startfile", lambda path: (_ for _ in ()).throw(OSError("no browser")))
+    else:
+        monkeypatch.setattr(control_panel.webbrowser, "open", lambda url: False)
+    control_panel.ControlPanel.open_report(panel)
+    assert errors and "index.html" in errors[0][1]
