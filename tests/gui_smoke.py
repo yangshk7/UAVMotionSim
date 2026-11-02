@@ -172,6 +172,11 @@ def main():
             full = app.active_job
             wait_for_job(root, app, 600)
             assert app.result is not None and app.result["status"] == "passed", app.log.get("1.0", "end")
+            assert float(app.progress["value"]) == 100
+            full_log = (full / "worker.log").read_text(encoding="utf-8")
+            assert '"phase": "convergence"' in full_log
+            assert '"percent": 96' in full_log and '"percent": 99' in full_log
+            report["checks"]["full_acceptance_progress"] = "passed"
             assert len(app.pose_arrays) == 2
             assert len(app.pose_table.get_children()) == 5
             report["checks"]["full_acceptance_from_gui"] = "passed"

@@ -104,11 +104,12 @@ def main(argv=None) -> int:
         result = run_experiment(config, args.passes, plan)
         from uavsim.runtime.progress import report_progress
 
-        report_progress(percent=80, stage="检查运动与有效航段")
+        validating = args.command == "validate"
+        report_progress(percent=40 if validating else 80, stage="检查运动与有效航段")
         result["validation"] = experiment_metrics(result, config)
-        report_progress(percent=82, stage="保存 MAT / CSV 数据")
+        report_progress(percent=42 if validating else 82, stage="保存 MAT / CSV 数据")
         export_experiment(result, root)
-        report_progress(percent=90, stage="生成运动图表")
+        report_progress(percent=45 if validating else 90, stage="生成运动图表")
         if config.output.save_plots:
             _plots(result, root)
         if args.command == "validate":
@@ -118,6 +119,7 @@ def main(argv=None) -> int:
             print("Running automated tests, long OU statistics and convergence...", flush=True)
             project = Path(__file__).resolve().parents[2]
             junit = root / "pytest_results.xml"
+            report_progress(percent=48, stage="运行自动化测试")
             completed = subprocess.run(
                 [
                     sys.executable,
@@ -142,11 +144,14 @@ def main(argv=None) -> int:
             # 任意基础测试失败立即停止，不进入后续验收。
             if completed.returncode:
                 raise RuntimeError(f"Automated tests failed; see {root}/pytest_output.txt")
+            report_progress(percent=55, stage="运行 20000 s OU 随机过程统计")
             ou = validate_ou_statistics(root)
             write_json(root / "ou_validation.json", ou)
             if not ou["passed"]:
                 raise RuntimeError("OU statistical validation failed")
+            report_progress(percent=60, stage="开始 1600 / 3200 / 6400 Hz 数值收敛")
             convergence = convergence_study(config, root, 2.0 if args.quick else None)
+            report_progress(percent=91, stage="汇总数值检查结果")
             write_json(root / "convergence_validation.json", convergence)
             report = {
                 "state_checks": result["validation"],

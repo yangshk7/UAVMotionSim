@@ -84,6 +84,16 @@ def test_progress_protocol_and_parallel_pass_aggregation():
         event = parse_event(EVENT_PREFIX + json.dumps({"type": "progress", "pass_index": index, "fraction": fraction}))
         control_panel.ControlPanel._update_progress(panel, event)
         assert panel.progress_percent == expected
+    panel.progress_sim_weight = 40
+    panel.progress_values = [0.0, 0.0]
+    panel.progress_percent = 0
+    panel.convergence_values = {1600: 0.0, 3200: 0.0, 6400: 0.0}
+    for index in (0, 1):
+        control_panel.ControlPanel._update_progress(panel, {"pass_index": index, "fraction": 1.0})
+    assert panel.progress_percent == 40
+    for rate in (1600, 3200, 6400):
+        control_panel.ControlPanel._update_progress(panel, {"phase": "convergence", "rate": rate, "fraction": 1.0})
+    assert panel.progress_percent == 90
 
 
 @pytest.mark.parametrize("mode", ["simulate", "acceptance", "direct"])

@@ -21,6 +21,7 @@ from review_report import acceptance_status, create_report
 from uavsim.cli import main as run_core
 from uavsim.config.loader import load_config, save_config
 from uavsim.config.validator import Config
+from uavsim.runtime.progress import report_progress
 from uavsim.sar_adapter.matlab_export import load_exported_pass, write_json
 
 PROJECT = Path(__file__).resolve().parents[2]
@@ -239,6 +240,7 @@ def main(argv: list[str] | None = None) -> int:
                     result = {
                         f"pass{index + 1}": load_exported_pass(path) for index, path in enumerate(files)
                     }
+                    report_progress(percent=93, stage="生成导航对照与天线图表")
                     print("[可视化] 绘制导航真值/估计对照、天线几何和执行器检查。", flush=True)
                     plot_pose_comparisons(result, data_dir)
                     plot_geometry_and_actuators(result, data_dir, config)
@@ -259,6 +261,7 @@ def main(argv: list[str] | None = None) -> int:
                         }
                     )
                 if not core_code:
+                    report_progress(percent=96, stage="执行 MATLAB 导航与 SAR 接口检查")
                     summary["stages"].append(
                         run_matlab(data_dir, args.matlab, args.matlab_exe, args.sar_project, logs)
                     )
@@ -280,6 +283,7 @@ def main(argv: list[str] | None = None) -> int:
                 "Python full validation + navigation review + MATLAB interface; no SITL/Simscape or real-flight calibration"
             )
             write_json(root / "acceptance.json", summary)
+            report_progress(percent=99, stage="生成完整验收离线报告")
             report = create_report(root, summary, result)
             (MAIN / "outputs" / "latest_report.txt").write_text(str(report), encoding="utf-8")
             print(f"人工验收状态：{summary['status']}；总用时 {summary['elapsed_s']:.1f} s", flush=True)

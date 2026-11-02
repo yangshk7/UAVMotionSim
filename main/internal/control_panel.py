@@ -668,11 +668,11 @@ class ControlPanel:
         self.accept_button.configure(state="disabled")
         self.stop_button.configure(state="normal")
         self.progress_values = [0.0] * passes
+        self.progress_sim_weight = 40 if mode == "acceptance" else 80
+        self.convergence_values = {1600: 0.0, 3200: 0.0, 6400: 0.0}
         self.progress_percent = 0.0
-        self.progress.configure(value=0, maximum=100, mode="determinate" if mode == "simulate" else "indeterminate")
-        self.progress_text.set("0% · 初始化仿真" if mode == "simulate" else "完整验收运行中，详见阶段日志")
-        if mode == "acceptance":
-            self.progress.start(12)
+        self.progress.configure(value=0, maximum=100, mode="determinate")
+        self.progress_text.set("0% · 初始化" + ("完整验收" if mode == "acceptance" else "仿真"))
         self.status.set(
             "正在"
             + ("运行完整验收" if mode == "acceptance" else "运行参数仿真")
@@ -720,12 +720,19 @@ class ControlPanel:
         if "percent" in event:
             percent = event["percent"]
             stage = event.get("stage", "处理中")
+        elif event.get("phase") == "convergence":
+            rate = event.get("rate")
+            if rate not in self.convergence_values:
+                return
+            self.convergence_values[rate] = max(self.convergence_values[rate], event["fraction"])
+            percent = 60 + 30 * sum(k * v for k, v in self.convergence_values.items()) / 11200
+            stage = f"数值收敛 {rate} Hz · {event['fraction']:.0%}"
         else:
             index = event["pass_index"]
             if index >= len(self.progress_values):
                 return
             self.progress_values[index] = max(self.progress_values[index], event["fraction"])
-            percent = 80 * sum(self.progress_values) / len(self.progress_values)
+            percent = getattr(self, "progress_sim_weight", 80) * sum(self.progress_values) / len(self.progress_values)
             stage = f"计算航次 {index + 1} · 该航次 {event['fraction']:.0%}"
         self.progress_percent = max(self.progress_percent, percent)
         self.progress.configure(value=self.progress_percent)

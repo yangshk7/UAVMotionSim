@@ -31,6 +31,7 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
     root = args.job_dir.resolve()
     config = load_config(root / "input_config.yaml")
+    os.environ["UAVSIM_GUI_PROGRESS"] = "1"
     try:
         if args.mode == "acceptance":
             from run import main as acceptance_main

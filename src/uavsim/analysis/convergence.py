@@ -4,6 +4,7 @@ import numpy as np
 
 from uavsim.config.validator import Config
 from uavsim.dynamics.simulator import simulate_pass
+from uavsim.runtime.progress import convergence_progress
 from uavsim.visualization.chinese_style import use_chinese_font
 
 from .metrics import rms
@@ -38,7 +39,8 @@ def convergence_study(
     solutions = {}
     for rate in [1600, 3200, 6400]:
         base["simulation"]["dynamics_rate_hz"] = rate
-        run = simulate_pass(Config.model_validate(base), 98231)
+        with convergence_progress(rate):
+            run = simulate_pass(Config.model_validate(base), 98231)
         solutions[rate] = run["truth_sar"]
     ref = solutions[6400]
     h = config.trajectory.apc_height_m
