@@ -23,7 +23,7 @@ from uavsim.config.loader import load_config, save_config
 from uavsim.config.validator import Config
 from uavsim.sar_adapter.matlab_export import load_exported_pass, write_json
 
-PROJECT = Path(__file__).resolve().parents[1]
+PROJECT = Path(__file__).resolve().parents[2]
 MAIN = PROJECT / "main"
 
 
@@ -200,7 +200,7 @@ def main(argv: list[str] | None = None) -> int:
         "message": "请确认参数和坐标后，对本次实际输出进行人工验收。",
     }
     digest = hashlib.sha256()
-    for path in sorted(MAIN.glob("*.py")):
+    for path in sorted((MAIN / "internal").glob("*.py")):
         digest.update(path.name.encode())
         digest.update(path.read_bytes())
     summary["acceptance_entry_sha256"] = digest.hexdigest()
@@ -281,7 +281,7 @@ def main(argv: list[str] | None = None) -> int:
             )
             write_json(root / "acceptance.json", summary)
             report = create_report(root, summary, result)
-            (MAIN / "latest_report.txt").write_text(str(report), encoding="utf-8")
+            (MAIN / "outputs" / "latest_report.txt").write_text(str(report), encoding="utf-8")
             print(f"人工验收状态：{summary['status']}；总用时 {summary['elapsed_s']:.1f} s", flush=True)
             print(f"验收页面：{report}", flush=True)
     if not args.no_open:

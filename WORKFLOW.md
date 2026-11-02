@@ -33,7 +33,7 @@ flowchart TD
 |---|---|---|
 | 桌面上位机 | 双击 `main/open_control_panel.cmd` | 调整关键参数、看实时日志、导航位姿和可拖动三维航迹 |
 | 命令行仿真 | `uv run --no-sync python -m uavsim.cli run --config configs/rotorpy_hex_x12.yaml --passes 2` | 批量或脚本化生成数据 |
-| 完整人工验收 | 双击 `main/run.cmd`，或运行 `uv run --no-sync python main/run.py` | 对双航次、统计、数值和 MATLAB 接口作完整本地检查 |
+| 完整人工验收 | 双击 `main/run.cmd`，或运行 `uv run --no-sync python main/internal/run.py` | 对双航次、统计、数值和 MATLAB 接口作完整本地检查 |
 
 `configs/hex_x_12kg.yaml` 是无扰动基准；`configs/experiment_two_pass.yaml` 在它的基础上开启 A/B 运动扰动以及位置、速度、姿态导航估计误差；`configs/rotorpy_hex_x12.yaml` 再启用 RotorPy 后端。`main/config.yaml` 继承 RotorPy 双航次配置，供人工验收使用。YAML 的 `extends` 相对当前配置文件解析，最终由 Pydantic 校验。上位机在启动任务时保存独立的 `input_config.yaml`，运行中继续编辑界面不会改变该任务的参数。
 
@@ -74,7 +74,7 @@ flowchart TD
 
 ## 六、外部开源飞控验证
 
-新增的 `main/run_external_validation.cmd` 在独立 Ubuntu-24.04 WSL 中依次启动 ArduPilot SITL 与 XTDrone2/PX4/Gazebo/DDS，执行 Hex-X 解锁、起飞、降落和自动停桨，保存实际导航消息、组件日志及中文航迹图。本入口已串联运行通过。版本、控制适配补丁与完整证据见 [外部平台部署](deployment/README.md)。
+新增的 `main/tools/run_external_validation.cmd` 在独立 Ubuntu-24.04 WSL 中依次启动 ArduPilot SITL 与 XTDrone2/PX4/Gazebo/DDS，执行 Hex-X 解锁、起飞、降落和自动停桨，保存实际导航消息、组件日志及中文航迹图。本入口已串联运行通过。版本、控制适配补丁与完整证据见 [外部平台部署](deployment/README.md)。
 
 外部导航来自实际飞控估计器，时间轴按原消息保留；不是默认 100 Hz 合成误差导航，也不将消息重采样后冒称为 800 Hz SAR 真值。当前完成的是短时起降验证，尚未完成与 RotorPy 相同 SAR 航线和所有物理参数逐项一致性对照。
 

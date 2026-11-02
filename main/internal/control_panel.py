@@ -35,7 +35,7 @@ from uavsim.motion.lever_arm import export_apc_from_aligned
 from uavsim.runtime.hardware import detect_hardware
 from uavsim.visualization.chinese_style import use_chinese_font
 
-PROJECT = Path(__file__).resolve().parents[1]
+PROJECT = Path(__file__).resolve().parents[2]
 MAIN = PROJECT / "main"
 
 

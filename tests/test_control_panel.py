@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "main"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "main" / "internal"))
 from control_jobs import EVENT_PREFIX, create_job, parse_event
 from control_model import Field, apply_fields, parse_value
 

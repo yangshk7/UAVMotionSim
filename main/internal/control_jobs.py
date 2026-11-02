@@ -48,7 +48,7 @@ def launch_job(
     command = [
         str(executable),
         "-u",
-        str(project / "main" / "gui_worker.py"),
+        str(project / "main" / "internal" / "gui_worker.py"),
         "--job-dir",
         str(root),
         "--mode",

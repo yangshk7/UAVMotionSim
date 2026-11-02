@@ -1,14 +1,23 @@
-# Manual Acceptance
+# Main：运行入口
 
-## 桌面参数上位机
+日常在本目录只需找两个 `.cmd` 文件：
 
-OpenSource 外部平台验收可双击 **run_external_validation.cmd**：依次运行 ArduPilot SITL 与 XTDrone2/PX4/Gazebo 的 Hex-X 起降并生成中文航迹图。该入口已串联运行通过；运行范围和原始记录见 [外部平台部署](../deployment/README.md)。
+| 文件 | 用途 |
+|---|---|
+| `run.cmd` | 一键运行完整双航次验收，最后打开离线结果页。 |
+| `open_control_panel.cmd` | 打开上位机，调整参数并运行单航次仿真或完整验收。 |
 
-完整 300 m 采集航段可双击 **run_external_route.cmd**，两平台分别飞越 20.48 s 航段并生成独立的交互验收页；双平台一键串联入口已实际运行通过。结果范围与指标见 [部署说明](../deployment/README.md)。
+`config.yaml` 是完整验收配置，`motion_config.yaml` 是上位机默认配置。`internal/` 存放程序实现，`tools/` 存放外部平台和 PowerShell 辅助入口，`docs/` 存放详细记录；这些目录中的脚本不是日常主入口。结果写入 `outputs/` 和 `gui_outputs/`。
 
-外部入口结束后还会生成并打开独立的 `index.html` 汇总页，包含验证状态、可拖动三维航迹、逐帧记录、图片和下载链接。页面位于 `results/external_review/`，最近路径保存在本目录 `latest_external_report.txt`。
+## 其他运行方式
 
-双击 **open_control_panel.cmd** 可在桌面窗口中调整导航误差、飞行/采样、A/B 扰动和资源参数，并启动仿真或完整验收；窗口内提供实时日志、图表和逐帧位姿查看。详见 [上位机说明](CONTROL_PANEL.md)。
+OpenSource 外部平台验收可双击 **tools/run_external_validation.cmd**：依次运行 ArduPilot SITL 与 XTDrone2/PX4/Gazebo 的 Hex-X 起降并生成中文航迹图。该入口已串联运行通过；运行范围和原始记录见 [外部平台部署](../deployment/README.md)。
+
+完整 300 m 采集航段可双击 **tools/run_external_route.cmd**，两平台分别飞越 20.48 s 航段并生成独立的交互验收页；双平台一键串联入口已实际运行通过。结果范围与指标见 [部署说明](../deployment/README.md)。
+
+外部入口结束后还会生成并打开独立的 `index.html` 汇总页，包含验证状态、可拖动三维航迹、逐帧记录、图片和下载链接。页面位于 `results/external_review/`，最近路径保存在本目录 `outputs/latest_external_report.txt`。
+
+双击 **open_control_panel.cmd** 可在桌面窗口中调整导航误差、飞行/采样、A/B 扰动和资源参数，并启动仿真或完整验收；窗口内提供实时日志、图表和逐帧位姿查看。详见 [上位机说明](docs/CONTROL_PANEL.md)。
 
 本目录是人工验收入口。默认运行**完整双航次、全长 20.48 s 采集、自动化测试、20,000 s OU 统计、1600/3200/6400 Hz 收敛、MATLAB 导航/几何/回波接口**，最后自动打开本地验收页面。沿用主工程的物理与误差模型，不另造一套演示数据。
 
@@ -17,13 +26,13 @@ OpenSource 外部平台验收可双击 **run_external_validation.cmd**：依次�
 Windows 直接双击 **run.cmd**。也可在本目录运行：
 
 ```powershell
-.\run.ps1
+.\tools\run.ps1
 ```
 
 在项目根目录可运行：
 
 ```powershell
-uv run --no-sync python main/run.py
+uv run --no-sync python main/internal/run.py
 ```
 
 首次使用先在项目根目录执行 `scripts/setup.ps1`。当前机器已完成 uv 环境部署。验收程序根据可用 CPU/RAM 选择 worker 数，记录 GPU/显存；当前动力学为 CPU 后端。
@@ -42,7 +51,7 @@ acceptance_<timestamp>/
   validate_<timestamp>/       # 原始 MAT/CSV、测试、收敛和图表
 ```
 
-`latest_report.txt` 记录最近生成的页面路径。MAT/CSV 保留原始精度；页面逐帧数据仅为显示舍入。页面不依赖外网或本地服务器。
+`outputs/latest_report.txt` 记录最近生成的页面路径。MAT/CSV 保留原始精度；页面逐帧数据仅为显示舍入。页面不依赖外网或本地服务器。
 
 ## 人工查看顺序
 
@@ -58,16 +67,16 @@ acceptance_<timestamp>/
 
 ```powershell
 # 指定进程上限，内存约束仍然生效
-.\run.ps1 -Workers 1
+.\tools\run.ps1 -Workers 1
 
 # 只生成报告，不自动弹出浏览器
-.\run.ps1 -NoOpen
+.\tools\run.ps1 -NoOpen
 
 # 没有 MATLAB 时允许先检查 Python 结果，整体状态显示 partial
-.\run.ps1 -Matlab skip
+.\tools\run.ps1 -Matlab skip
 
 # 要求 MATLAB 必须存在且通过
-.\run.ps1 -Matlab required
+.\tools\run.ps1 -Matlab required
 ```
 
 Python 入口还支持 `--matlab-exe <path>`、`--sar-project <directory>`、`--config <yaml>`。

@@ -7,7 +7,7 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-uv run --no-sync python main\run.py %*
+uv run --no-sync python main\internal\run.py %*
 set "run_code=%errorlevel%"
 if not "%run_code%"=="0" echo Review the generated report and logs for details.
 pause

@@ -25,11 +25,11 @@
 .\deployment\run_xtdrone_validation.ps1
 ```
 
-也可直接双击 `main/run_external_validation.cmd`，依次验证两个外部平台并生成中文航迹图。该入口独立于 `main/run.cmd` 的 RotorPy/SAR 完整数值验收。
+也可直接双击 `main/tools/run_external_validation.cmd`，依次验证两个外部平台并生成中文航迹图。该入口独立于 `main/run.cmd` 的 RotorPy/SAR 完整数值验收。
 
 ## 300 m 完整采集航段
 
-双击 `main/run_external_route.cmd` 可依次运行 ArduPilot SITL 与 PX4/Gazebo/XTDrone2 的独立航线模式。流程为爬升至约 300 m、在 X=-150 m 附近预定位并助跑、以约 10 m/s 穿越 X=-102.4 m 后开始 20.48 s 采集，最后自动降落。每次结果写入 `results/sitl_route/`、`results/xtdrone_route/` 和 `results/external_route_review/`；页面路径保存在 `main/latest_external_route_report.txt`。`--no-pause` 用于不自动打开浏览器的批量运行。
+双击 `main/tools/run_external_route.cmd` 可依次运行 ArduPilot SITL 与 PX4/Gazebo/XTDrone2 的独立航线模式。流程为爬升至约 300 m、在 X=-150 m 附近预定位并助跑、以约 10 m/s 穿越 X=-102.4 m 后开始 20.48 s 采集，最后自动降落。每次结果写入 `results/sitl_route/`、`results/xtdrone_route/` 和 `results/external_route_review/`；页面路径保存在 `main/outputs/latest_external_route_report.txt`。`--no-pause` 用于不自动打开浏览器的批量运行。
 
 当前默认真值请求频率固定为 SITL **300 Hz**、PX4/Gazebo **1000 Hz**。SITL 固件实际按约 333 Hz 输出，请求频率与实测频率分别保存在结果中；详见 [高频真值实测](../docs/high_rate_truth.md)。
 
@@ -58,7 +58,7 @@ PX4 同一次运行另导出 `route_aligned_sar.csv`，逐行保留飞控导航�
 
 ## 离线 index.html 汇总页
 
-一键入口现在会在 `results/external_review/review_<timestamp>/index.html` 生成本次结果页，交互运行结束后自动打开。`main/latest_external_report.txt` 记录最近页面的完整路径。`--no-pause` 自动化模式生成页面但不打开浏览器。
+一键入口现在会在 `results/external_review/review_<timestamp>/index.html` 生成本次结果页，交互运行结束后自动打开。`main/outputs/latest_external_report.txt` 记录最近页面的完整路径。`--no-pause` 自动化模式生成页面但不打开浏览器。
 
 页面提供平台切换、可拖动旋转/缩放的三维航迹、真实/独立比例切换、时间滑块、播放、位置/速度/最近姿态记录、静态图、原始 CSV 和日志链接。它直接读取实际记录，姿态显示最近消息的时间差，没有生成插值真值。
 
@@ -76,7 +76,7 @@ SITL 已通过的实际记录为 `results/sitl/sitl_20261031_154519_105217/`：�
 
 XTDrone2 修复后通过记录为 `results/xtdrone/xtdrone_20261031_162625_964802/`：最高相对高度约 4.647 m，导航位置 2,022 条、姿态 2,023 条、XTDrone2 状态 387 条；PX4 日志含 `Landing detected` 与 `Disarmed by landing`，Offboard 发送状态最终为 `DISABLED`。目标高度 5 m，本烟雾测试在达到 4 m 后请求降落，不用于声称高度跟踪误差或 SAR 航线精度。
 
-随后从 `main/run_external_validation.cmd --no-pause` 串联重跑两个平台，整体返回 0。最新 XTDrone2 结果为 `results/xtdrone/xtdrone_20261031_162949_483003/`（最高约 4.622 m，位置 3,088 条、姿态 3,089 条），SITL 结果为 `results/sitl/sitl_20261031_162926_289887/`。两者均包含自动生成的中文 `flight_summary.png`。`validation_summary.json` 汇总这次验证，失败历史没有修改为通过。
+随后从 `main/tools/run_external_validation.cmd --no-pause` 串联重跑两个平台，整体返回 0。最新 XTDrone2 结果为 `results/xtdrone/xtdrone_20261031_162949_483003/`（最高约 4.622 m，位置 3,088 条、姿态 3,089 条），SITL 结果为 `results/sitl/sitl_20261031_162926_289887/`。两者均包含自动生成的中文 `flight_summary.png`。`validation_summary.json` 汇总这次验证，失败历史没有修改为通过。
 
 此前失败记录保留。原生 x500 在相同命令流程中也复现降落异常，排除了仅由 Hex-X 参数导致的解释。根本原因是 XTDrone2 `land()` 没有停止 Offboard 定时器，旧位置目标与 PX4 自主降落轨迹交替写入同一控制话题。`xtdrone-stop-offboard-on-land.patch` 在 LAND 前清空旧目标并停止其发送，随后 Hex-X 自动起降通过。没有关闭保护、强制解锁/停桨或放宽落地门槛。
 

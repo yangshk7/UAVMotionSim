@@ -10,9 +10,6 @@ results/*
 !results/.gitkeep
 main/outputs/*
 !main/outputs/.gitkeep
-main/latest_report.txt
-main/latest_external_report.txt
-main/latest_external_route_report.txt
 main/gui_outputs/
 main/gui_configs/
 main/gui_logs/

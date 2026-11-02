@@ -263,7 +263,9 @@ def create_report(root: Path, base: Path = PROJECT, codes: dict | None = None, r
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
     )
     pointer = "latest_external_route_report.txt" if route else "latest_external_report.txt"
-    (base / "main" / pointer).write_text(str(path), encoding="utf-8")
+    pointer_path = base / "main" / "outputs" / pointer
+    pointer_path.parent.mkdir(parents=True, exist_ok=True)
+    pointer_path.write_text(str(path), encoding="utf-8")
     return path
 
 

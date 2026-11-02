@@ -37,6 +37,7 @@ def test_report_retains_real_samples_and_offline_links(tmp_path):
     original = (directory / "navigation_position_sar.csv").read_bytes()
     root = m.begin(tmp_path)
     page = m.create_report(root, tmp_path)
+    assert (tmp_path / "main" / "outputs" / "latest_external_report.txt").read_text(encoding="utf-8") == str(page)
     text = page.read_text(encoding="utf-8")
     assert "可拖动三维航迹" in text
     assert "../../sitl/sitl_20260101/validation.json" in text

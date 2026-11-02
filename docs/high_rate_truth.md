@@ -26,6 +26,6 @@ Gazebo 插件的 `update_frequency` 参数定义见 [官方 PosePublisher 文档
 .\deployment\run_xtdrone_route.ps1
 ```
 
-`main/run_external_route.cmd` 和短时验收入口也使用这两个默认请求值。SITL 请求 300 Hz 在当前固件中实际得到约 333 Hz；不把请求值写成实测频率。需要复现实测上限时可显式传入 `-TruthRateHz 333`。更高频率增加真值文件体积和记录负载。导航估计消息仍按原飞控链路输出；上表不是导航解频率。1000 Hz Gazebo 真值可以在 SAR 800 Hz 脉冲时刻做时间重采样，但重采样点需标为插值，不是原生的 800 Hz Gazebo 输出。
+`main/tools/run_external_route.cmd` 和短时验收入口也使用这两个默认请求值。SITL 请求 300 Hz 在当前固件中实际得到约 333 Hz；不把请求值写成实测频率。需要复现实测上限时可显式传入 `-TruthRateHz 333`。更高频率增加真值文件体积和记录负载。导航估计消息仍按原飞控链路输出；上表不是导航解频率。1000 Hz Gazebo 真值可以在 SAR 800 Hz 脉冲时刻做时间重采样，但重采样点需标为插值，不是原生的 800 Hz Gazebo 输出。
 
 证据：SITL 完整航线 `results/frequency_probe/sitl_route/sitl_20261102_095735_133880/`；PX4/Gazebo 完整航线 `results/xtdrone_route/xtdrone_20261102_095933_737941/`。两目录均保存 `validation.json` 和原始真值 CSV；PX4 另存 `model_snapshot.sdf`、`world_snapshot.sdf`。短时档位结果分别在 `results/frequency_probe/sitl/` 和 `results/xtdrone/`。

@@ -13,7 +13,7 @@ from matplotlib.backend_bases import MouseButton, MouseEvent
 from uavsim.config.loader import load_config
 
 PROJECT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT / "main"))
+sys.path.insert(0, str(PROJECT / "main" / "internal"))
 
 
 def wait_for_job(root, app, timeout_s):

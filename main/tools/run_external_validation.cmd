@@ -1,6 +1,6 @@
 @echo off
 setlocal
-cd /d "%~dp0.."
+cd /d "%~dp0..\.."
 set "review_dir="
 set "sitl_code=not_run"
 set "xtdrone_code=not_run"

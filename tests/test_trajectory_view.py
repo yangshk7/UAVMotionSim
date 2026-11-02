@@ -10,7 +10,7 @@ from numpy.testing import assert_array_equal
 
 
 def load_view():
-    path = Path(__file__).resolve().parents[1] / "main" / "trajectory_view.py"
+    path = Path(__file__).resolve().parents[1] / "main" / "internal" / "trajectory_view.py"
     spec = importlib.util.spec_from_file_location("trajectory_view_test", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

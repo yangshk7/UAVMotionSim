@@ -7,7 +7,7 @@ from numpy.testing import assert_array_equal
 
 
 def load_review_module():
-    path = Path(__file__).resolve().parents[1] / "main" / "review_report.py"
+    path = Path(__file__).resolve().parents[1] / "main" / "internal" / "review_report.py"
     spec = importlib.util.spec_from_file_location("manual_review_report", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

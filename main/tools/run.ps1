@@ -4,8 +4,8 @@ param(
     [switch]$NoOpen
 )
 $ErrorActionPreference='Stop'
-Set-Location -LiteralPath (Split-Path -Parent $PSScriptRoot)
-$runArguments=@('run','--no-sync','python','main/run.py','--matlab',$Matlab,'--workers',"$Workers")
+Set-Location -LiteralPath ([IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..')))
+$runArguments=@('run','--no-sync','python','main/internal/run.py','--matlab',$Matlab,'--workers',"$Workers")
 if ($NoOpen) { $runArguments+='--no-open' }
 & uv @runArguments
 exit $LASTEXITCODE

@@ -2,9 +2,9 @@
 
 **本目录是独立的 OpenSource 版本。** 默认实际调用已安装的 RotorPy 3.0.0 多旋翼动力学，保持 12 kg Hex-X。集成范围、验证和后续阶段见 [开源集成状态](OPEN_SOURCE_INTEGRATION.md)。原 `UAV_Motion_Sim` 未修改。
 
-ArduPilot SITL 与 XTDrone2/ROS2/Gazebo/PX4 已在独立 WSL 中部署，两个平台的短时起降与自动停桨已通过。双击 `main/run_external_validation.cmd` 可重新验证，详见 [外部平台部署](deployment/README.md)。
+ArduPilot SITL 与 XTDrone2/ROS2/Gazebo/PX4 已在独立 WSL 中部署，两个平台的短时起降与自动停桨已通过。双击 `main/tools/run_external_validation.cmd` 可重新验证，详见 [外部平台部署](deployment/README.md)。
 
-两个外部飞控还已分别完成 300 m 高度、10 m/s 指令、20.48 s 的完整采集航段与自动降落；双击 `main/run_external_route.cmd` 可重新运行并生成独立交互报告。PX4/Gazebo 已保存原始物理位姿与导航记录，接收时间近邻对齐结果保留时间和原点不确定性，详见 [部署说明](deployment/README.md)。
+两个外部飞控还已分别完成 300 m 高度、10 m/s 指令、20.48 s 的完整采集航段与自动降落；双击 `main/tools/run_external_route.cmd` 可重新运行并生成独立交互报告。PX4/Gazebo 已保存原始物理位姿与导航记录，接收时间近邻对齐结果保留时间和原点不确定性，详见 [部署说明](deployment/README.md)。
 
 主航迹数据源的选择指标、采集段三维管道定义与当前实算结果见 [航迹主数据源与管道评估](docs/route_source_selection.md)。
 
@@ -28,7 +28,7 @@ ArduPilot SITL 与 XTDrone2/ROS2/Gazebo/PX4 已在独立 WSL 中部署，两个�
 
 **人工验收入口：**打开 `main` 文件夹，双击 `run.cmd`。它会运行完整双航次、测试、统计、收敛和 MATLAB 接口检查，最后打开带时间滑块与关键图表的离线验收页。详见 [main 使用说明](main/README.md)。
 
-**桌面上位机：**双击 `main/open_control_panel.cmd`，直接在窗口内编辑关键参数、保存配置、启动仿真/完整验收，查看日志、图表和导航位姿。详见 [上位机说明](main/CONTROL_PANEL.md)。
+**桌面上位机：**双击 `main/open_control_panel.cmd`，直接在窗口内编辑关键参数、保存配置、启动仿真/完整验收，查看日志、图表和导航位姿。详见 [上位机说明](main/docs/CONTROL_PANEL.md)。
 
 在本工程根目录打开 PowerShell。包管理统一使用 **uv**；Python、缓存和虚拟环境位于项目内。
 
