@@ -1,0 +1,20 @@
+# X1 手册 UG014 V1.1 表3-2：X1-5 / RTK / GNSS中断0秒。
+# 水平RMS按二维合量解释，假定X/Y等方差；姿态以小角度FRD旋转向量近似。
+# 手册未给出时间谱与白噪声分解；相关时间沿用工程初值，白噪声设零。
+extends: hex_x_12kg.yaml
+disturbances:
+  navigation_position_error:
+    enabled: true
+    bias_std_sar_m: [0.010606601717798213, 0.010606601717798213, 0.020]
+    noise_std_sar_m: [0.0, 0.0, 0.0]
+    correlation_time_s: 8.0
+  navigation_velocity_error:
+    enabled: true
+    bias_std_sar_mps: [0.013435028842544402, 0.013435028842544402, 0.014]
+    noise_std_sar_mps: [0.0, 0.0, 0.0]
+    correlation_time_s: 3.0
+  navigation_attitude_error:
+    enabled: true
+    bias_std_body_deg: [0.018, 0.018, 0.084]
+    noise_std_body_deg: [0.0, 0.0, 0.0]
+    correlation_time_s: 5.0

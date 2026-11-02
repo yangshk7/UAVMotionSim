@@ -11,6 +11,8 @@
 
 ## 其他运行方式
 
+导航误差默认参考北云 X1-5、RTK、GNSS未中断指标；换算规则与适用条件见 [X1参数依据](../docs/navigation_x1_reference.md)。
+
 OpenSource 外部平台验收可双击 **tools/run_external_validation.cmd**：依次运行 ArduPilot SITL 与 XTDrone2/PX4/Gazebo 的 Hex-X 起降并生成中文航迹图。该入口已串联运行通过；运行范围和原始记录见 [外部平台部署](../deployment/README.md)。
 
 完整 300 m 采集航段可双击 **tools/run_external_route.cmd**，两平台分别飞越 20.48 s 航段并生成独立的交互验收页；双平台一键串联入口已实际运行通过。结果范围与指标见 [部署说明](../deployment/README.md)。

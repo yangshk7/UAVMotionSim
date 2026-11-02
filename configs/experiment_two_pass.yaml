@@ -1,4 +1,4 @@
-extends: hex_x_12kg.yaml
+extends: navigation_x1_5_rtk.yaml
 # A 三轴统一位置目标扰动，中等等级各轴 0.15 m OU 标准差；未经实测标定。
 disturbances:
   translation:
