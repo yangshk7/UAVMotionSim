@@ -195,7 +195,41 @@ class AttitudeErrorConfig(StrictModel):
         return self
 
 
+class ImuGnssConfig(StrictModel):
+    """局部导航线性误差状态模型；随机游走单位按手册每√小时定义。"""
+
+    enabled: bool = False
+    accelerometer_bias_std_mps2: Vector3 = (0.000686, 0.000686, 0.000686)
+    accelerometer_vrw_mps_sqrt_hour: Vector3 = (0.03, 0.03, 0.03)
+    gyro_bias_std_degph: Vector3 = (3.0, 3.0, 3.0)
+    gyro_arw_deg_sqrt_hour: Vector3 = (0.2, 0.2, 0.2)
+    bias_correlation_time_s: float = Field(100.0, gt=0)
+    gnss_enabled: bool = True
+    gnss_rate_hz: float = Field(5.0, gt=0)
+    gnss_position_std_ned_m: Vector3 = (0.007778, 0.007778, 0.016)
+    gnss_velocity_std_ned_mps: Vector3 = (0.021213, 0.021213, 0.03)
+    heading_enabled: bool = True
+    heading_std_deg: float = Field(0.08, gt=0)
+    initial_position_std_m: float = Field(0.02, ge=0)
+    initial_velocity_std_mps: float = Field(0.03, ge=0)
+    initial_tilt_std_deg: float = Field(0.018, ge=0)
+    initial_heading_std_deg: float = Field(0.084, ge=0)
+    random_seed: int = Field(0, ge=0)
+
+    @model_validator(mode="after")
+    def valid_noise(self):
+        for name in ("accelerometer_bias_std_mps2", "accelerometer_vrw_mps_sqrt_hour",
+                     "gyro_bias_std_degph", "gyro_arw_deg_sqrt_hour"):
+            if min(getattr(self, name)) < 0:
+                raise ValueError("IMU noise must be nonnegative")
+        for name in ("gnss_position_std_ned_m", "gnss_velocity_std_ned_mps"):
+            if min(getattr(self, name)) <= 0:
+                raise ValueError("GNSS observation standard deviations must be positive")
+        return self
+
+
 class DisturbanceConfig(StrictModel):
+    imu_gnss: ImuGnssConfig = Field(default_factory=ImuGnssConfig)
     all_enabled: bool = False
     tau_slow_s: float = Field(2.5, gt=0)
     tau_fast_s: float = Field(0.35, gt=0)

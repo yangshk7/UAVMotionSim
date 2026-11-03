@@ -1,11 +1,11 @@
 extends: experiment_two_pass.yaml
 disturbances:
   translation:
-    x: {level: large}
-    y: {level: large}
-    z: {level: large}
+    x: {level: large, amplitude: null}
+    y: {level: large, amplitude: null}
+    z: {level: large, amplitude: null}
   attitude:
-    roll: {level: large}
-    pitch: {level: large}
-    yaw: {level: large}
+    roll: {level: large, amplitude: null}
+    pitch: {level: large, amplitude: null}
+    yaw: {level: large, amplitude: null}
   navigation_position_error: {level: large}

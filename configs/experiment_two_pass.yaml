@@ -1,14 +1,14 @@
 extends: navigation_x1_5_rtk.yaml
-# A 三轴统一位置目标扰动，中等等级各轴 0.15 m OU 标准差；未经实测标定。
+# 默认small等级；幅度为工程候选值，未经实测标定。
 disturbances:
   translation:
-    x: {enabled: true, unit: m}
-    y: {enabled: true, unit: m}
-    z: {enabled: true, unit: m}
+    x: {enabled: true, unit: m, level: small, amplitude: 0.05}
+    y: {enabled: true, unit: m, level: small, amplitude: 0.05}
+    z: {enabled: true, unit: m, level: small, amplitude: 0.05}
   attitude:
-    roll: {enabled: true}
-    pitch: {enabled: true}
-    yaw: {enabled: true}
+    roll: {enabled: true, level: small, amplitude: 0.5}
+    pitch: {enabled: true, level: small, amplitude: 0.5}
+    yaw: {enabled: true, level: small, amplitude: 1.0}
   navigation_position_error:
     enabled: true
   navigation_velocity_error:

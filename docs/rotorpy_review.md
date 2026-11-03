@@ -1,5 +1,7 @@
 # RotorPy 源码研究
 
+> 版本口径：最终版参数、功能边界与验收结论统一以 [v1.0.0发布说明](FINAL_RELEASE.md) 为准。本文带日期的运行数字是对应历史实验记录，不代表最终版重新测得的结果。
+
 阅读版本：`40b09697a6a1596d404a67f459941d46a39eedd3`，检索日期 2026-10-30。
 原始参考文本保留在 `docs/references`。此页记录原版的研究结论；OpenSource 版本现通过 `uavsim.dynamics.rotorpy_hex` 实际调用 RotorPy 3.0.0 的多旋翼动力学 RHS。仍未复制 RotorPy 实现到项目源码。
 

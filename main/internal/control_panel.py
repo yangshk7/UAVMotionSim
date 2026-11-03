@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import queue
+import secrets
 import threading
 import time
 import tkinter as tk
@@ -18,7 +19,6 @@ from control_jobs import create_job, launch_job, parse_event, stop_job
 from control_model import (
     FLIGHT_FIELDS,
     LEVER_ARM_FIELDS,
-    NAVIGATION_GROUPS,
     RESOURCE_FIELDS,
     Field,
     apply_fields,
@@ -30,7 +30,7 @@ from PIL import Image, ImageTk
 from trajectory_view import draw_trajectory
 
 from uavsim.config.loader import load_config, save_config
-from uavsim.disturbances.presets import NAVIGATION_M
+from uavsim.disturbances.presets import ATTITUDE_DEG, NAVIGATION_M, TRANSLATION
 from uavsim.motion.lever_arm import export_apc_from_aligned
 from uavsim.runtime.hardware import detect_hardware
 from uavsim.visualization.chinese_style import use_chinese_font
@@ -109,12 +109,36 @@ class ControlPanel:
     def _style(self):
         style = ttk.Style(self.root)
         style.theme_use("clam")
+        # clam 默认用叉号表示选中；统一使用勾选图标，保留原生键盘/变量行为。
+        self.check_images = []
+        for selected, disabled in [(False, False), (True, False), (False, True), (True, True)]:
+            icon = tk.PhotoImage(master=self.root, width=18, height=18)
+            icon.put('#94a3b8' if disabled else '#64748b', to=(1, 1, 16, 16))
+            icon.put('#e2e8f0' if disabled else '#ffffff', to=(2, 2, 15, 15))
+            if selected:
+                color = '#94a3b8' if disabled else '#176b43'
+                for x, y in [(4, 8), (5, 9), (6, 10), (7, 11),
+                             (8, 10), (9, 9), (10, 8), (11, 7), (12, 6), (13, 5)]:
+                    icon.put(color, to=(x, y, x + 2, y + 2))
+            self.check_images.append(icon)
+        off, on, disabled_off, disabled_on = self.check_images
+        style.element_create('Tick.indicator', 'image', off,
+                             ('disabled', 'selected', disabled_on), ('disabled', disabled_off),
+                             ('selected', on), sticky='')
+
+        def tick_layout(layout):
+            return [('Tick.indicator' if name.endswith('.indicator') else name,
+                     {key: tick_layout(value) if key == 'children' else value
+                      for key, value in options.items()}) for name, options in layout]
+
+        style.layout('TCheckbutton', tick_layout(style.layout('TCheckbutton')))
         style.configure(".", font=("Microsoft YaHei UI", 10))
         style.configure("TFrame", background="#f1f5f9")
         style.configure("TLabel", background="#f1f5f9", foreground="#243c52")
         style.configure("TLabelframe", background="#f1f5f9", bordercolor="#d4dfe8")
         style.configure("TLabelframe.Label", font=("Microsoft YaHei UI", 11, "bold"), foreground="#193954")
         style.configure("TButton", padding=(12, 7))
+        style.configure("Seed.TButton", padding=(8, 0))
         style.configure("Primary.TButton", background="#235d8d", foreground="white")
         style.map("Primary.TButton", background=[("active", "#194a73"), ("disabled", "#a2b1bf")])
         style.configure("Title.TLabel", font=("Microsoft YaHei UI", 20, "bold"), foreground="#173955")
@@ -216,9 +240,11 @@ class ControlPanel:
 
     def _field(self, parent, field: Field):
         self.fields.append(field)
+        compact = getattr(parent, '_compact', False)
         value = get_value(self.base.model_dump(), field.path)
         row = parent.grid_size()[1]
-        ttk.Label(parent, text=field.label).grid(row=row, column=0, sticky="w", padx=(0, 20), pady=6)
+        ttk.Label(parent, text=field.label, wraplength=115 if compact else 0).grid(
+            row=row, column=0, sticky="w", padx=(0, 6 if compact else 20), pady=4 if compact else 6)
         holder = ttk.Frame(parent)
         holder.grid(row=row, column=1, sticky="ew", pady=4)
         if field.kind == "bool":
@@ -260,12 +286,17 @@ class ControlPanel:
             variable = tk.StringVar(value="" if value is None else str(value))
             if field.kind == "choice":
                 widget = ttk.Combobox(
-                    holder, textvariable=variable, values=field.choices, state="readonly", width=22
+                    holder, textvariable=variable, values=field.choices, state="readonly", width=12 if compact else 22
                 )
             else:
-                widget = ttk.Entry(holder, textvariable=variable, width=38 if field.kind == "seeds" else 22)
-            widget.pack(side="left", fill="x", expand=field.kind == "seeds")
-            if field.nullable:
+                widget = ttk.Entry(holder, textvariable=variable,
+                                   width=12 if compact else 28 if field.kind == "seeds" else 22)
+            widget.pack(side="left")
+            if field.path == "base_seed":
+                ttk.Button(holder, text="随机", style="Seed.TButton", command=self._randomize_base_seed).pack(side="left", padx=8)
+            elif field.path == "pass_seeds":
+                ttk.Button(holder, text="随机", style="Seed.TButton", command=self._randomize_pass_seeds).pack(side="left", padx=8)
+            if field.nullable and not compact:
                 ttk.Label(holder, text="留空使用默认/自动值", style="Hint.TLabel").pack(side="left", padx=12)
             variables = [variable]
         self.bindings[field.path] = variables
@@ -273,52 +304,56 @@ class ControlPanel:
             variable.trace_add("write", lambda *_: self._schedule_validation())
         return variables
 
+    def _randomize_base_seed(self):
+        """填写32位非负随机种子；与其他字段一样纳入校验、保存和运行快照。"""
+        variable = self.bindings['base_seed'][0]
+        current = variable.get().strip()
+        value = secrets.randbelow(2**32)
+        while str(value) == current:
+            value = secrets.randbelow(2**32)
+        variable.set(str(value))
+        self.status.set(f'基础随机种子已更新为 {value}；用于下一次运行。')
+
+    def _randomize_pass_seeds(self):
+        """保留输入的航次数量；空输入使用默认数量，生成互不重复的32位种子。"""
+        variable = self.bindings['pass_seeds'][0]
+        parts = [part for part in variable.get().replace('，', ',').split(',') if part.strip()]
+        count = len(parts) or len(self.base.pass_seeds)
+        values = secrets.SystemRandom().sample(range(2**32), count)
+        variable.set(', '.join(str(value) for value in values))
+        self.status.set(f'已生成 {count} 个互不重复的航次种子；用于下一次运行。')
+
     def _build_navigation(self, parent):
-        ttk.Label(
-            parent,
-            text="独立控制估计误差，不改变真实飞行。σ 为标准差，不是最大误差；相关时间越大，偏差变化越慢。关闭某轴误差需将该轴慢变和白噪声 σ 同时设为 0。",
-            wraplength=1100,
-            style="Hint.TLabel",
-        ).pack(anchor="w", pady=(0, 12))
-        for title, name, bias, noise, unit in NAVIGATION_GROUPS:
-            prefix = "disturbances." + name
-            group = self._group(parent, title)
-            for field in [
-                Field(prefix + ".enabled", "估计误差开关", "bool"),
-                Field(prefix + ".correlation_time_s", "慢变相关时间 (s)"),
-                Field(
-                    prefix + "." + bias,
-                    f"慢变偏差 σ ({unit})",
-                    "vector",
-                    nullable=name == "navigation_position_error",
-                ),
-                Field(prefix + "." + noise, f"测量白噪声 σ ({unit})", "vector"),
-                Field(prefix + ".random_seed", "独立随机种子", "int", nullable=True),
-            ]:
-                self._field(group, field)
-            if name == "navigation_position_error":
-                variables = self._field(
-                    group, Field(prefix + ".level", "位置误差等级", "choice", ("small", "medium", "large"))
-                )
-
-                def level_changed(*_, var=variables[0], path=prefix + "." + bias):
-                    if self.loading or not self.auto_vectors[path].get():
-                        return
-                    for widget, value in zip(self.bindings[path], NAVIGATION_M[var.get()]):
-                        widget.set(str(value))
-
-                variables[0].trace_add("write", level_changed)
-        ttk.Label(
-            parent,
-            text="姿态误差采用 R_est = R_true · Exp(δθ_B)，输入为 FRD 旋转向量标准差（deg）。角速度和加速度目前仍为 truth_ 真值通道。",
-            wraplength=1100,
-            style="Hint.TLabel",
-        ).pack(anchor="w")
+        ttk.Label(parent, text="IMU 误差传播与 GNSS 校正；加速度计输入为比力，陀螺仪输入为角速度。参数单位按每√小时定义随机游走，不是逐点输出标准差。", wraplength=1100, style="Hint.TLabel").pack(anchor="w", pady=(0, 12))
+        group = self._group(parent, "X1 指标参考 · GNSS/INS 误差状态模型")
+        prefix = "disturbances.imu_gnss."
+        fields = [
+            Field(prefix + "enabled", "启用 GNSS/INS（关闭时使用旧配置统计模型）", "bool"),
+            Field(prefix + "accelerometer_bias_std_mps2", "加速度计慢变偏置 σ · FRD (m/s²)", "vector"),
+            Field(prefix + "accelerometer_vrw_mps_sqrt_hour", "加速度计白噪声 · 速度随机游走 (m/s/√h)", "vector"),
+            Field(prefix + "gyro_bias_std_degph", "陀螺仪慢变偏置 σ · FRD (deg/h)", "vector"),
+            Field(prefix + "gyro_arw_deg_sqrt_hour", "陀螺仪白噪声 · 角度随机游走 (deg/√h)", "vector"),
+            Field(prefix + "bias_correlation_time_s", "偏置相关时间 · 工程假设 (s)"),
+            Field(prefix + "gnss_enabled", "GNSS 校正开关（含航向辅助）", "bool"),
+            Field(prefix + "gnss_rate_hz", "GNSS 更新频率 (Hz)"),
+            Field(prefix + "gnss_position_std_ned_m", "GNSS 位置观测 σ · NED (m)", "vector"),
+            Field(prefix + "gnss_velocity_std_ned_mps", "GNSS 速度观测 σ · NED (m/s)", "vector"),
+            Field(prefix + "heading_enabled", "启用双天线航向辅助", "bool"),
+            Field(prefix + "heading_std_deg", "航向观测 σ (deg)"),
+            Field(prefix + "initial_position_std_m", "初始位置 σ (m)"),
+            Field(prefix + "initial_velocity_std_mps", "初始速度 σ (m/s)"),
+            Field(prefix + "initial_tilt_std_deg", "初始横滚/俯仰 σ (deg)"),
+            Field(prefix + "initial_heading_std_deg", "初始航向 σ (deg)"),
+            Field(prefix + "random_seed", "导航随机种子", "int"),
+        ]
+        for field in fields:
+            self._field(group, field)
+        ttk.Label(parent, text="位置、速度、姿态误差由同一传播与校正模型产生。线性模型限制姿态误差小于5°；此处不复现北云内部固件。", wraplength=1100, style="Hint.TLabel").pack(anchor="w")
 
     def _build_disturbances(self, parent):
         ttk.Label(
             parent,
-            text="默认 A 平移 X/Y/Z 都扰动 SAR 位置目标，单位 m；中等等级各轴 OU 标准差为 0.15 m。外力模式可单独加载配置，单位 N。",
+            text="默认全部 small：A 位置目标 X/Y/Z 各 0.05 m，B Roll/Pitch 各 0.5°、Yaw 1°。幅度框可手动修改；切换指令层等级会填入对应候选幅度。外力模式单位 N，须单独指定幅度。",
             style="Hint.TLabel",
             wraplength=1100,
         ).pack(anchor="w", pady=(0, 12))
@@ -332,20 +367,27 @@ class ControlPanel:
         ]:
             self._field(group, field)
         for group_name, names in [("translation", ("x", "y", "z")), ("attitude", ("roll", "pitch", "yaw"))]:
+            axis_row = ttk.Frame(parent)
+            axis_row.pack(fill='x', pady=(0, 14))
+            for column in range(3):
+                axis_row.columnconfigure(column, weight=1, uniform='axis')
             for axis, name in enumerate(names):
                 prefix = f"disturbances.{group_name}.{name}"
-                group = self._group(
-                    parent, ("A 平移 / " if group_name == "translation" else "B 姿态 / ") + name.upper()
-                )
+                group = ttk.LabelFrame(axis_row,
+                                       text=("A 平移 / " if group_name == "translation" else "B 姿态 / ") + name.upper(),
+                                       padding=(8, 6))
+                group.grid(row=0, column=axis, sticky='nsew', padx=(0 if axis == 0 else 5, 0))
+                group.columnconfigure(1, weight=1)
+                group._compact = True
                 mode = self._field(
                     group, Field(prefix + ".injection_mode", "注入层", "choice", ("command", "dynamics"))
                 )[0]
                 self._field(group, Field(prefix + ".enabled", "该轴扰动开关", "bool"))
-                self._field(
+                level = self._field(
                     group, Field(prefix + ".level", "候选强度等级", "choice", ("small", "medium", "large"))
-                )
+                )[0]
                 self._field(
-                    group, Field(prefix + ".amplitude", "幅度（OU 为 σ；constant 为常量）", nullable=True)
+                    group, Field(prefix + ".amplitude", "幅度（σ/常量）", nullable=True)
                 )
                 unit = Field(prefix + ".unit", "幅度单位", "str")
                 self.fields.append(unit)
@@ -375,6 +417,13 @@ class ControlPanel:
 
                 mode.trace_add("write", mode_changed)
                 mode_changed()
+
+                def level_changed(*_, p=prefix, lv=level, m=mode, g=group_name, i=axis):
+                    if not self.loading and m.get() == 'command':
+                        values = TRANSLATION if g == 'translation' else ATTITUDE_DEG
+                        self.bindings[p + '.amplitude'][0].set(str(values[lv.get()][i]))
+
+                level.trace_add('write', level_changed)
 
     def _build_resources(self, parent):
         group = self._group(parent, "随机性与资源上限")

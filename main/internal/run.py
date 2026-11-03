@@ -113,6 +113,25 @@ def run_matlab(
     }
 
 
+def check_figures(data_dir: Path, imu_gnss: bool) -> dict:
+    """检查必需图表名称，允许附加图表；不以固定总数推断文件完整性。"""
+    required = {
+        'actuator_and_quaternion_checks.png', 'antenna_geometry.png', 'disturbance_inputs.png',
+        'motion_states.png', 'navigation_attitude_comparison.png', 'navigation_pose_errors.png',
+        'navigation_position_comparison.png', 'navigation_velocity_comparison.png',
+        'numerical_convergence.png', 'ou_statistics.png', 'position_errors.png', 'trajectory_3d.png',
+    }
+    if imu_gnss:
+        required.add('imu_gnss_diagnostics.png')
+    missing = sorted(name for name in required if not (data_dir / name).is_file())
+    return {
+        'name': '导航位姿与关键产出可视化',
+        'status': 'failed' if missing else 'passed',
+        'detail': (f'必需图表 {len(required)-len(missing)}/{len(required)}；缺失：{missing}'
+                   if missing else f'真值/估计逐帧对照；必需图表 {len(required)}/{len(required)} 完整。'),
+    }
+
+
 def collect_checks(data_dir: Path) -> tuple[list[dict], dict]:
     """读取本次原始验证结果，缺失检查记为未执行，不补造通过标志。"""
     stages = []
@@ -244,14 +263,7 @@ def main(argv: list[str] | None = None) -> int:
                     print("[可视化] 绘制导航真值/估计对照、天线几何和执行器检查。", flush=True)
                     plot_pose_comparisons(result, data_dir)
                     plot_geometry_and_actuators(result, data_dir, config)
-                    figure_count = len(list(data_dir.glob("*.png")))
-                    summary["stages"].append(
-                        {
-                            "name": "导航位姿与关键产出可视化",
-                            "status": "passed" if figure_count == 12 else "skipped",
-                            "detail": f"真值/估计逐帧对照；已生成 {figure_count}/12 张结果图；原始 MAT/CSV 不改动。",
-                        }
-                    )
+                    summary["stages"].append(check_figures(data_dir, config.disturbances.imu_gnss.enabled))
                 else:
                     summary["stages"].append(
                         {

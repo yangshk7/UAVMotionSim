@@ -63,6 +63,7 @@ def create_report(root: Path, summary: dict, result: dict | None = None) -> Path
             "Roll/Pitch/Yaw，内部 NED/FRD 约定，单位 deg。",
         ),
         ("导航估计误差", "navigation_pose_errors.png", "位置、速度和 SO(3) 旋转向量误差；不是欧拉角差。"),
+        ("IMU 与 GNSS 融合诊断", "imu_gnss_diagnostics.png", "加计与陀螺残余偏置、位置预测标准差；不是原始IMU测量日志。"),
         ("运动状态", "motion_states.png", "800 Hz 真实速度、加速度、姿态与体轴角速度。"),
         ("APC 与名义航迹差异", "position_errors.png", "物理运动差异与导航位置误差分开展示。"),
         ("天线杆臂与波束", "antenna_geometry.png", "APC/CG 相对位置、SAR 波束分量、下视角和斜视角。"),
@@ -147,7 +148,7 @@ def create_report(root: Path, summary: dict, result: dict | None = None) -> Path
 </style></head><body><header><small>UAV MOTION SIM / MANUAL ACCEPTANCE</small><h1>导航位姿与双航次 · 人工验收</h1><p>完整仿真 → 自动化测试 → OU 统计 → 数值收敛 → MATLAB 接口 → 关键产出可视化</p><p>__RUN_NAME__</p></header><main class="wrap">
 <div class="status __STATUS__"><b>__STATUS_TEXT__</b><div>__MESSAGE__</div></div>
 <div class="kpis">__KPIS__</div><nav class="jump"><a href="#inspection">逐帧查看</a><a href="#checks">验收结果</a><a href="#figures">结果图表</a><a href="#files">导出数据</a></nav>
-<section class="panel" id="inspection"><h2>100 Hz 导航位姿 · 逐帧对照</h2><p class="hint">拖动时间轴查看同一时刻的导航估计与真实位姿。此处仅显示已生成的导航采样点；姿态角约定为 NED/FRD，APC 与质心位置明确区分。</p><div class="controls"><select id="pass"><option value="pass1">航次 1</option><option value="pass2">航次 2</option></select><button id="play">播放</button><input id="time" type="range" min="0" max="0" value="0"><b id="clock">—</b></div><table class="cursor"><thead><tr><th>字段 / 单位</th><th>真实值</th><th>导航估计值</th></tr></thead><tbody id="pose"></tbody></table><p class="hint">角速度与加速度尚未建立额外传感器误差，导出字段使用 truth_ 前缀。导航姿态误差为 SO(3) 旋转向量，不能将欧拉角差直接当作该误差。</p></section>
+<section class="panel" id="inspection"><h2>100 Hz 导航位姿 · 逐帧对照</h2><p class="hint">拖动时间轴查看同一时刻的导航估计与真实位姿。此处仅显示已生成的导航采样点；姿态角约定为 NED/FRD，APC 与质心位置明确区分。</p><div class="controls"><select id="pass"><option value="pass1">航次 1</option><option value="pass2">航次 2</option></select><button id="play">播放</button><input id="time" type="range" min="0" max="0" value="0"><b id="clock">—</b></div><table class="cursor"><thead><tr><th>字段 / 单位</th><th>真实值</th><th>导航估计值</th></tr></thead><tbody id="pose"></tbody></table><p class="hint">角速度与加速度的 truth_ 字段保留物理真值；导航误差模型与参数见本次配置中的 imu_gnss。导航姿态误差为 SO(3) 旋转向量，不能将欧拉角差直接当作该误差。</p></section>
 <section class="panel" id="checks"><h2>本次运行的验收记录</h2><table><thead><tr><th>项目</th><th>状态</th><th>实际结果</th></tr></thead><tbody>__STAGES__</tbody></table></section>
 <section id="figures"><h2>关键产出可视化</h2>__FIGURES__</section>
 <section class="panel" id="files"><h2>数据与运行记录</h2><div class="downloads">__FILES__<a class="download" href="acceptance.json">验收汇总 JSON</a><a class="download" href="run.log">完整运行日志</a></div></section>

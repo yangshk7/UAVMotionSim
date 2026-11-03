@@ -111,6 +111,38 @@ def navigation_pose(
         },
         "estimator_model": "Independent statistical errors; not a GNSS/IMU fusion filter",
     }
+    if d.imu_gnss.enabled:
+        from uavsim.navigation.imu_gnss import simulate_errors
+
+        errors, angles, estimated_rotation, sigmas, updates = simulate_errors(
+            config, sampled_truth, rotation, pass_seed
+        )
+        nav.update(
+            position_sar_m=truth['position_sar_m'] + polar_to_sar(errors[:, :3]),
+            position_N_m=truth['position_N_m'] + errors[:, :3],
+            position_error_sar_m=polar_to_sar(errors[:, :3]),
+            error_sar_m=polar_to_sar(errors[:, :3]),
+            velocity_sar_mps=truth['velocity_sar_mps'] + polar_to_sar(errors[:, 3:6]),
+            velocity_error_sar_mps=polar_to_sar(errors[:, 3:6]),
+            attitude_error_rotvec_B_rad=angles,
+            rotation_NB=estimated_rotation,
+            q_NB_wxyz=from_matrix(estimated_rotation),
+            euler_NB_rpy_rad=matrix_to_euler(estimated_rotation),
+            ins_error_state=errors,
+            ins_error_std=sigmas,
+            gnss_update=updates,
+            estimator_model='Local NED 15-state linearized GNSS/INS error-state Kalman simulation',
+        )
+        # 旧独立输出噪声分量不再具有物理意义，避免报告误读。
+        for key in ('velocity_bias_sar_mps', 'velocity_noise_sar_mps',
+                    'attitude_bias_rotvec_B_rad', 'attitude_noise_rotvec_B_rad',
+                    'bias_sar_m', 'noise_sar_m'):
+            nav.pop(key, None)
+        nav['channel_sources'].update(
+            position='IMU error propagation with GNSS correction',
+            velocity='IMU error propagation with GNSS correction',
+            attitude='gyro/accelerometer error coupling with GNSS and optional heading correction',
+        )
     nav["velocity_N_mps"] = polar_to_sar(nav["velocity_sar_mps"])
     nav["euler_NB_rpy_deg"] = np.rad2deg(nav["euler_NB_rpy_rad"])
     lever = np.asarray(config.antenna.phase_center_frd_m)

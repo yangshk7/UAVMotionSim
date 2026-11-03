@@ -1,5 +1,7 @@
 # UAV Motion Sim
 
+> 最终版v1.0.0：日常上位机默认1000 m、10 m/s、10 s裕量，输出110 s；六轴small。`main/run.cmd`仍是固定20.48 s标准接口验收。最终参数和结果以[发布说明](docs/FINAL_RELEASE.md)为准。
+
 **本目录是独立的 OpenSource 版本。** 默认实际调用已安装的 RotorPy 3.0.0 多旋翼动力学，保持 12 kg Hex-X。集成范围、验证和后续阶段见 [开源集成状态](OPEN_SOURCE_INTEGRATION.md)。原 `UAV_Motion_Sim` 未修改。
 
 ArduPilot SITL 与 XTDrone2/ROS2/Gazebo/PX4 已在独立 WSL 中部署，两个平台的短时起降与自动停桨已通过。双击 `main/tools/run_external_validation.cmd` 可重新验证，详见 [外部平台部署](deployment/README.md)。
@@ -52,7 +54,7 @@ uv run --no-sync python scripts/benchmark.py
 
 ## 输出内容
 
-主要输出为 **100 Hz 导航式位姿记录**（位置、速度、姿态角、四元数等），以及 **800 Hz SAR 脉冲同步运动记录**。按用户后续要求，位置、速度和姿态分别具有独立估计误差模型，并另存对应真实位姿。角速度与加速度字段明确使用 truth_ 前缀。详见 [数据接口](docs/data_interface.md)。
+主要输出为 **100 Hz 导航式位姿记录**（位置、速度、姿态角、四元数等），以及 **800 Hz SAR 脉冲同步运动记录**。当前标准配置用加速度计/陀螺仪误差传播与GNSS校正生成相关联的位置、速度和姿态误差，并另存对应真实位姿；模型范围和参数假设见 [GNSS/INS模型](docs/gnss_ins_model.md)。角速度与加速度字段明确使用 truth_ 前缀。详见 [数据接口](docs/data_interface.md)。
 
 标准时序：预稳定 `[-5,0)` s，采集 `[0,20.48]` s。完整动力学 81,537 点，采集动力学 65,537 点，SAR 16,385 点，导航 2,049 点。
 

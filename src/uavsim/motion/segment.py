@@ -96,7 +96,8 @@ def from_simulated_pass(pass_result: dict, config) -> MotionSegment:
         truth_rate_hz=config.simulation.dynamics_rate_hz,
         navigation_rate_hz=config.simulation.navigation_rate_hz,
         clock_alignment="exact_common_grid",
-        navigation_model="independent_configured_position_velocity_attitude_errors",
+        navigation_model=("linearized_15_state_gnss_ins" if config.disturbances.imu_gnss.enabled
+                          else "independent_configured_position_velocity_attitude_errors"),
     )
 
 

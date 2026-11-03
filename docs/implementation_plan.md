@@ -1,5 +1,7 @@
 # 实施计划
 
+> 版本口径：最终版参数、功能边界与验收结论统一以 [v1.0.0发布说明](FINAL_RELEASE.md) 为准。本文带日期的运行数字是对应历史实验记录，不代表最终版重新测得的结果。
+
 源规范：`AirborneSAR_UAVMotionSim_Codex_Technical_Roadmap_V1.0.md`。
 
 工程直接建立在 `UAV_Motion_Sim` 内，不再增加重复的工程根目录。所有新增路径使用英文。

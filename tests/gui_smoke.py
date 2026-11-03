@@ -42,18 +42,18 @@ def main():
         for axis in "xyz":
             prefix = f"disturbances.translation.{axis}"
             assert app.bindings[prefix + ".injection_mode"][0].get() == "command"
-            assert app.bindings[prefix + ".level"][0].get() == "medium"
+            assert app.bindings[prefix + ".level"][0].get() == "small"
+            assert float(app.bindings[prefix + '.amplitude'][0].get()) == 0.05
             assert app.bindings[prefix + ".unit"][0].get() == "m"
         report["checks"]["equal_three_axis_position_target_defaults"] = "passed"
-        path = "disturbances.navigation_position_error.bias_std_sar_m"
-        app.auto_vectors[path].set(False)
+        path = "disturbances.imu_gnss.gnss_position_std_ned_m"
         app.bindings[path][0].set(".2")
-        app.bindings["disturbances.navigation_velocity_error.bias_std_sar_mps"][0].set(".04")
-        app.bindings["disturbances.navigation_attitude_error.bias_std_body_deg"][0].set(".15")
+        app.bindings["disturbances.imu_gnss.accelerometer_bias_std_mps2"][0].set(".04")
+        app.bindings["disturbances.imu_gnss.gyro_bias_std_degph"][0].set(".15")
         collected = app.collect_config()
-        assert collected.disturbances.navigation_position_error.bias_std_sar_m[0] == 0.2
-        assert collected.disturbances.navigation_velocity_error.bias_std_sar_mps[0] == 0.04
-        assert collected.disturbances.navigation_attitude_error.bias_std_body_deg[0] == 0.15
+        assert collected.disturbances.imu_gnss.gnss_position_std_ned_m[0] == 0.2
+        assert collected.disturbances.imu_gnss.accelerometer_bias_std_mps2[0] == 0.04
+        assert collected.disturbances.imu_gnss.gyro_bias_std_degph[0] == 0.15
         assert collected.vehicle == app.base.vehicle
         report["checks"]["navigation_parameters_and_hidden_values"] = "passed"
         app.bindings["trajectory.speed_mps"][0].set("nan")
@@ -83,14 +83,14 @@ def main():
         ]:
             app.bindings[key][0].set(value)
         app.passes.set("1")
-        original = app.collect_config().disturbances.navigation_velocity_error.bias_std_sar_mps[0]
+        original = app.collect_config().disturbances.imu_gnss.accelerometer_bias_std_mps2[0]
         app.start("simulate")
         assert app.process is not None
         first = app.active_job
-        app.bindings["disturbances.navigation_velocity_error.bias_std_sar_mps"][0].set(".99")
+        app.bindings["disturbances.imu_gnss.accelerometer_bias_std_mps2"][0].set(".99")
         root.update()
         assert (
-            load_config(first / "input_config.yaml").disturbances.navigation_velocity_error.bias_std_sar_mps[
+            load_config(first / "input_config.yaml").disturbances.imu_gnss.accelerometer_bias_std_mps2[
                 0
             ]
             == original

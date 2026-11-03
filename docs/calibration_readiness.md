@@ -1,5 +1,7 @@
 # 12 kg Hex-X 实测标定准备
 
+> 版本口径：最终版参数、功能边界与验收结论统一以 [v1.0.0发布说明](FINAL_RELEASE.md) 为准。本文带日期的运行数字是对应历史实验记录，不代表最终版重新测得的结果。
+
 截至 2026-11-01，本机没有目标 12 kg Hex-X 的实飞日志、台架推力数据或传感器标定数据。外部仿真航线仅检验模型和软件闭环，不能用其自身产生的“真值”反推并宣称模型已获实测标定。
 
 已核对的公开资料见 [公开飞行数据](public_flight_data.md)。[UAV-FD](https://zenodo.org/records/7648996) 是其他六旋翼的 ArduPilot 实飞与电机转速数据；现已下载两段无故障记录，完成校验、机载 GPS/EKF 速度一致性统计及六路 PWM→RPM 拟合与独立航次检查。[MUN-FRL](https://mun-frl-vil-dataset.readthedocs.io/en/latest/) 是 DJI M600 的同步 IMU 与 RTK/PPK 轨迹，适合验证独立真值对照，但其单段完整 ROS bag 为数十 GB，本阶段未下载。两者均不能提供本机型的质量、惯量、电机参数或导航误差标准差；没有改动 `configs/` 的工程初值。

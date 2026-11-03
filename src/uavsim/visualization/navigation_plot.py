@@ -34,4 +34,21 @@ def plot_navigation(result: dict, root: str | Path) -> Path:
     path = Path(root) / "navigation_pose_errors.png"
     fig.savefig(path, dpi=160)
     plt.close(fig)
+    active = [(name, data['navigation']) for name, data in result.items()
+              if name.startswith('pass') and 'ins_error_state' in data['navigation']]
+    if active:
+        extra, axs = plt.subplots(3, 1, figsize=(11, 9), sharex=True, layout='constrained')
+        for name, nav in active:
+            state = nav['ins_error_state']
+            label = [name.replace('pass', '航次 ') + ' ' + a for a in 'XYZ']
+            axs[0].plot(nav['time_s'], state[:, 9:12], label=label)
+            axs[1].plot(nav['time_s'], np.rad2deg(state[:, 12:15])*3600, label=label)
+            axs[2].plot(nav['time_s'], nav['ins_error_std'][:, :3], label=label)
+        for ax, label in zip(axs, ['加计残余偏置 (m/s²)', '陀螺残余偏置 (度/小时)', '位置预测标准差 (m)']):
+            ax.set_ylabel(label)
+            ax.grid(True, alpha=.3)
+            ax.legend(ncol=3)
+        axs[-1].set_xlabel('采集时间 (s)')
+        extra.savefig(Path(root) / 'imu_gnss_diagnostics.png', dpi=160)
+        plt.close(extra)
     return path

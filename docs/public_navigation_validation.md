@@ -1,5 +1,7 @@
 # 公开实飞轨迹与独立真值对照
 
+> 版本口径：最终版参数、功能边界与验收结论统一以 [v1.0.0发布说明](FINAL_RELEASE.md) 为准。本文带日期的运行数字是对应历史实验记录，不代表最终版重新测得的结果。
+
 2026-11-01 使用 [NTU VIRAL 官方数据页](https://ntu-aris.github.io/ntu_viral_dataset/)的 `eee_01` 航段完成导航误差评估方法验证。输入是作者公开的 [Leica 测量棱镜真值 CSV](https://huggingface.co/datasets/Yuan-Shenghai/NTU-VIRAL-DATASET/tree/main/ground_truth/eee_01)和[官方 FAST-LIO2 示例估计轨迹](https://github.com/ntu-aris/fastlio2_sample/tree/master/result_eee_01)。原始文件保存在 `results/public_data/ntu_viral_eee_01/`，各自 SHA256 见 `evaluation.json`。本数据来自其他无人机，未用于标定本项目 12 kg Hex-X。
 
 该航段使用独立激光跟踪位置真值，不是 RTK/PPK。NTU 官方[评估教程](https://ntu-aris.github.io/ntu_viral_dataset/evaluation_tutorial.html)指出真值位于测量棱镜，机体原点到棱镜的平移为 `[-0.293656, -0.012288, -0.273095] m`；必须用估计姿态旋转该杆臂，再与棱镜位置比较。真值 CSV 的姿态列全为单位四元数，且官方说明没有姿态真值，所以本报告只评估位置。

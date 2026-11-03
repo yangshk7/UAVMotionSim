@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose, assert_array_equal
 from scipy.io import loadmat
 from scipy.spatial.transform import Rotation
@@ -18,8 +19,10 @@ def pose_config():
     return Config.model_validate(data)
 
 
-def test_pose_errors_and_truth_isolation():
+@pytest.mark.parametrize('imu_gnss', [False, True])
+def test_pose_errors_and_truth_isolation(imu_gnss):
     cfg = pose_config()
+    cfg.disturbances.imu_gnss.enabled = imu_gnss
     data = simulate_pass(cfg, 123)
     base = simulate_pass(short_config(), 123)
     for field in ["position_N_m", "velocity_N_mps", "q_NB_wxyz", "omega_B_radps"]:

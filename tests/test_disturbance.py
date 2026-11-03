@@ -64,7 +64,7 @@ def test_three_position_target_disturbances_use_the_same_units_and_no_integratio
 def test_default_position_and_optional_force_configurations():
     for path, strength in [
         ("configs/disturbance_small.yaml", 0.05),
-        ("main/motion_config.yaml", 0.15),
+        ("main/motion_config.yaml", 0.05),
         ("configs/disturbance_large.yaml", 0.30),
     ]:
         factors = load_config(path).disturbances.translation
