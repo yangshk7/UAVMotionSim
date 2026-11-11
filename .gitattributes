@@ -1,2 +1,4 @@
 deployment/**/*.sh text eol=lf
 deployment/**/*.patch text eol=lf
+# Unified diff context lines contain a required leading space, including blank lines.
+deployment/**/*.patch whitespace=-blank-at-eol

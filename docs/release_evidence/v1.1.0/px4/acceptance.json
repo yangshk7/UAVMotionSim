@@ -1,0 +1,48 @@
+{
+  "data_directory": "${PROJECT_ROOT}\\main\\gui_outputs\\all_acceptance_20261111_195103_385879\\chains\\px4\\artifacts",
+  "stages": [
+    {
+      "name": "pass1 px4飞行及严格对时",
+      "status": "passed",
+      "detail": "真实启动外部平台；保留原生真值/日志；导航对齐100 Hz；杆臂已应用。"
+    },
+    {
+      "name": "pass1 水平航段检查",
+      "status": "passed",
+      "detail": "目标长度1000 m；实测前进1101.581 m；速度9.653–10.701 m/s。裁剪窗与完整统计见route_coverage_pass1.json。"
+    },
+    {
+      "name": "pass2 px4飞行及严格对时",
+      "status": "passed",
+      "detail": "真实启动外部平台；保留原生真值/日志；导航对齐100 Hz；杆臂已应用。"
+    },
+    {
+      "name": "pass2 水平航段检查",
+      "status": "passed",
+      "detail": "目标长度1000 m；实测前进1101.222 m；速度9.665–10.672 m/s。裁剪窗与完整统计见route_coverage_pass2.json。"
+    },
+    {
+      "name": "外部链路参数适用范围",
+      "status": "passed",
+      "detail": "外部飞控使用固定12 kg Hex-X机型、原生控制器和原生传感器模型；上位机A/B扰动、Python控制增益、机体参数、初始状态误差、积分频率和预稳定时长不写入外部飞控。本入口运行无额外注入风扰的基准场景，仍保留原生传感器噪声及闭环跟踪误差。统一导航误差参数仅作用于shared_model，不作用于飞控自身估计。SITL位置/速度真值为SIM2，姿态由SIM四元数插值；PX4位置/姿态真值来自Gazebo，速度为位置差分。导航统一输出100 Hz；飞控原始导航可能低于100 Hz，插值不提高原始测量频率。"
+    },
+    {
+      "name": "跨平台对照、OU统计、积分收敛及SAR端到端",
+      "status": "skipped",
+      "detail": "本入口仅验收所选外部链路；未执行项不能视为完整科研验收通过。"
+    }
+  ],
+  "message": "px4 · 导航来源 shared_model。外部飞控使用固定12 kg Hex-X机型、原生控制器和原生传感器模型；上位机A/B扰动、Python控制增益、机体参数、初始状态误差、积分频率和预稳定时长不写入外部飞控。本入口运行无额外注入风扰的基准场景，仍保留原生传感器噪声及闭环跟踪误差。统一导航误差参数仅作用于shared_model，不作用于飞控自身估计。SITL位置/速度真值为SIM2，姿态由SIM四元数插值；PX4位置/姿态真值来自Gazebo，速度为位置差分。导航统一输出100 Hz；飞控原始导航可能低于100 Hz，插值不提高原始测量频率。",
+  "supported_figures": [
+    "trajectory_3d.png",
+    "navigation_position_comparison.png",
+    "navigation_velocity_comparison.png",
+    "navigation_attitude_comparison.png",
+    "navigation_pose_errors.png",
+    "imu_gnss_diagnostics.png"
+  ],
+  "metrics": {
+    "navigation_samples": 11000,
+    "truth_rate_hz": 1000
+  }
+}

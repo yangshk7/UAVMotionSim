@@ -92,7 +92,7 @@ def from_simulated_pass(pass_result: dict, config) -> MotionSegment:
     return MotionSegment(
         truth=truth,
         navigation=navigation,
-        source="rotorpy" if config.runtime.backend == "rotorpy" else "internal_cpu",
+        source={"rotorpy": "rotorpy", "matlab": "matlab"}.get(config.runtime.backend, "internal_cpu"),
         truth_rate_hz=config.simulation.dynamics_rate_hz,
         navigation_rate_hz=config.simulation.navigation_rate_hz,
         clock_alignment="exact_common_grid",

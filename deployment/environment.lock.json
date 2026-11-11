@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "release": "1.1.0",
+  "python": "3.11.15",
+  "uv": "0.12.1",
+  "ubuntu": "24.04",
+  "gazebo_sim": "8.15.0",
+  "repositories": {
+    "PX4": {
+      "url": "https://github.com/PX4/PX4-Autopilot.git",
+      "commit": "99c40407ffd7ac184e2d7b4b293f36f10fe561ef",
+      "path": "/opt/uav_motion/PX4-Autopilot"
+    },
+    "XTDrone2": {
+      "url": "https://github.com/andy-zhuo-02/XTDrone2.git",
+      "commit": "15b2ef6eb9fd8c2631f931a27064f323d26a9ed3",
+      "path": "/opt/uav_motion/xtdrone_ws/src/XTDrone2"
+    },
+    "px4_msgs": {
+      "url": "https://github.com/PX4/px4_msgs.git",
+      "commit": "18cbccedb6c304b180bca8e81a4a601758fc9de9",
+      "path": "/opt/uav_motion/xtdrone_ws/src/XTDrone2/xtd2_third_party_pkgs/px4_msgs"
+    },
+    "Micro-XRCE-DDS-Agent": {
+      "url": "https://github.com/eProsima/Micro-XRCE-DDS-Agent.git",
+      "commit": "57d086216d01ec43121845d385894a25987f8a2c",
+      "path": "/opt/uav_motion/Micro-XRCE-DDS-Agent"
+    },
+    "Fast-DDS": {
+      "url": "https://github.com/eProsima/Fast-DDS.git",
+      "commit": "092848725b8425e4f05a8ccf7b3b8d513fabf733",
+      "path": "/opt/uav_motion/Micro-XRCE-DDS-Agent/build/fastdds/src/fastdds"
+    }
+  },
+  "sitl": {
+    "path": "/opt/uav_motion/sitl/4.7.2/bin/arducopter",
+    "sha256": "caed35e4cb796ec06cac40b09566a18251771486b1cbac5e2bf16b7a5ed5045d"
+  },
+  "patches": [
+    "agent-fastdds-pin.patch",
+    "fastdds-cstdint.patch",
+    "fastdds-build-compat.patch",
+    "xtdrone-stop-offboard-on-land.patch"
+  ]
+}

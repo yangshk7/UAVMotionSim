@@ -6,20 +6,27 @@ import hashlib
 import json
 import math
 import shutil
+import signal
 import socket
 import subprocess
 import sys
 import time
+from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
 
 from pymavlink import mavutil
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from aligned_route import AlignedRoute  # noqa: E402
 from scenario_profile import load_profile  # noqa: E402
 
 
 def main():
+    def terminate(signum, frame):
+        raise KeyboardInterrupt("External GUI job cancelled")
+    signal.signal(signal.SIGTERM, terminate)
+    signal.signal(signal.SIGHUP, terminate)
     parser = argparse.ArgumentParser()
     parser.add_argument("--binary", type=Path, required=True)
     parser.add_argument("--defaults", type=Path, required=True)
@@ -27,7 +34,16 @@ def main():
     parser.add_argument("--route", action="store_true", help="Fly the 300 m, 20.48 s collection route")
     parser.add_argument("--scenario", type=Path, help="Optional external simulator scenario JSON")
     parser.add_argument("--truth-rate-hz", type=int, default=300, help="Requested MAVLink SIMSTATE/SIM_STATE Hz")
+    parser.add_argument("--aligned-route", action="store_true", help="Use the common external baseline protocol")
+    parser.add_argument("--route-config", type=Path, help="Shared route JSON; requires --aligned-route")
     args = parser.parse_args()
+    if args.route_config and not args.aligned_route:
+        parser.error("--route-config requires --aligned-route")
+    if args.aligned_route and (not args.route or args.scenario):
+        parser.error("--aligned-route requires --route and the no-added-wind baseline")
+    aligned = (AlignedRoute.from_file(args.route_config) if args.route_config else AlignedRoute()) if args.aligned_route else None
+    ready_since = None
+    last_progress_clock = -math.inf
     if not 1 <= args.truth_rate_hz <= 1000:
         parser.error("--truth-rate-hz must be between 1 and 1000")
     scenario = load_profile(args.scenario) if args.scenario else None
@@ -57,6 +73,9 @@ def main():
             "".join(f"{key} {value}\n" for key, value in parameters.items()), encoding="ascii"
         )
         defaults += ",scenario.parm"
+    if aligned:
+        (root / "aligned_route.parm").write_text("SIM_WIND_SPD 0\nSIM_WIND_TURB 0\n", encoding="ascii")
+        defaults += ",aligned_route.parm"
     command = [
         str(binary),
         "-I",
@@ -72,6 +91,7 @@ def main():
         "-w",
     ]
     report = {
+        "aligned_route": asdict(aligned) if aligned else None,
         "command": command,
         "binary_sha256": hashlib.sha256(binary.read_bytes()).hexdigest(),
         "scenario": scenario["name"] if scenario else "baseline",
@@ -81,7 +101,7 @@ def main():
         "passed": False,
         "truth_rate_requested_hz": args.truth_rate_hz,
         "scope": (
-            "12 kg Hex-X 300 m, 10 m/s, 20.48 s collection route; navigation and simulator truth"
+            (f"12 kg Hex-X {aligned.altitude_m:g} m, {aligned.speed_mps:g} m/s, {aligned.duration_s:g} s collection route" if aligned else "12 kg Hex-X 300 m, 10 m/s, 20.48 s collection route; navigation and simulator truth")
             if args.route else "12 kg Hex-X 10 m takeoff/land smoke; not SAR-rate truth"
         ),
     }
@@ -139,20 +159,31 @@ def main():
             route_phase = "takeoff"
             route_start_s = None
             route_positions = []
-            last_target_sent = 0.0
+            last_target_sent = -math.inf
+            capture_yaw = 0.0
             target_log = []
 
             def target(x_m: float, y_m: float, z_down_m: float, boot_ms: int, velocity_mode: bool):
+                vx, vy, vz = (10.0, 0.0, 0.0) if velocity_mode else (0.0, 0.0, 0.0)
+                yaw_rate = 0.0
+                mask = 0x0DC7 if velocity_mode else 0x0DF8
+                if aligned:
+                    if velocity_mode:
+                        vx, vy, vz = aligned.velocity_ned(position[-1][2], -position[-1][3])
+                        yaw_rate = aligned.yaw_rate(capture_yaw)
+                        mask &= ~(1 << 11)
+                    else:
+                        mask &= ~(1 << 10)
                 connection.mav.set_position_target_local_ned_send(
                     boot_ms, connection.target_system, connection.target_component,
-                    mavutil.mavlink.MAV_FRAME_LOCAL_NED, 0x0DC7 if velocity_mode else 0x0DF8,
+                    mavutil.mavlink.MAV_FRAME_LOCAL_NED, mask,
                     0 if velocity_mode else x_m, 0 if velocity_mode else y_m,
                     0 if velocity_mode else z_down_m,
-                    10 if velocity_mode else 0, 0, 0, 0, 0, 0, 0, 0,
+                    vx, vy, vz, 0, 0, 0, 0, yaw_rate,
                 )
                 target_log.append([boot_ms / 1000, x_m, y_m, -z_down_m, "velocity" if velocity_mode else "position"])
 
-            while time.monotonic() - started < (260 if args.route else 120):
+            while time.monotonic() - started < (max(260, 180 + aligned.duration_s / 2) if aligned else 260 if args.route else 120):
                 elapsed = time.monotonic() - started
                 msg = connection.recv_match(blocking=True, timeout=0.2)
                 if msg:
@@ -178,18 +209,30 @@ def main():
                              received_at]
                         )
                         if args.route and takeoff_sent and not land_sent:
-                            if route_phase == "takeoff" and -msg.z >= 295:
+                            if route_phase == "takeoff" and -msg.z >= (aligned.altitude_m-1 if aligned else 295):
                                 route_phase = "reposition"
-                            if route_phase == "reposition" and abs(msg.x + 150) <= 3 and abs(msg.y) <= 3 and abs(msg.z + 300) <= 5:
-                                route_phase = "accelerate"
-                            if route_phase == "accelerate" and msg.x >= -102.4 and msg.vx >= 9 and abs(msg.z + 300) <= 5:
-                                route_phase = "capture"
-                                route_start_s = msg.time_boot_ms / 1000
+                            if aligned:
+                                state = (msg.x, msg.y, msg.z, msg.vx, msg.vy, msg.vz)
+                                clock = msg.time_boot_ms / 1000
+                                if route_phase == "reposition":
+                                    ready_since = aligned.settle_start(ready_since, clock, state, capture_yaw)
+                                    if ready_since is not None and clock - ready_since >= aligned.settle_s:
+                                        route_phase = "accelerate"
+                                if route_phase == "accelerate" and aligned.capture_ready(*state, capture_yaw):
+                                    route_phase, route_start_s = "capture", clock
+                                    report["capture_start_nav_ned"] = [*state, capture_yaw]
+                            else:
+                                if route_phase == "reposition" and abs(msg.x + 150) <= 3 and abs(msg.y) <= 3 and abs(msg.z + 300) <= 5:
+                                    route_phase = "accelerate"
+                                if route_phase == "accelerate" and msg.x >= -102.4 and msg.vx >= 9 and abs(msg.z + 300) <= 5:
+                                    route_phase = "capture"
+                                    route_start_s = msg.time_boot_ms / 1000
                             if route_phase == "capture":
                                 route_positions.append([msg.time_boot_ms / 1000, msg.x, msg.y, -msg.z])
-                                if msg.time_boot_ms / 1000 - route_start_s >= 20.48:
+                                if msg.time_boot_ms / 1000 - route_start_s >= (aligned.duration_s if aligned else 20.48):
                                     route_phase = "complete"
                     elif kind == "ATTITUDE":
+                        capture_yaw = msg.yaw
                         attitude.append(
                             [
                                 msg.time_boot_ms / 1000,
@@ -217,36 +260,41 @@ def main():
                                     0,
                                     0,
                                     0,
-                                    300 if args.route else 10,
+                                    (aligned.altitude_m if aligned else 300) if args.route else 10,
                                 )
                                 takeoff_sent = True
                         elif armed_once and land_sent:
                             report["passed"] = (
                                 route_phase == "complete"
                                 and len(route_positions) >= 100
-                                and route_positions[-1][1] - route_positions[0][1] >= 180
-                                and 290 <= sum(row[3] for row in route_positions) / len(route_positions) <= 310
-                                and math.sqrt(sum(row[2] ** 2 for row in route_positions) / len(route_positions)) <= 10
+                                and route_positions[-1][1] - route_positions[0][1] >= (0.85 * aligned.speed_mps * aligned.duration_s if aligned else 180)
+                                and abs(sum(row[3] for row in route_positions) / len(route_positions) - (aligned.altitude_m if aligned else 300)) <= 10
+                                and math.sqrt(sum((row[2] - (aligned.center_y_m if aligned else 0)) ** 2 for row in route_positions) / len(route_positions)) <= 10
                                 if args.route else highest >= 8.0
                             )
                             break
+                if aligned and position and position[-1][0] - last_progress_clock >= 1:
+                    last_progress_clock = position[-1][0]
+                    print("UAVSIM_EXTERNAL_PROGRESS " + json.dumps({"phase": route_phase,
+                        "elapsed_s": max(0, last_progress_clock-route_start_s) if route_start_s is not None else 0,
+                        "duration_s": aligned.duration_s}), flush=True)
                 if not armed_once and elapsed > 12 and elapsed - last_arm > 4:
                     connection.set_mode("GUIDED")
                     connection.arducopter_arm()
                     last_arm = elapsed
                 if args.route and takeoff_sent and not land_sent and position:
-                    now = time.monotonic()
+                    now = position[-1][0] if aligned else time.monotonic()
                     if route_phase == "complete":
                         connection.set_mode("LAND")
                         land_sent = True
-                    elif route_phase in ("reposition", "accelerate", "capture") and now - last_target_sent >= 0.1:
+                    elif route_phase in ("reposition", "accelerate", "capture") and now - last_target_sent >= (aligned.command_period_s if aligned else 0.1) - 1e-9:
                         current = position[-1]
                         x_goal = (
-                            -150.0 if route_phase == "reposition"
-                            else -102.4 if route_phase == "accelerate"
-                            else min(102.4, -102.4 + 10 * (current[0] - route_start_s))
+                            (aligned.reposition_x_m if aligned else -150.0) if route_phase == "reposition"
+                            else (aligned.start_x_m if aligned else -102.4) if route_phase == "accelerate"
+                            else (aligned.start_x_m + aligned.speed_mps * min(aligned.duration_s, current[0]-route_start_s) if aligned else min(102.4, -102.4 + 10 * (current[0] - route_start_s)))
                         )
-                        target(x_goal, 0.0, -300.0, round(current[0] * 1000), route_phase != "reposition")
+                        target(x_goal, aligned.center_y_m if aligned else 0.0, -aligned.altitude_m if aligned else -300.0, round(current[0] * 1000), route_phase != "reposition")
                         last_target_sent = now
                 elif takeoff_sent and highest >= 8.0 and not land_sent:
                     connection.set_mode("LAND")
@@ -258,7 +306,7 @@ def main():
                     route_duration_s=(route_positions[-1][0] - route_positions[0][0]) if len(route_positions) > 1 else 0,
                     route_x_span_m=(route_positions[-1][1] - route_positions[0][1]) if len(route_positions) > 1 else 0,
                     route_altitude_mean_m=(sum(row[3] for row in route_positions) / len(route_positions)) if route_positions else None,
-                    route_cross_track_rms_m=(math.sqrt(sum(row[2] ** 2 for row in route_positions) / len(route_positions))) if route_positions else None,
+                    route_cross_track_rms_m=(math.sqrt(sum((row[2] - (aligned.center_y_m if aligned else 0)) ** 2 for row in route_positions) / len(route_positions))) if route_positions else None,
                 )
             report.update(
                 armed=armed_once,

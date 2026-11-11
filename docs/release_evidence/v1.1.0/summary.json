@@ -1,0 +1,42 @@
+{
+  "release": "1.1.0",
+  "source_run": "all_acceptance_20261111_195103_385879",
+  "status": "passed",
+  "duration_s": 110,
+  "target_length_m": 1000,
+  "elapsed_s": 2755.216335200006,
+  "chains": [
+    {
+      "backend": "rotorpy",
+      "status": "passed",
+      "pass1_distance_m": 1099.9936379155274,
+      "pass2_distance_m": 1099.9445681706147
+    },
+    {
+      "backend": "matlab",
+      "status": "passed",
+      "pass1_distance_m": 1099.9782706640262,
+      "pass2_distance_m": 1099.9500001241315
+    },
+    {
+      "backend": "cpu",
+      "status": "passed",
+      "pass1_distance_m": 1099.9936379155274,
+      "pass2_distance_m": 1099.9445681706147
+    },
+    {
+      "backend": "sitl",
+      "status": "passed",
+      "pass1_distance_m": 1099.9006578672554,
+      "pass2_distance_m": 1100.0254808547495
+    },
+    {
+      "backend": "px4",
+      "status": "passed",
+      "pass1_distance_m": 1101.5811997250566,
+      "pass2_distance_m": 1101.2219382368646
+    }
+  ],
+  "pairs": 20,
+  "scope": "All five engines and applicable acceptance; no SAR imaging end-to-end"
+}

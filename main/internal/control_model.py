@@ -133,7 +133,10 @@ FLIGHT_FIELDS = [
 LEVER_ARM_FIELDS = [Field("antenna.phase_center_frd_m", "质心 → APC 杆臂 (m)", "vector")]
 
 RESOURCE_FIELDS = [
-    Field("runtime.backend", "动力学后端", "choice", ("rotorpy", "cpu", "auto")),
+    Field("runtime.backend", "仿真链路", "choice", ("rotorpy", "matlab", "sitl", "px4", "cpu", "auto")),
+    Field("runtime.wsl_distribution", "外部链路 WSL 发行版", "str"),
+    Field("runtime.external_navigation_source", "外部链路导航来源", "choice", ("shared_model", "flight_controller")),
+    Field("runtime.matlab_executable", "MATLAB链路程序路径（可空）", "str", nullable=True),
     Field("base_seed", "基础随机种子", "int"),
     Field("pass_seeds", "航次种子（逗号分隔）", "seeds"),
     Field("nominal_baseline_sar_m", "名义双航次基线 SAR (m)", "vector"),

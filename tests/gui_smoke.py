@@ -64,6 +64,11 @@ def main():
         else:
             raise AssertionError("NaN input accepted")
         app.apply_config(load_config(PROJECT / "main" / "config.yaml"), PROJECT / "main" / "config.yaml")
+        for backend in ("rotorpy", "matlab", "sitl", "px4", "cpu", "auto"):
+            app.bindings["runtime.backend"][0].set(backend)
+            assert app.collect_config().runtime.backend == backend
+        app.bindings["runtime.backend"][0].set("rotorpy")
+        report["checks"]["all_simulation_chain_options_round_trip"] = "passed"
         app.bindings["disturbances.translation.y.injection_mode"][0].set("dynamics")
         assert app.bindings["disturbances.translation.y.unit"][0].get() == "N"
         assert app.bindings["disturbances.translation.y.amplitude"][0].get() == ""
@@ -170,7 +175,7 @@ def main():
             app.start("acceptance")
             assert app.process is not None
             full = app.active_job
-            wait_for_job(root, app, 600)
+            wait_for_job(root, app, 1800)
             assert app.result is not None and app.result["status"] == "passed", app.log.get("1.0", "end")
             assert float(app.progress["value"]) == 100
             full_log = (full / "worker.log").read_text(encoding="utf-8")

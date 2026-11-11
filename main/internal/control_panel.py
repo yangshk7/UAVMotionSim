@@ -165,6 +165,8 @@ class ControlPanel:
         self.run_button.pack(side="left", padx=(20, 3))
         self.accept_button = ttk.Button(commands, text="完整验收", command=lambda: self.start("acceptance"))
         self.accept_button.pack(side="left", padx=3)
+        self.all_accept_button = ttk.Button(commands, text="全链路验收", command=lambda: self.start("all_acceptance"))
+        self.all_accept_button.pack(side="left", padx=3)
         self.stop_button = ttk.Button(commands, text="停止当前任务", command=self.stop, state="disabled")
         self.stop_button.pack(side="left", padx=3)
         ttk.Button(commands, text="刷新硬件", command=self.refresh_hardware).pack(side="right", padx=3)
@@ -429,12 +431,13 @@ class ControlPanel:
         group = self._group(parent, "随机性与资源上限")
         for field in RESOURCE_FIELDS:
             self._field(group, field)
+        ttk.Label(parent, text="仿真链路：rotorpy=RotorPy（默认）；matlab=MATLAB物理内核；sitl=ArduPilot SITL（WSL，300 Hz）；px4=PX4/Gazebo（WSL，1000 Hz）；cpu=内置刚体；auto=当前同cpu。外部链路读取直线航线、速度、高度、时长、双航次基线和杆臂，使用固定12 kg机型及原生飞控。A/B扰动、Python控制增益、初始误差和积分频率不作用于外部飞控。shared_model=统一可配置导航误差；flight_controller=飞控自身导航（100 Hz插值）。外部完整验收执行所选链路的飞行与严格对时，其他科研验收明确列为未执行。", wraplength=1100, style="Hint.TLabel").pack(anchor="w", pady=(0, 12))
         options = self._group(parent, "运行方式")
         ttk.Label(options, text="仿真航次数").grid(row=0, column=0, sticky="w", pady=7)
         ttk.Combobox(options, textvariable=self.passes, values=["1", "2"], state="readonly", width=12).grid(
             row=0, column=1, sticky="w"
         )
-        ttk.Label(options, text="完整验收固定双航次；仿真模式可选单航次。", style="Hint.TLabel").grid(
+        ttk.Label(options, text="两种验收均固定双航次；全链路验收强制MATLAB检查，不受skip影响。", style="Hint.TLabel").grid(
             row=1, column=1, sticky="w"
         )
         ttk.Label(options, text="MATLAB 检查").grid(row=2, column=0, sticky="w", pady=7)
@@ -449,7 +452,7 @@ class ControlPanel:
             ttk.Entry(options, textvariable=var, width=70).grid(row=row, column=1, sticky="ew")
         ttk.Label(
             parent,
-            text="运行仿真：用于参数试验，不执行完整测试/收敛/MATLAB。\n完整验收：运行全部已实现的本地链路。修改采样或采集时长后，MATLAB 接口还需与既有雷达参数相符。\nGPU/显存会检测并记录；当前计算后端为 float64 CPU，不提供未经验证的 GPU 开关。",
+            text="运行仿真：用于参数试验，不执行完整测试/收敛/MATLAB。\n完整验收：验收当前选择的链路。全链路验收：串行运行RotorPy、MATLAB、内置CPU、SITL、PX4双航次，汇总适用检查和交叉指标；需要MATLAB及已部署WSL，耗时较长，不含SAR成像端到端。修改采样或采集时长后，MATLAB 接口还需与既有雷达参数相符。\nGPU/显存会检测并记录；当前计算后端为 float64 CPU，不提供未经验证的 GPU 开关。",
             style="Hint.TLabel",
             wraplength=1100,
         ).pack(anchor="w")
@@ -594,7 +597,7 @@ class ControlPanel:
                 if s.duration_mode == "route_length" else "固定时长 · "
             )
             self.config_status.set(
-                f"参数有效 · {target}输出 {s.acquisition_duration_s:g} s · 真值 {round(s.acquisition_duration_s * s.dynamics_rate_hz) + 1:,} 点 · 导航 {round(s.acquisition_duration_s * s.navigation_rate_hz) + 1:,} 点 · 杆臂 FRD {tuple(config.antenna.phase_center_frd_m)} m"
+                f"参数有效 · 链路 {config.runtime.backend} · {target}输出 {s.acquisition_duration_s:g} s · 真值采样 {300 if config.runtime.backend == 'sitl' else 1000 if config.runtime.backend == 'px4' else s.dynamics_rate_hz} Hz · 导航 {round(s.acquisition_duration_s * s.navigation_rate_hz) + 1:,} 点 · 杆臂 FRD {tuple(config.antenna.phase_center_frd_m)} m"
             )
         except ValueError as error:
             self.config_status.set("参数需检查：" + str(error).splitlines()[0])
@@ -687,7 +690,7 @@ class ControlPanel:
             return
         try:
             config = self.collect_config()
-            passes = 2 if mode == "acceptance" else int(self.passes.get())
+            passes = 2 if mode in ("acceptance", "all_acceptance") else int(self.passes.get())
             if len(config.pass_seeds) < passes:
                 raise ValueError(f"至少需要 {passes} 个独立航次种子")
             data = config.model_dump()
@@ -715,16 +718,17 @@ class ControlPanel:
         self.result = None
         self.run_button.configure(state="disabled")
         self.accept_button.configure(state="disabled")
+        self.all_accept_button.configure(state="disabled")
         self.stop_button.configure(state="normal")
         self.progress_values = [0.0] * passes
-        self.progress_sim_weight = 40 if mode == "acceptance" else 80
+        self.progress_sim_weight = 40 if mode in ("acceptance", "all_acceptance") else 80
         self.convergence_values = {1600: 0.0, 3200: 0.0, 6400: 0.0}
         self.progress_percent = 0.0
         self.progress.configure(value=0, maximum=100, mode="determinate")
-        self.progress_text.set("0% · 初始化" + ("完整验收" if mode == "acceptance" else "仿真"))
+        self.progress_text.set("0% · 初始化" + ("全链路验收" if mode == "all_acceptance" else "完整验收" if mode == "acceptance" else "仿真"))
         self.status.set(
             "正在"
-            + ("运行完整验收" if mode == "acceptance" else "运行参数仿真")
+            + ("运行全链路验收" if mode == "all_acceptance" else "运行完整验收" if mode == "acceptance" else "运行参数仿真")
             + " · 参数快照已锁定，后续编辑只影响下一次任务"
         )
         self.log.insert("end", f"\n===== {mode} | {root.name} =====\n")
@@ -782,7 +786,7 @@ class ControlPanel:
                 return
             self.progress_values[index] = max(self.progress_values[index], event["fraction"])
             percent = getattr(self, "progress_sim_weight", 80) * sum(self.progress_values) / len(self.progress_values)
-            stage = f"计算航次 {index + 1} · 该航次 {event['fraction']:.0%}"
+            stage = event.get("stage", f"计算航次 {index + 1} · 该航次 {event['fraction']:.0%}")
         self.progress_percent = max(self.progress_percent, percent)
         self.progress.configure(value=self.progress_percent)
         self.progress_text.set(f"{self.progress_percent:.0f}% · {stage}")
@@ -810,8 +814,10 @@ class ControlPanel:
                         self.log.insert("end", "任务错误：" + value["message"] + "\n")
                 elif kind == "done":
                     self.progress.stop()
+                    self.progress.configure(value=self.progress_percent)
                     self.run_button.configure(state="normal")
                     self.accept_button.configure(state="normal")
+                    self.all_accept_button.configure(state="normal")
                     self.stop_button.configure(state="disabled")
                     self.process = None
                     state = (
@@ -830,7 +836,7 @@ class ControlPanel:
                     self.status.set(
                         f"{state} · 用时 {time.monotonic() - self.started:.1f} s · {self.active_job.name}"
                     )
-                    if self.result and self.result["status"] in ("simulated", "passed") and not self.cancel_requested:
+                    if self.result and self.result["status"] in ("simulated", "passed", "partial") and not self.cancel_requested:
                         self.progress.configure(mode="determinate", value=100)
                         self.progress_text.set("100% · " + state)
                     else:

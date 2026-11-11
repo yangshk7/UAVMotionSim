@@ -1,5 +1,9 @@
 # Main：运行入口
 
+顶部“全链路验收”会串行运行RotorPy、MATLAB、内置CPU、SITL、PX4的双航次及各自适用的完整检查，再生成汇总和交叉对照。需要MATLAB及已部署WSL，不含SAR成像端到端；详见[使用说明](docs/CONTROL_PANEL_USER_GUIDE.md#新增全链路验收)。
+
+上位机已提供RotorPy、MATLAB、ArduPilot SITL和PX4/Gazebo统一启动入口。外部链路需要已部署的WSL环境，可选择统一导航误差模型或飞控自身导航；参数适用范围、输出来源与外部验收边界见[上位机详细说明](docs/CONTROL_PANEL_USER_GUIDE.md#仿真链路统一入口2026-11-11)。
+
 > 版本口径：最终版参数、功能边界与验收结论统一以 [v1.0.0发布说明](../docs/FINAL_RELEASE.md) 为准。本文带日期的运行数字是对应历史实验记录，不代表最终版重新测得的结果。
 
 > 当前默认已升级为加速度计/陀螺仪误差传播与GNSS校正，旧独立PVA误差及80%/20%拆分仅保留历史兼容；以 [GNSS/INS模型说明](../docs/gnss_ins_model.md) 为准。
@@ -89,4 +93,4 @@ Python 入口还支持 `--matlab-exe <path>`、`--sar-project <directory>`、`--
 
 默认自动检测 MATLAB，并读取相邻既有 L 波段工程进行完整单点回波接口验证。原 SAR 工程不写入；若无 MATLAB、无原回波工程或显式跳过，整体只能标为部分完成。任何数值检查失败均保留日志并停止后续接口验收。
 
-**验收边界**：本入口覆盖 RotorPy/Python 与 MATLAB 本地链路，不自动执行独立部署的 ArduPilot/XTDrone2 验证。外部平台入口、补丁和验证范围见 `../deployment/README.md`。Simscape、实机标定及新 GPU 积分后端尚未完成。原回波仍采用固定名义波束权重，尚未消费姿态变化波束。
+**验收边界（2026-11-11更新）**：本入口现覆盖 RotorPy/Python、MATLAB接口、早期MATLAB UAV物理核心对照，以及已部署SITL/PX4的同工况飞行与原生时钟对照。每次运行状态和差异见报告新增表格，跳过或失败会进入总状态。外部飞控对照采用独立300 m、10 m/s、20.48 s基准。执行环境、额外耗时和参数解释见上位机使用说明。Simscape、实机标定和SAR成像端到端实验仍属于后续工作。

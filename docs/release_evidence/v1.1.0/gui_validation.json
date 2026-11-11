@@ -1,0 +1,19 @@
+{
+  "tk_version": 8.6,
+  "checks": {
+    "equal_three_axis_position_target_defaults": "passed",
+    "navigation_parameters_and_hidden_values": "passed",
+    "invalid_input_rejected": "passed",
+    "all_simulation_chain_options_round_trip": "passed",
+    "dynamics_amplitude_requires_explicit_unit_value": "passed",
+    "simulation_progress_events_and_completion": "passed",
+    "interactive_3d_track_from_navigation_csv": "passed",
+    "invalid_history_directory_rejected": "passed",
+    "single_pass_worker_and_embedded_results": "passed",
+    "immutable_running_snapshot": "passed",
+    "owned_job_cancellation_preserves_artifacts": "passed"
+  },
+  "simulation_job": "C:\\Users\\ikun\\Desktop\\机载SAR仿真\\UAV_Motion_Sim_OpenSource\\main\\gui_outputs\\simulate_20261111_213613_475935",
+  "cancelled_job": "C:\\Users\\ikun\\Desktop\\机载SAR仿真\\UAV_Motion_Sim_OpenSource\\main\\gui_outputs\\simulate_20261111_213619_165203",
+  "status": "passed"
+}

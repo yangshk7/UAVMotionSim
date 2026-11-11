@@ -1,0 +1,294 @@
+base_seed: 20260604
+pass_seeds:
+- 20260604
+- 20260605
+nominal_baseline_sar_m:
+- 0.0
+- 0.0
+- 0.0
+vehicle:
+  model: HexX12
+  mass_kg: 12.0
+  inertia_kg_m2:
+  - - 0.55
+    - 0.0
+    - 0.0
+  - - 0.0
+    - 0.6
+    - 0.0
+  - - 0.0
+    - 0.0
+    - 1.0
+  arm_length_m: 0.55
+  max_rotor_thrust_N: 42.0
+  kf: 8.0e-05
+  km: 2.4e-06
+  motor_time_constant_s: 0.1
+  gravity_mps2: 9.81
+  drag_enabled: false
+  air_density_kg_m3: 1.225
+  drag_cd_area_m2:
+  - 0.0
+  - 0.0
+  - 0.0
+simulation:
+  dynamics_rate_hz: 3200
+  sar_rate_hz: 800
+  navigation_rate_hz: 100
+  pre_stabilization_s: 5.0
+  acquisition_duration_s: 110.0
+  duration_mode: route_length
+  duration_margin_s: 10.0
+  integrator: RK4
+  initial_position_error_sar_m:
+  - 0.0
+  - 0.0
+  - 0.0
+  initial_velocity_error_sar_mps:
+  - 0.0
+  - 0.0
+  - 0.0
+  initial_attitude_error_rpy_deg:
+  - 0.0
+  - 0.0
+  - 0.0
+  initial_body_rate_radps:
+  - 0.0
+  - 0.0
+  - 0.0
+controller:
+  position_rate_hz: 20
+  velocity_rate_hz: 50
+  attitude_rate_hz: 200
+  angular_rate_hz: 200
+  kp_position_per_s:
+  - 0.6
+  - 0.6
+  - 0.8
+  kp_velocity_per_s:
+  - 1.5
+  - 1.5
+  - 2.0
+  ki_velocity_per_s2:
+  - 0.12
+  - 0.12
+  - 0.25
+  velocity_integral_limit_m:
+  - 2.0
+  - 2.0
+  - 2.0
+  kp_attitude_per_s:
+  - 4.0
+  - 4.0
+  - 3.0
+  kp_rate_per_s:
+  - 12.0
+  - 12.0
+  - 10.0
+  ki_rate_per_s2:
+  - 1.0
+  - 1.0
+  - 0.5
+  rate_integral_limit_rad:
+  - 0.4
+  - 0.4
+  - 0.4
+  max_speed_mps: 12.0
+  max_horizontal_acceleration_mps2: 2.5
+  max_vertical_acceleration_mps2: 2.0
+  max_tilt_deg: 25.0
+  max_body_rate_radps: 1.5
+  max_torque_Nm:
+  - 8.0
+  - 8.0
+  - 2.0
+  allocation_weights:
+  - 1.0
+  - 2.0
+  - 2.0
+  - 4.0
+trajectory:
+  type: straight_constant_velocity
+  speed_mps: 10.0
+  route_length_m: 1000.0
+  speed_tolerance_fraction: 0.1
+  apc_height_m: 300.0
+  yaw_deg: 0.0
+  center_aperture: true
+  times_s: []
+  positions_sar_m: []
+  velocities_sar_mps: []
+  yaw_series_deg: []
+antenna:
+  phase_center_frd_m:
+  - 0.0
+  - 0.1
+  - 0.2
+  look_angle_deg: 50.0
+  right_looking: true
+  squint_angle_deg: 0.0
+disturbances:
+  imu_gnss:
+    enabled: true
+    accelerometer_bias_std_mps2:
+    - 0.000686
+    - 0.000686
+    - 0.000686
+    accelerometer_vrw_mps_sqrt_hour:
+    - 0.03
+    - 0.03
+    - 0.03
+    gyro_bias_std_degph:
+    - 3.0
+    - 3.0
+    - 3.0
+    gyro_arw_deg_sqrt_hour:
+    - 0.2
+    - 0.2
+    - 0.2
+    bias_correlation_time_s: 100.0
+    gnss_enabled: true
+    gnss_rate_hz: 5.0
+    gnss_position_std_ned_m:
+    - 0.007778
+    - 0.007778
+    - 0.016
+    gnss_velocity_std_ned_mps:
+    - 0.021213
+    - 0.021213
+    - 0.03
+    heading_enabled: true
+    heading_std_deg: 0.08
+    initial_position_std_m: 0.02
+    initial_velocity_std_mps: 0.03
+    initial_tilt_std_deg: 0.018
+    initial_heading_std_deg: 0.084
+    random_seed: 0
+  all_enabled: false
+  tau_slow_s: 2.5
+  tau_fast_s: 0.35
+  slow_variance_fraction: 0.7
+  input_rate_hz: 3200
+  command_filter_cutoff_hz: 1.0
+  translation:
+    x:
+      enabled: true
+      injection_mode: command
+      level: small
+      profile: ou
+      start_time_s: 0.0
+      end_time_s: null
+      ramp_s: 0.5
+      amplitude: 0.05
+      unit: m
+      random_seed: null
+    y:
+      enabled: true
+      injection_mode: command
+      level: small
+      profile: ou
+      start_time_s: 0.0
+      end_time_s: null
+      ramp_s: 0.5
+      amplitude: 0.05
+      unit: m
+      random_seed: null
+    z:
+      enabled: true
+      injection_mode: command
+      level: small
+      profile: ou
+      start_time_s: 0.0
+      end_time_s: null
+      ramp_s: 0.5
+      amplitude: 0.05
+      unit: m
+      random_seed: null
+  attitude:
+    roll:
+      enabled: true
+      injection_mode: command
+      level: small
+      profile: ou
+      start_time_s: 0.0
+      end_time_s: null
+      ramp_s: 0.5
+      amplitude: 0.5
+      unit: deg
+      random_seed: null
+    pitch:
+      enabled: true
+      injection_mode: command
+      level: small
+      profile: ou
+      start_time_s: 0.0
+      end_time_s: null
+      ramp_s: 0.5
+      amplitude: 0.5
+      unit: deg
+      random_seed: null
+    yaw:
+      enabled: true
+      injection_mode: command
+      level: small
+      profile: ou
+      start_time_s: 0.0
+      end_time_s: null
+      ramp_s: 0.5
+      amplitude: 1.0
+      unit: deg
+      random_seed: null
+  navigation_position_error:
+    enabled: true
+    level: medium
+    correlation_time_s: 8.0
+    bias_std_sar_m:
+    - 0.009487
+    - 0.009487
+    - 0.017889
+    noise_std_sar_m:
+    - 0.004743
+    - 0.004743
+    - 0.008944
+    random_seed: null
+  navigation_velocity_error:
+    enabled: true
+    correlation_time_s: 3.0
+    bias_std_sar_mps:
+    - 0.012017
+    - 0.012017
+    - 0.012522
+    noise_std_sar_mps:
+    - 0.006008
+    - 0.006008
+    - 0.006261
+    random_seed: null
+  navigation_attitude_error:
+    enabled: true
+    correlation_time_s: 5.0
+    bias_std_body_deg:
+    - 0.0161
+    - 0.0161
+    - 0.075132
+    noise_std_body_deg:
+    - 0.00805
+    - 0.00805
+    - 0.037566
+    random_seed: null
+geometry:
+  translation: actual
+  attitude: actual
+runtime:
+  max_workers: 0
+  memory_fraction: 0.6
+  reserve_memory_gb: 2.0
+  backend: rotorpy
+  wsl_distribution: Ubuntu-24.04
+  external_navigation_source: shared_model
+  matlab_executable: null
+  matlab_timeout_s: 1800
+  blas_threads_per_worker: 1
+output:
+  save_mat: true
+  save_csv: true
+  save_plots: true

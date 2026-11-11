@@ -1,6 +1,6 @@
 # 公开实飞轨迹与独立真值对照
 
-> 版本口径：最终版参数、功能边界与验收结论统一以 [v1.0.0发布说明](FINAL_RELEASE.md) 为准。本文带日期的运行数字是对应历史实验记录，不代表最终版重新测得的结果。
+> 版本口径：最终版参数、功能边界与验收结论统一以 [v1.1.0发布说明](FINAL_RELEASE.md) 为准。本文带日期的运行数字是对应历史实验记录，不代表最终版重新测得的结果。
 
 2026-11-01 使用 [NTU VIRAL 官方数据页](https://ntu-aris.github.io/ntu_viral_dataset/)的 `eee_01` 航段完成导航误差评估方法验证。输入是作者公开的 [Leica 测量棱镜真值 CSV](https://huggingface.co/datasets/Yuan-Shenghai/NTU-VIRAL-DATASET/tree/main/ground_truth/eee_01)和[官方 FAST-LIO2 示例估计轨迹](https://github.com/ntu-aris/fastlio2_sample/tree/master/result_eee_01)。原始文件保存在 `results/public_data/ntu_viral_eee_01/`，各自 SHA256 见 `evaluation.json`。本数据来自其他无人机，未用于标定本项目 12 kg Hex-X。
 

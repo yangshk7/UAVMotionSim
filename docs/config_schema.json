@@ -413,6 +413,9 @@
     "DisturbanceConfig": {
       "additionalProperties": false,
       "properties": {
+        "imu_gnss": {
+          "$ref": "#/$defs/ImuGnssConfig"
+        },
         "all_enabled": {
           "default": false,
           "title": "All Enabled",
@@ -605,6 +608,209 @@
       "title": "GeometryConfig",
       "type": "object"
     },
+    "ImuGnssConfig": {
+      "additionalProperties": false,
+      "description": "局部导航线性误差状态模型；随机游走单位按手册每√小时定义。",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "accelerometer_bias_std_mps2": {
+          "default": [
+            0.000686,
+            0.000686,
+            0.000686
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Accelerometer Bias Std Mps2",
+          "type": "array"
+        },
+        "accelerometer_vrw_mps_sqrt_hour": {
+          "default": [
+            0.03,
+            0.03,
+            0.03
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Accelerometer Vrw Mps Sqrt Hour",
+          "type": "array"
+        },
+        "gyro_bias_std_degph": {
+          "default": [
+            3.0,
+            3.0,
+            3.0
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Gyro Bias Std Degph",
+          "type": "array"
+        },
+        "gyro_arw_deg_sqrt_hour": {
+          "default": [
+            0.2,
+            0.2,
+            0.2
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Gyro Arw Deg Sqrt Hour",
+          "type": "array"
+        },
+        "bias_correlation_time_s": {
+          "default": 100.0,
+          "exclusiveMinimum": 0,
+          "title": "Bias Correlation Time S",
+          "type": "number"
+        },
+        "gnss_enabled": {
+          "default": true,
+          "title": "Gnss Enabled",
+          "type": "boolean"
+        },
+        "gnss_rate_hz": {
+          "default": 5.0,
+          "exclusiveMinimum": 0,
+          "title": "Gnss Rate Hz",
+          "type": "number"
+        },
+        "gnss_position_std_ned_m": {
+          "default": [
+            0.007778,
+            0.007778,
+            0.016
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Gnss Position Std Ned M",
+          "type": "array"
+        },
+        "gnss_velocity_std_ned_mps": {
+          "default": [
+            0.021213,
+            0.021213,
+            0.03
+          ],
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Gnss Velocity Std Ned Mps",
+          "type": "array"
+        },
+        "heading_enabled": {
+          "default": true,
+          "title": "Heading Enabled",
+          "type": "boolean"
+        },
+        "heading_std_deg": {
+          "default": 0.08,
+          "exclusiveMinimum": 0,
+          "title": "Heading Std Deg",
+          "type": "number"
+        },
+        "initial_position_std_m": {
+          "default": 0.02,
+          "minimum": 0,
+          "title": "Initial Position Std M",
+          "type": "number"
+        },
+        "initial_velocity_std_mps": {
+          "default": 0.03,
+          "minimum": 0,
+          "title": "Initial Velocity Std Mps",
+          "type": "number"
+        },
+        "initial_tilt_std_deg": {
+          "default": 0.018,
+          "minimum": 0,
+          "title": "Initial Tilt Std Deg",
+          "type": "number"
+        },
+        "initial_heading_std_deg": {
+          "default": 0.084,
+          "minimum": 0,
+          "title": "Initial Heading Std Deg",
+          "type": "number"
+        },
+        "random_seed": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Random Seed",
+          "type": "integer"
+        }
+      },
+      "title": "ImuGnssConfig",
+      "type": "object"
+    },
     "NavigationConfig": {
       "additionalProperties": false,
       "properties": {
@@ -742,10 +948,47 @@
           "default": "auto",
           "enum": [
             "auto",
-            "cpu"
+            "cpu",
+            "rotorpy",
+            "matlab",
+            "sitl",
+            "px4"
           ],
           "title": "Backend",
           "type": "string"
+        },
+        "wsl_distribution": {
+          "default": "Ubuntu-24.04",
+          "minLength": 1,
+          "title": "Wsl Distribution",
+          "type": "string"
+        },
+        "external_navigation_source": {
+          "default": "shared_model",
+          "enum": [
+            "shared_model",
+            "flight_controller"
+          ],
+          "title": "External Navigation Source",
+          "type": "string"
+        },
+        "matlab_executable": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Matlab Executable"
+        },
+        "matlab_timeout_s": {
+          "default": 1800,
+          "minimum": 30,
+          "title": "Matlab Timeout S",
+          "type": "integer"
         },
         "blas_threads_per_worker": {
           "default": 1,
@@ -788,6 +1031,21 @@
           "default": 20.48,
           "exclusiveMinimum": 0,
           "title": "Acquisition Duration S",
+          "type": "number"
+        },
+        "duration_mode": {
+          "default": "fixed",
+          "enum": [
+            "fixed",
+            "route_length"
+          ],
+          "title": "Duration Mode",
+          "type": "string"
+        },
+        "duration_margin_s": {
+          "default": 10.0,
+          "minimum": 0,
+          "title": "Duration Margin S",
           "type": "number"
         },
         "integrator": {
@@ -906,6 +1164,19 @@
           "default": 10.0,
           "minimum": 0,
           "title": "Speed Mps",
+          "type": "number"
+        },
+        "route_length_m": {
+          "default": 204.8,
+          "exclusiveMinimum": 0,
+          "title": "Route Length M",
+          "type": "number"
+        },
+        "speed_tolerance_fraction": {
+          "default": 0.1,
+          "exclusiveMaximum": 1,
+          "exclusiveMinimum": 0,
+          "title": "Speed Tolerance Fraction",
           "type": "number"
         },
         "apc_height_m": {

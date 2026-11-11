@@ -1,0 +1,873 @@
+{
+  "stages": [
+    {
+      "name": "rotorpy 完整适用验收",
+      "status": "passed",
+      "detail": "刚体运动与时间同步:passed；长序列 OU 随机统计:passed；1600 / 3200 / 6400 Hz 数值收敛:passed；自动化测试套件:passed；导航位姿与关键产出可视化:passed；MATLAB 独立导航/几何接口:passed"
+    },
+    {
+      "name": "matlab 完整适用验收",
+      "status": "passed",
+      "detail": "刚体运动与时间同步:passed；长序列 OU 随机统计:passed；1600 / 3200 / 6400 Hz 数值收敛:passed；自动化测试套件:passed；导航位姿与关键产出可视化:passed；MATLAB 独立导航/几何接口:passed"
+    },
+    {
+      "name": "cpu 完整适用验收",
+      "status": "passed",
+      "detail": "刚体运动与时间同步:passed；长序列 OU 随机统计:passed；1600 / 3200 / 6400 Hz 数值收敛:passed；自动化测试套件:passed；导航位姿与关键产出可视化:passed；MATLAB 独立导航/几何接口:passed"
+    },
+    {
+      "name": "sitl 完整适用验收",
+      "status": "passed",
+      "detail": "pass1 sitl飞行及严格对时:passed；pass1 水平航段检查:passed；pass2 sitl飞行及严格对时:passed；pass2 水平航段检查:passed；外部链路参数适用范围:passed"
+    },
+    {
+      "name": "px4 完整适用验收",
+      "status": "passed",
+      "detail": "pass1 px4飞行及严格对时:passed；pass1 水平航段检查:passed；pass2 px4飞行及严格对时:passed；pass2 水平航段检查:passed；外部链路参数适用范围:passed"
+    },
+    {
+      "name": "五链路双航次指标与数据完整性",
+      "status": "passed",
+      "detail": "本次新产出计算完成；差异如实报告，不据此宣称与实飞等价。"
+    },
+    {
+      "name": "SITL / PX4 双航次原生时钟同工况对照",
+      "status": "passed",
+      "detail": "本次新产出计算完成；差异如实报告，不据此宣称与实飞等价。"
+    }
+  ],
+  "chain_acceptance": [
+    {
+      "backend": "rotorpy",
+      "status": "passed",
+      "report": "chains/rotorpy/index.html",
+      "stages": [
+        {
+          "name": "刚体运动与时间同步",
+          "status": "passed",
+          "detail": "每航次 SAR 88001 点、导航 11001 点；直接整数步同步。"
+        },
+        {
+          "name": "长序列 OU 随机统计",
+          "status": "passed",
+          "detail": "20000 s / 400000 点；方差 0.99301，ACF 最大差 0.00934。"
+        },
+        {
+          "name": "1600 / 3200 / 6400 Hz 数值收敛",
+          "status": "passed",
+          "detail": "3200 对 6400 Hz 斜距差 RMS 0.002107 mm，门槛 1 mm。"
+        },
+        {
+          "name": "自动化测试套件",
+          "status": "passed",
+          "detail": "133 通过，0 失败，0 错误，0 跳过。"
+        },
+        {
+          "name": "导航位姿与关键产出可视化",
+          "status": "passed",
+          "detail": "真值/估计逐帧对照；必需图表 13/13 完整。"
+        },
+        {
+          "name": "MATLAB 独立导航/几何接口",
+          "status": "passed",
+          "detail": "MATLAB独立检查双航次采样、姿态、杆臂与波束，含4个水平反馈解析回归；未运行SAR回波或成像。"
+        }
+      ]
+    },
+    {
+      "backend": "matlab",
+      "status": "passed",
+      "report": "chains/matlab/index.html",
+      "stages": [
+        {
+          "name": "刚体运动与时间同步",
+          "status": "passed",
+          "detail": "每航次 SAR 88001 点、导航 11001 点；直接整数步同步。"
+        },
+        {
+          "name": "长序列 OU 随机统计",
+          "status": "passed",
+          "detail": "20000 s / 400000 点；方差 0.99301，ACF 最大差 0.00934。"
+        },
+        {
+          "name": "1600 / 3200 / 6400 Hz 数值收敛",
+          "status": "passed",
+          "detail": "3200 对 6400 Hz 斜距差 RMS 0.002107 mm，门槛 1 mm。"
+        },
+        {
+          "name": "自动化测试套件",
+          "status": "passed",
+          "detail": "133 通过，0 失败，0 错误，0 跳过。"
+        },
+        {
+          "name": "导航位姿与关键产出可视化",
+          "status": "passed",
+          "detail": "真值/估计逐帧对照；必需图表 13/13 完整。"
+        },
+        {
+          "name": "MATLAB 独立导航/几何接口",
+          "status": "passed",
+          "detail": "MATLAB独立检查双航次采样、姿态、杆臂与波束，含4个水平反馈解析回归；未运行SAR回波或成像。"
+        }
+      ]
+    },
+    {
+      "backend": "cpu",
+      "status": "passed",
+      "report": "chains/cpu/index.html",
+      "stages": [
+        {
+          "name": "刚体运动与时间同步",
+          "status": "passed",
+          "detail": "每航次 SAR 88001 点、导航 11001 点；直接整数步同步。"
+        },
+        {
+          "name": "长序列 OU 随机统计",
+          "status": "passed",
+          "detail": "20000 s / 400000 点；方差 0.99301，ACF 最大差 0.00934。"
+        },
+        {
+          "name": "1600 / 3200 / 6400 Hz 数值收敛",
+          "status": "passed",
+          "detail": "3200 对 6400 Hz 斜距差 RMS 0.002107 mm，门槛 1 mm。"
+        },
+        {
+          "name": "自动化测试套件",
+          "status": "passed",
+          "detail": "133 通过，0 失败，0 错误，0 跳过。"
+        },
+        {
+          "name": "导航位姿与关键产出可视化",
+          "status": "passed",
+          "detail": "真值/估计逐帧对照；必需图表 13/13 完整。"
+        },
+        {
+          "name": "MATLAB 独立导航/几何接口",
+          "status": "passed",
+          "detail": "MATLAB独立检查双航次采样、姿态、杆臂与波束，含4个水平反馈解析回归；未运行SAR回波或成像。"
+        }
+      ]
+    },
+    {
+      "backend": "sitl",
+      "status": "passed",
+      "report": "chains/sitl/index.html",
+      "stages": [
+        {
+          "name": "pass1 sitl飞行及严格对时",
+          "status": "passed",
+          "detail": "真实启动外部平台；保留原生真值/日志；导航对齐100 Hz；杆臂已应用。"
+        },
+        {
+          "name": "pass1 水平航段检查",
+          "status": "passed",
+          "detail": "目标长度1000 m；实测前进1099.901 m；速度9.956–10.063 m/s。裁剪窗与完整统计见route_coverage_pass1.json。"
+        },
+        {
+          "name": "pass2 sitl飞行及严格对时",
+          "status": "passed",
+          "detail": "真实启动外部平台；保留原生真值/日志；导航对齐100 Hz；杆臂已应用。"
+        },
+        {
+          "name": "pass2 水平航段检查",
+          "status": "passed",
+          "detail": "目标长度1000 m；实测前进1100.025 m；速度9.955–10.064 m/s。裁剪窗与完整统计见route_coverage_pass2.json。"
+        },
+        {
+          "name": "外部链路参数适用范围",
+          "status": "passed",
+          "detail": "外部飞控使用固定12 kg Hex-X机型、原生控制器和原生传感器模型；上位机A/B扰动、Python控制增益、机体参数、初始状态误差、积分频率和预稳定时长不写入外部飞控。本入口运行无额外注入风扰的基准场景，仍保留原生传感器噪声及闭环跟踪误差。统一导航误差参数仅作用于shared_model，不作用于飞控自身估计。SITL位置/速度真值为SIM2，姿态由SIM四元数插值；PX4位置/姿态真值来自Gazebo，速度为位置差分。导航统一输出100 Hz；飞控原始导航可能低于100 Hz，插值不提高原始测量频率。"
+        }
+      ]
+    },
+    {
+      "backend": "px4",
+      "status": "passed",
+      "report": "chains/px4/index.html",
+      "stages": [
+        {
+          "name": "pass1 px4飞行及严格对时",
+          "status": "passed",
+          "detail": "真实启动外部平台；保留原生真值/日志；导航对齐100 Hz；杆臂已应用。"
+        },
+        {
+          "name": "pass1 水平航段检查",
+          "status": "passed",
+          "detail": "目标长度1000 m；实测前进1101.581 m；速度9.653–10.701 m/s。裁剪窗与完整统计见route_coverage_pass1.json。"
+        },
+        {
+          "name": "pass2 px4飞行及严格对时",
+          "status": "passed",
+          "detail": "真实启动外部平台；保留原生真值/日志；导航对齐100 Hz；杆臂已应用。"
+        },
+        {
+          "name": "pass2 水平航段检查",
+          "status": "passed",
+          "detail": "目标长度1000 m；实测前进1101.222 m；速度9.665–10.672 m/s。裁剪窗与完整统计见route_coverage_pass2.json。"
+        },
+        {
+          "name": "外部链路参数适用范围",
+          "status": "passed",
+          "detail": "外部飞控使用固定12 kg Hex-X机型、原生控制器和原生传感器模型；上位机A/B扰动、Python控制增益、机体参数、初始状态误差、积分频率和预稳定时长不写入外部飞控。本入口运行无额外注入风扰的基准场景，仍保留原生传感器噪声及闭环跟踪误差。统一导航误差参数仅作用于shared_model，不作用于飞控自身估计。SITL位置/速度真值为SIM2，姿态由SIM四元数插值；PX4位置/姿态真值来自Gazebo，速度为位置差分。导航统一输出100 Hz；飞控原始导航可能低于100 Hz，插值不提高原始测量频率。"
+        }
+      ]
+    }
+  ],
+  "metrics": {},
+  "data_directory": "${PROJECT_ROOT}\\main\\gui_outputs\\all_acceptance_20261111_195103_385879\\chains\\rotorpy\\artifacts\\validate_20261111_195106_584299",
+  "message": "全链路验收：五套独立实现各跑双航次；auto等同cpu不重复。内部核心执行全量科学验收；外部飞控执行真实飞行和原生日志严格对时。SAR回波/成像端到端不在本次范围。",
+  "entry_sha256": "7843cb00b0cf1e87777a360b1ac0900ae600897d84c32b446a256a91ecef7734",
+  "chain_order": [
+    "rotorpy",
+    "matlab",
+    "cpu",
+    "sitl",
+    "px4"
+  ],
+  "cross_chain_metrics": {
+    "status": "passed",
+    "pairs": [
+      {
+        "pass": "pass1",
+        "left": "rotorpy",
+        "right": "matlab",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          0.00885398069427058,
+          0.011570899657538231,
+          0.003470219162287856
+        ],
+        "velocity_xyz_rms_mps": [
+          0.01354404161788139,
+          0.01543110375222418,
+          0.00389297837832619
+        ],
+        "attitude_angle_rms_deg": 0.6257784084854892
+      },
+      {
+        "pass": "pass1",
+        "left": "rotorpy",
+        "right": "cpu",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          1.0728180570045675e-14,
+          1.0704474875667977e-15,
+          0.0
+        ],
+        "velocity_xyz_rms_mps": [
+          4.116920587260844e-15,
+          1.3155352881604412e-15,
+          2.463698074730514e-16
+        ],
+        "attitude_angle_rms_deg": 3.1362003935775985e-14
+      },
+      {
+        "pass": "pass1",
+        "left": "rotorpy",
+        "right": "sitl",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          0.4420899138350168,
+          0.09405954407946451,
+          0.12168016517426657
+        ],
+        "velocity_xyz_rms_mps": [
+          0.12403919100085853,
+          0.10964489489700742,
+          0.0903624908452822
+        ],
+        "attitude_angle_rms_deg": 4.274132015812898
+      },
+      {
+        "pass": "pass1",
+        "left": "rotorpy",
+        "right": "px4",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          2.0844725624752996,
+          0.11374505614814208,
+          0.48099441205211985
+        ],
+        "velocity_xyz_rms_mps": [
+          0.24246307456978144,
+          0.11572438974814046,
+          0.10667547890298468
+        ],
+        "attitude_angle_rms_deg": 11.90262731565436
+      },
+      {
+        "pass": "pass1",
+        "left": "matlab",
+        "right": "cpu",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          0.008853980694271001,
+          0.011570899657538413,
+          0.003470219162287856
+        ],
+        "velocity_xyz_rms_mps": [
+          0.01354404161788124,
+          0.015431103752224352,
+          0.003892978378326173
+        ],
+        "attitude_angle_rms_deg": 0.6257784084854897
+      },
+      {
+        "pass": "pass1",
+        "left": "matlab",
+        "right": "sitl",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          0.44180434906279803,
+          0.091728241511431,
+          0.12098283972306634
+        ],
+        "velocity_xyz_rms_mps": [
+          0.123246346514723,
+          0.10804390565180934,
+          0.08967603757044432
+        ],
+        "attitude_angle_rms_deg": 4.223280551347872
+      },
+      {
+        "pass": "pass1",
+        "left": "matlab",
+        "right": "px4",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          2.0842051071191854,
+          0.11105268970011899,
+          0.48068563724070584
+        ],
+        "velocity_xyz_rms_mps": [
+          0.2420291933898649,
+          0.11416854554685463,
+          0.10610764983247643
+        ],
+        "attitude_angle_rms_deg": 11.883881166181018
+      },
+      {
+        "pass": "pass1",
+        "left": "cpu",
+        "right": "sitl",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          0.44208991383501584,
+          0.0940595440794646,
+          0.12168016517426657
+        ],
+        "velocity_xyz_rms_mps": [
+          0.12403919100085843,
+          0.10964489489700735,
+          0.09036249084528218
+        ],
+        "attitude_angle_rms_deg": 4.2741320158128975
+      },
+      {
+        "pass": "pass1",
+        "left": "cpu",
+        "right": "px4",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          2.0844725624752996,
+          0.11374505614814213,
+          0.48099441205211985
+        ],
+        "velocity_xyz_rms_mps": [
+          0.2424630745697815,
+          0.11572438974814027,
+          0.10667547890298464
+        ],
+        "attitude_angle_rms_deg": 11.90262731565436
+      },
+      {
+        "pass": "pass1",
+        "left": "sitl",
+        "right": "px4",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          1.6533096039713624,
+          0.06256699672995614,
+          0.4882853692126081
+        ],
+        "velocity_xyz_rms_mps": [
+          0.20915448161059988,
+          0.02784520196945638,
+          0.061088481805354936
+        ],
+        "attitude_angle_rms_deg": 10.96982924048963
+      },
+      {
+        "pass": "pass2",
+        "left": "rotorpy",
+        "right": "matlab",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          0.011899852333505026,
+          0.010790022778064054,
+          0.003724072692347223
+        ],
+        "velocity_xyz_rms_mps": [
+          0.01682570849549728,
+          0.01521426852958023,
+          0.004398046298273662
+        ],
+        "attitude_angle_rms_deg": 0.6084848326980461
+      },
+      {
+        "pass": "pass2",
+        "left": "rotorpy",
+        "right": "cpu",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          2.0835981576036306e-14,
+          9.635125178427483e-16,
+          1.5348680022499364e-14
+        ],
+        "velocity_xyz_rms_mps": [
+          8.609326923693472e-15,
+          1.2560045223262034e-15,
+          8.591419469707673e-15
+        ],
+        "attitude_angle_rms_deg": 7.230252661598631e-14
+      },
+      {
+        "pass": "pass2",
+        "left": "rotorpy",
+        "right": "sitl",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          0.35987626467724826,
+          0.09615043719931522,
+          0.11209733709523786
+        ],
+        "velocity_xyz_rms_mps": [
+          0.11827141200028025,
+          0.11481347860281717,
+          0.08794134128560463
+        ],
+        "attitude_angle_rms_deg": 4.153431869379344
+      },
+      {
+        "pass": "pass2",
+        "left": "rotorpy",
+        "right": "px4",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          1.4796277825616222,
+          0.13125791830977818,
+          0.6385217112822676
+        ],
+        "velocity_xyz_rms_mps": [
+          0.23208322358177125,
+          0.11744621506184172,
+          0.09951825296550204
+        ],
+        "attitude_angle_rms_deg": 11.392989747357687
+      },
+      {
+        "pass": "pass2",
+        "left": "matlab",
+        "right": "cpu",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          0.011899852333506312,
+          0.010790022778063985,
+          0.003724072692346998
+        ],
+        "velocity_xyz_rms_mps": [
+          0.016825708495498054,
+          0.015214268529580152,
+          0.004398046298274093
+        ],
+        "attitude_angle_rms_deg": 0.6084848326980465
+      },
+      {
+        "pass": "pass2",
+        "left": "matlab",
+        "right": "sitl",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          0.35965242694126687,
+          0.09453541209968434,
+          0.1119788502899008
+        ],
+        "velocity_xyz_rms_mps": [
+          0.11877788994288443,
+          0.11306560447697982,
+          0.08806243308928981
+        ],
+        "attitude_angle_rms_deg": 4.139346457564707
+      },
+      {
+        "pass": "pass2",
+        "left": "matlab",
+        "right": "px4",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          1.4795810999253085,
+          0.13064114556225273,
+          0.6383882969878522
+        ],
+        "velocity_xyz_rms_mps": [
+          0.23219201611499407,
+          0.11594554528196908,
+          0.09960070402876324
+        ],
+        "attitude_angle_rms_deg": 11.388648778627408
+      },
+      {
+        "pass": "pass2",
+        "left": "cpu",
+        "right": "sitl",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          0.35987626467724887,
+          0.096150437199315,
+          0.11209733709523602
+        ],
+        "velocity_xyz_rms_mps": [
+          0.11827141200028084,
+          0.11481347860281714,
+          0.08794134128560487
+        ],
+        "attitude_angle_rms_deg": 4.153431869379344
+      },
+      {
+        "pass": "pass2",
+        "left": "cpu",
+        "right": "px4",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          1.4796277825616215,
+          0.13125791830977807,
+          0.6385217112822641
+        ],
+        "velocity_xyz_rms_mps": [
+          0.23208322358177116,
+          0.11744621506184165,
+          0.0995182529655017
+        ],
+        "attitude_angle_rms_deg": 11.392989747357689
+      },
+      {
+        "pass": "pass2",
+        "left": "sitl",
+        "right": "px4",
+        "samples": 11000,
+        "duration_s": 109.99,
+        "position_xyz_rms_m": [
+          1.1417544078365518,
+          0.08729859782663356,
+          0.5404605307645844
+        ],
+        "velocity_xyz_rms_mps": [
+          0.2032125284040965,
+          0.026591495739869585,
+          0.04288447963432482
+        ],
+        "attitude_angle_rms_deg": 10.719296063362552
+      }
+    ],
+    "meaning": "Data integrity and pairwise metrics computed; no numerical equivalence threshold imposed",
+    "limitations": "采集开始相对时间100 Hz公共网格；不扣除初始偏差。外部链路不接收内部A/B扰动及控制增益，这些数值不是完全同物理工况的精度排名。"
+  },
+  "external_comparison": {
+    "status": "passed",
+    "detail": "本次双航次原生飞控同工况对照已计算；差异不设等价门槛。",
+    "comparison": {
+      "profile": {
+        "altitude_m": 300.2,
+        "reposition_x_m": -610.0,
+        "start_x_m": -550.0,
+        "duration_s": 110.0,
+        "speed_mps": 10.0,
+        "position_tolerance_m": 0.5,
+        "capture_x_tolerance_m": 2.0,
+        "velocity_tolerance_mps": 0.5,
+        "settle_s": 1.0,
+        "command_period_s": 0.1,
+        "cross_track_gain_per_s": 0.5,
+        "correction_limit_mps": 1.0,
+        "heading_tolerance_deg": 3.0,
+        "yaw_rate_limit_deg_s": 10.0,
+        "center_y_m": -0.1
+      },
+      "comparison": "Absolute SAR X grid, native physical position; Y/Z left in the original local frames",
+      "common_x_window_m": [
+        -549.5784925895538,
+        550.3221652777016
+      ],
+      "grid_step_m": 0.1,
+      "grid_samples": 11000,
+      "sitl": {
+        "directory": "${PROJECT_ROOT}\\main\\gui_outputs\\all_acceptance_20261111_195103_385879\\chains\\sitl\\artifacts\\pass1\\sitl_20261111_201320_011547\\alignment",
+        "capture_start_nav_ned": [
+          -549.8917236328125,
+          -0.09491529315710068,
+          -300.1999816894531,
+          10.029727935791016,
+          -0.004282000008970499,
+          0.001297597773373127,
+          0.00039765393012203276
+        ],
+        "aligned_native_duration_s": 109.98999999999995,
+        "online_route_duration_s": 110.0,
+        "route_x_span_m": 1100.0021362304688,
+        "truth_y_rms_m": 0.014507101521655756,
+        "truth_height_mean_m": 300.29901934063815,
+        "truth_height_std_m": 0.0008891612145151566,
+        "truth_height_error_rms_m": 0.09902333274578196,
+        "truth_along_speed_error_rms_mps": 0.026497088765850225,
+        "truth_rpy_mean_deg": [
+          0.00027917401250336936,
+          0.00019332467713716267,
+          -0.25244113591218864
+        ],
+        "tube_d95_m": 0.2048857414841444,
+        "tube_max_m": 0.2086531291105029
+      },
+      "px4": {
+        "directory": "${PROJECT_ROOT}\\main\\gui_outputs\\all_acceptance_20261111_195103_385879\\chains\\px4\\artifacts\\pass1\\xtdrone_20261111_201801_534276\\alignment",
+        "capture_start_nav_ned": [
+          -549.0636596679688,
+          -0.061735428869724274,
+          -300.06256103515625,
+          10.48223876953125,
+          0.02419840544462204,
+          -0.07529391348361969,
+          0.002460055984556675
+        ],
+        "aligned_native_duration_s": 109.99000000000001,
+        "online_route_duration_s": 116.44063401222229,
+        "route_x_span_m": 1101.677490234375,
+        "truth_y_rms_m": 0.05819907666391235,
+        "truth_height_mean_m": 300.17275777303433,
+        "truth_height_std_m": 0.4715886300886112,
+        "truth_height_error_rms_m": 0.4723748246455364,
+        "truth_along_speed_error_rms_mps": 0.20943014674976115,
+        "truth_rpy_mean_deg": [
+          -0.004422330023342563,
+          0.027393120864925798,
+          -0.61320686164286
+        ],
+        "tube_d95_m": 1.9660645232697984,
+        "tube_max_m": 2.117265858432256
+      },
+      "px4_minus_sitl_yz_mean_m": [
+        -0.003950345305531037,
+        -0.12626156760381768
+      ],
+      "cross_platform_yz_rms_m": [
+        0.06285007934405468,
+        0.48821253249938695
+      ],
+      "cross_platform_along_speed_rms_mps": 0.20968867742044014,
+      "cross_platform_attitude_angle_rms_deg": 10.969007643881387
+    },
+    "passes": [
+      {
+        "profile": {
+          "altitude_m": 300.2,
+          "reposition_x_m": -610.0,
+          "start_x_m": -550.0,
+          "duration_s": 110.0,
+          "speed_mps": 10.0,
+          "position_tolerance_m": 0.5,
+          "capture_x_tolerance_m": 2.0,
+          "velocity_tolerance_mps": 0.5,
+          "settle_s": 1.0,
+          "command_period_s": 0.1,
+          "cross_track_gain_per_s": 0.5,
+          "correction_limit_mps": 1.0,
+          "heading_tolerance_deg": 3.0,
+          "yaw_rate_limit_deg_s": 10.0,
+          "center_y_m": -0.1
+        },
+        "comparison": "Absolute SAR X grid, native physical position; Y/Z left in the original local frames",
+        "common_x_window_m": [
+          -549.5784925895538,
+          550.3221652777016
+        ],
+        "grid_step_m": 0.1,
+        "grid_samples": 11000,
+        "sitl": {
+          "directory": "${PROJECT_ROOT}\\main\\gui_outputs\\all_acceptance_20261111_195103_385879\\chains\\sitl\\artifacts\\pass1\\sitl_20261111_201320_011547\\alignment",
+          "capture_start_nav_ned": [
+            -549.8917236328125,
+            -0.09491529315710068,
+            -300.1999816894531,
+            10.029727935791016,
+            -0.004282000008970499,
+            0.001297597773373127,
+            0.00039765393012203276
+          ],
+          "aligned_native_duration_s": 109.98999999999995,
+          "online_route_duration_s": 110.0,
+          "route_x_span_m": 1100.0021362304688,
+          "truth_y_rms_m": 0.014507101521655756,
+          "truth_height_mean_m": 300.29901934063815,
+          "truth_height_std_m": 0.0008891612145151566,
+          "truth_height_error_rms_m": 0.09902333274578196,
+          "truth_along_speed_error_rms_mps": 0.026497088765850225,
+          "truth_rpy_mean_deg": [
+            0.00027917401250336936,
+            0.00019332467713716267,
+            -0.25244113591218864
+          ],
+          "tube_d95_m": 0.2048857414841444,
+          "tube_max_m": 0.2086531291105029
+        },
+        "px4": {
+          "directory": "${PROJECT_ROOT}\\main\\gui_outputs\\all_acceptance_20261111_195103_385879\\chains\\px4\\artifacts\\pass1\\xtdrone_20261111_201801_534276\\alignment",
+          "capture_start_nav_ned": [
+            -549.0636596679688,
+            -0.061735428869724274,
+            -300.06256103515625,
+            10.48223876953125,
+            0.02419840544462204,
+            -0.07529391348361969,
+            0.002460055984556675
+          ],
+          "aligned_native_duration_s": 109.99000000000001,
+          "online_route_duration_s": 116.44063401222229,
+          "route_x_span_m": 1101.677490234375,
+          "truth_y_rms_m": 0.05819907666391235,
+          "truth_height_mean_m": 300.17275777303433,
+          "truth_height_std_m": 0.4715886300886112,
+          "truth_height_error_rms_m": 0.4723748246455364,
+          "truth_along_speed_error_rms_mps": 0.20943014674976115,
+          "truth_rpy_mean_deg": [
+            -0.004422330023342563,
+            0.027393120864925798,
+            -0.61320686164286
+          ],
+          "tube_d95_m": 1.9660645232697984,
+          "tube_max_m": 2.117265858432256
+        },
+        "px4_minus_sitl_yz_mean_m": [
+          -0.003950345305531037,
+          -0.12626156760381768
+        ],
+        "cross_platform_yz_rms_m": [
+          0.06285007934405468,
+          0.48821253249938695
+        ],
+        "cross_platform_along_speed_rms_mps": 0.20968867742044014,
+        "cross_platform_attitude_angle_rms_deg": 10.969007643881387
+      },
+      {
+        "profile": {
+          "altitude_m": 300.2,
+          "reposition_x_m": -610.0,
+          "start_x_m": -550.0,
+          "duration_s": 110.0,
+          "speed_mps": 10.0,
+          "position_tolerance_m": 0.5,
+          "capture_x_tolerance_m": 2.0,
+          "velocity_tolerance_mps": 0.5,
+          "settle_s": 1.0,
+          "command_period_s": 0.1,
+          "cross_track_gain_per_s": 0.5,
+          "correction_limit_mps": 1.0,
+          "heading_tolerance_deg": 3.0,
+          "yaw_rate_limit_deg_s": 10.0,
+          "center_y_m": -0.1
+        },
+        "comparison": "Absolute SAR X grid, native physical position; Y/Z left in the original local frames",
+        "common_x_window_m": [
+          -549.7015749096983,
+          550.3239059450513
+        ],
+        "grid_step_m": 0.1,
+        "grid_samples": 11001,
+        "sitl": {
+          "directory": "${PROJECT_ROOT}\\main\\gui_outputs\\all_acceptance_20261111_195103_385879\\chains\\sitl\\artifacts\\pass2\\sitl_20261111_201536_281559\\alignment",
+          "capture_start_nav_ned": [
+            -549.982666015625,
+            -0.09476881474256516,
+            -300.2007751464844,
+            10.055707931518555,
+            -0.004195030778646469,
+            0.002904740395024419,
+            0.00020586626487784088
+          ],
+          "aligned_native_duration_s": 110.0,
+          "online_route_duration_s": 110.0,
+          "route_x_span_m": 1100.0301513671875,
+          "truth_y_rms_m": 0.014645992954873134,
+          "truth_height_mean_m": 300.2989924887402,
+          "truth_height_std_m": 0.0009177345345243243,
+          "truth_height_error_rms_m": 0.09899674269219977,
+          "truth_along_speed_error_rms_mps": 0.027433102857112816,
+          "truth_rpy_mean_deg": [
+            0.000330167993364299,
+            0.0022292417503719936,
+            -0.25918318594261996
+          ],
+          "tube_d95_m": 0.2050782828325523,
+          "tube_max_m": 0.20974299596519902
+        },
+        "px4": {
+          "directory": "${PROJECT_ROOT}\\main\\gui_outputs\\all_acceptance_20261111_195103_385879\\chains\\px4\\artifacts\\pass2\\xtdrone_20261111_202720_266395\\alignment",
+          "capture_start_nav_ned": [
+            -549.1251220703125,
+            -0.0506155900657177,
+            -300.3460998535156,
+            10.483810424804688,
+            -0.0027932976372539997,
+            0.1077113226056099,
+            -5.921241972828284e-05
+          ],
+          "aligned_native_duration_s": 109.99000000000001,
+          "online_route_duration_s": 115.18958592414856,
+          "route_x_span_m": 1101.4175415039062,
+          "truth_y_rms_m": 0.07756731877158267,
+          "truth_height_mean_m": 300.77216604270285,
+          "truth_height_std_m": 0.26050430572588035,
+          "truth_height_error_rms_m": 0.6286783547442709,
+          "truth_along_speed_error_rms_mps": 0.20260150386208786,
+          "truth_rpy_mean_deg": [
+            -0.0023140353051871905,
+            0.03450907140175446,
+            -0.7210821658525012
+          ],
+          "tube_d95_m": 1.982875988983913,
+          "tube_max_m": 2.097670619924334
+        },
+        "px4_minus_sitl_yz_mean_m": [
+          0.004683337294218095,
+          0.47317355396259475
+        ],
+        "cross_platform_yz_rms_m": [
+          0.08729203981293195,
+          0.5401765998088185
+        ],
+        "cross_platform_along_speed_rms_mps": 0.20350528267750126,
+        "cross_platform_attitude_angle_rms_deg": 10.718941489829124
+      }
+    ],
+    "steps": []
+  },
+  "elapsed_s": 2755.216335200006,
+  "status": "passed"
+}

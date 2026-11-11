@@ -1,0 +1,15 @@
+{
+  "forward_distance_m": 1099.9006578672554,
+  "target_length_m": 1000.0,
+  "assessment_mode": "target_length_coverage",
+  "speed_min_mps": 9.955569511675984,
+  "speed_max_mps": 10.06277490199734,
+  "duration_s": 109.99,
+  "speed_hard_gate_applied": false,
+  "passed": true,
+  "crop_window": {
+    "start_time_s": 5.0,
+    "end_time_s": 105.01,
+    "forward_distance_m": 1000.0786225602851
+  }
+}

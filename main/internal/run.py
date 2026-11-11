@@ -56,7 +56,8 @@ def _matlab_literal(path: Path) -> str:
 
 
 def run_matlab(
-    data_dir: Path, matlab_mode: str, matlab_exe: str | None, sar_project: Path, log_dir: Path
+    data_dir: Path, matlab_mode: str, matlab_exe: str | None, sar_project: Path, log_dir: Path,
+    navigation_only: bool = False,
 ) -> dict:
     if matlab_mode == "skip":
         return {
@@ -72,8 +73,11 @@ def run_matlab(
             "status": state,
             "detail": "未找到 MATLAB；可用 --matlab-exe 指定可执行文件。",
         }
-    has_sar = (sar_project / "+lband" / "simulate_echo.m").is_file()
-    expression = f"addpath({_matlab_literal(PROJECT / 'matlab')}); disp(version); run_matlab_validation({_matlab_literal(data_dir)}"
+    has_sar = not navigation_only and (sar_project / "+lband" / "simulate_echo.m").is_file()
+    expression = f"addpath({_matlab_literal(PROJECT / 'matlab')}); disp(version); "
+    if navigation_only:
+        expression += "test_matlab_closed_loop; "
+    expression += f"run_matlab_validation({_matlab_literal(data_dir)}"
     if has_sar:
         expression += "," + _matlab_literal(sar_project)
     expression += ");"
@@ -99,6 +103,9 @@ def run_matlab(
     result = _read_json(result_path)
     if not result.get("passed"):
         return {"name": "MATLAB 导航与 SAR 接口", "status": "failed", "detail": "MATLAB 数值检查未通过。"}
+    if navigation_only:
+        return {"name": "MATLAB 独立导航/几何接口", "status": "passed",
+                "detail": "MATLAB独立检查双航次采样、姿态、杆臂与波束，含4个水平反馈解析回归；未运行SAR回波或成像。"}
     echo = result.get("echo", {})
     if not echo.get("passed"):
         return {
@@ -154,6 +161,16 @@ def collect_checks(data_dir: Path) -> tuple[list[dict], dict]:
                 navigation_samples=first.get("navigation_samples", "—"),
             )
             detail = f"每航次 SAR {metrics['sar_samples']} 点、导航 {metrics['navigation_samples']} 点；直接整数步同步。"
+            for pass_name, checks in result.items():
+                if pass_name not in ("pass1", "pass2") or checks.get("passed"):
+                    continue
+                quality = checks.get("route_quality")
+                if quality is not None and not quality.get("passed"):
+                    detail += (f" {pass_name}航段覆盖失败：目标{quality['target_route_length_m']:g} m，"
+                               f"实际前进{quality['full_forward_distance_m']:.3f} m，未找到合格裁剪窗；"
+                               f"速度带硬门槛{'启用' if quality['speed_band_enforced'] else '未启用'}。")
+                if not checks.get("kinematics_passed", True):
+                    detail += f" {pass_name}运动学一致性检查失败，具体残差见validation.json。"
         elif filename == "ou_validation.json":
             detail = f"{result['duration_s']:g} s / {result['samples']} 点；方差 {result['variance']:.5f}，ACF 最大差 {result['acf_max_error_0_to_10s']:.5f}。"
         else:
@@ -202,6 +219,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--matlab", choices=["auto", "required", "skip"], default="auto")
     parser.add_argument("--matlab-exe", default=None)
     parser.add_argument("--sar-project", type=Path, default=PROJECT.parent / "L波段仿真")
+    parser.add_argument("--external", choices=["run", "skip"], default="run")
     parser.add_argument("--no-open", action="store_true", help="Generate report without launching a browser")
     parser.add_argument("--output-root", type=Path, default=MAIN / "outputs")
     args = parser.parse_args(argv)
@@ -277,6 +295,28 @@ def main(argv: list[str] | None = None) -> int:
                     summary["stages"].append(
                         run_matlab(data_dir, args.matlab, args.matlab_exe, args.sar_project, logs)
                     )
+                    from cross_acceptance import run_cross_acceptance
+                    from matlab_motion_comparison import run_matlab_motion_comparison
+
+                    report_progress(percent=97, stage="对照早期 MATLAB UAV 与 RotorPy 动力学")
+                    if args.matlab != "skip":
+                        summary["matlab_motion_comparison"] = run_matlab_motion_comparison(root, args.matlab_exe)
+                    else:
+                        summary["matlab_motion_comparison"] = {
+                            "status": "skipped", "detail": "用户跳过 MATLAB UAV 对照", "cases": []}
+                    native = summary["matlab_motion_comparison"]
+                    summary["stages"].append({"name": "MATLAB UAV / RotorPy 同工况对照",
+                                              "status": native["status"], "detail": native["detail"]})
+
+                    report_progress(percent=98, stage="运行 SITL/PX4 同工况飞行及交叉对照")
+                    summary["external_comparison"] = (run_cross_acceptance(root) if args.external == "run"
+                                                       else {"status": "skipped", "detail": "用户跳过外部飞控对照"})
+                    cross = summary["external_comparison"]
+                    summary["stages"].append({
+                        "name": "SITL / PX4 原生时钟交叉对照",
+                        "status": cross["status"],
+                        "detail": cross["detail"],
+                    })
                 else:
                     summary["stages"].append(
                         {
@@ -292,7 +332,7 @@ def main(argv: list[str] | None = None) -> int:
             summary["elapsed_s"] = perf_counter() - started
             summary["status"] = acceptance_status(summary["stages"])
             summary["scope"] = (
-                "Python full validation + navigation review + MATLAB interface; no SITL/Simscape or real-flight calibration"
+                "Python full validation + MATLAB interface + fresh SITL/PX4 native-clock comparison"
             )
             write_json(root / "acceptance.json", summary)
             report_progress(percent=99, stage="生成完整验收离线报告")

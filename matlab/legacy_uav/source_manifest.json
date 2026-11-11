@@ -1,0 +1,69 @@
+{
+  "source_project": "无人机航迹仿真",
+  "files": [
+    {
+      "file": "+controllers/initialize.m",
+      "source": "legacy_matlab_project/+uav/+controllers/initialize.m",
+      "source_sha256": "03147a6d4408a84723485b2b06da54c13a1e3e08d60baebf5da395aa58fc849a"
+    },
+    {
+      "file": "+controllers/update.m",
+      "source": "legacy_matlab_project/+uav/+controllers/update.m",
+      "source_sha256": "7a782fc7906a9d9b1308934d0dd1610038f27a48f6f8840ca7e64d1cdce41ba5"
+    },
+    {
+      "file": "+dynamics/derivative.m",
+      "source": "legacy_matlab_project/+uav/+dynamics/derivative.m",
+      "source_sha256": "d3b33830089afec084e14794b4194d8d0534cac7d6bfc5aa33c10ca149181987"
+    },
+    {
+      "file": "+dynamics/rk4.m",
+      "source": "legacy_matlab_project/+uav/+dynamics/rk4.m",
+      "source_sha256": "6fd09a9d7938a300766d9c751fdfe67ba6dd6ea732d2e17113862ea63bca596b"
+    },
+    {
+      "file": "+dynamics/simulatePhysical.m",
+      "source": "legacy_matlab_project/+uav/+dynamics/simulatePhysical.m",
+      "source_sha256": "7344f96d07e621345e0c61e9210f057766061454dae78f4c119c4ae586e03144"
+    },
+    {
+      "file": "+vehicle/allocate.m",
+      "source": "legacy_matlab_project/+uav/+vehicle/allocate.m",
+      "source_sha256": "1d4b7550ce0a567baebd8dbea257433b05459c9896e3cb255bc694044189e4ce"
+    },
+    {
+      "file": "+frames/quatToRot.m",
+      "source": "legacy_matlab_project/+uav/+frames/quatToRot.m",
+      "source_sha256": "e915cee278c8889f33d5d8fabffed6216372684890add9a82344d91c9820519b"
+    },
+    {
+      "file": "+frames/rotToQuat.m",
+      "source": "legacy_matlab_project/+uav/+frames/rotToQuat.m",
+      "source_sha256": "e1e8be5c81cbcfd166060d411242e206cba5fd57e69f1f6810cf4192fc2ed2c1"
+    },
+    {
+      "file": "+frames/rotationVector.m",
+      "source": "legacy_matlab_project/+uav/+frames/rotationVector.m",
+      "source_sha256": "a7e4735b1c174679fb5aebb9002fbd7f78083959298f8fa5259397b06e1a6794"
+    },
+    {
+      "file": "+frames/eulerToQuat.m",
+      "source": "legacy_matlab_project/+uav/+frames/eulerToQuat.m",
+      "source_sha256": "5dde56c6d60867614488bf4a01f7ff65791ddfc7cb14cfba94d93a9e2f49e165"
+    },
+    {
+      "file": "+frames/multiply.m",
+      "source": "legacy_matlab_project/+uav/+frames/multiply.m",
+      "source_sha256": "966e8faac608ad6c5040fdea93f80f6ca88a468eab01046b7ac67199bbf7fa06"
+    }
+  ],
+  "adaptations": [
+    "Private namespace uavlegacy",
+    "Initial 19-state override",
+    "Exact external RK4 half-step input",
+    "Angular acceleration and progress output",
+    "Optional empty pre-stabilization window",
+    "Configured torque bounds and conditional integration",
+    "Retain horizontal position/velocity feedback during attitude-target disturbances; legacy open-loop experiment policy removed from integrated backend"
+  ]
+}

@@ -8,9 +8,15 @@ patch_file="$project_dir/deployment/patches/xtdrone-stop-offboard-on-land.patch"
 scenario_file=""
 truth_rate_hz=1000
 route_mode=false
+aligned_mode=false
+route_config=""
+custom_output=""
 while (($#)); do
     case "$1" in
+        --route-config) route_config="$2"; shift 2 ;;
+        --output) custom_output="$2"; shift 2 ;;
         --route) route_mode=true; shift ;;
+        --aligned-route) aligned_mode=true; shift ;;
         --scenario) scenario_file="$2"; shift 2 ;;
         --truth-rate-hz) truth_rate_hz="$2"; shift 2 ;;
         *) echo "Unknown option: $1" >&2; exit 2 ;;
@@ -32,7 +38,10 @@ if $route_mode; then
 else
     output_dir="$project_dir/results/xtdrone"
 fi
+if [[ -n "$custom_output" ]]; then output_dir="$custom_output"; fi
 validation_args=(--truth-rate-hz "$truth_rate_hz")
 if $route_mode; then validation_args+=(--route); fi
+if [[ -n "$route_config" ]]; then validation_args+=(--route-config "$route_config"); fi
+if $aligned_mode; then validation_args+=(--aligned-route); fi
 if [[ -n "$scenario_file" ]]; then validation_args+=(--scenario "$scenario_file"); fi
 python3 "$script_dir/validate_stack.py" --output "$output_dir" "${validation_args[@]}"

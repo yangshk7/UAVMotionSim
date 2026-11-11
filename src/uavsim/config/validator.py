@@ -275,7 +275,11 @@ class RuntimeConfig(StrictModel):
     max_workers: int = Field(0, ge=0, description="0 selects automatic safe concurrency")
     memory_fraction: float = Field(0.6, gt=0, le=0.9)
     reserve_memory_gb: float = Field(2.0, ge=0)
-    backend: Literal["auto", "cpu", "rotorpy"] = "auto"
+    backend: Literal["auto", "cpu", "rotorpy", "matlab", "sitl", "px4"] = "auto"
+    wsl_distribution: str = Field("Ubuntu-24.04", min_length=1)
+    external_navigation_source: Literal["shared_model", "flight_controller"] = "shared_model"
+    matlab_executable: str | None = None
+    matlab_timeout_s: int = Field(1800, ge=30)
     blas_threads_per_worker: int = Field(1, ge=1)
 
 

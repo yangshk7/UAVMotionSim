@@ -3,6 +3,11 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using System.Reflection;
+
+[assembly: AssemblyVersion("1.1.0.0")]
+[assembly: AssemblyFileVersion("1.1.0.0")]
+[assembly: AssemblyProduct("UAVMotionSim")]
 
 internal static class Program
 {

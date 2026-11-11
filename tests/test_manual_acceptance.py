@@ -6,6 +6,25 @@ import numpy as np
 from numpy.testing import assert_array_equal
 
 
+def test_failed_route_details_include_actual_coverage(tmp_path, monkeypatch):
+    import sys
+
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1]/"main"/"internal"))
+    sys.modules.pop("run", None)
+    from run import collect_checks
+
+    validation = {"passed": False,
+                  "pass1": {"passed": True, "sar_samples": 88001, "navigation_samples": 11001},
+                  "pass2": {"passed": False, "kinematics_passed": True,
+                            "route_quality": {"passed": False, "target_route_length_m": 1000,
+                                              "full_forward_distance_m": 797.7029, "speed_band_enforced": False}}}
+    (tmp_path/"validation.json").write_text(json.dumps(validation), encoding="utf-8")
+    stages, _ = collect_checks(tmp_path)
+    assert stages[0]["status"] == "failed"
+    assert "797.703" in stages[0]["detail"] and "1000" in stages[0]["detail"]
+    assert "硬门槛未启用" in stages[0]["detail"]
+
+
 def load_review_module():
     path = Path(__file__).resolve().parents[1] / "main" / "internal" / "review_report.py"
     spec = importlib.util.spec_from_file_location("manual_review_report", path)
@@ -65,3 +84,18 @@ def test_cursor_samples_come_from_navigation_without_modifying_data():
     )
     json.dumps(payload, allow_nan=False)
     assert_array_equal(original, nav["position_sar_m"])
+
+
+def test_cross_comparison_failure_is_visible_and_skip_links_are_not_fabricated(tmp_path):
+    module = load_review_module()
+    summary = {
+        'stages': [{'name': 'external', 'status': 'failed', 'detail': 'missing native log'}],
+        'external_comparison': {'status': 'failed', 'detail': '<missing native log>'},
+        'matlab_motion_comparison': {'status': 'skipped', 'detail': 'MATLAB skipped', 'cases': []},
+    }
+    page = module.create_report(tmp_path, summary).read_text(encoding='utf-8')
+    assert '本次流程存在失败项' in page
+    assert 'SITL / PX4 交叉对照' in page and '&lt;missing native log&gt;' in page
+    assert 'MATLAB UAV / RotorPy 同工况对照' in page
+    assert 'href="external_comparison/result.json"' not in page
+    assert 'href="matlab_motion_comparison/result.json"' not in page

@@ -1,0 +1,43 @@
+{
+  "stages": [
+    {
+      "name": "刚体运动与时间同步",
+      "status": "passed",
+      "detail": "每航次 SAR 88001 点、导航 11001 点；直接整数步同步。"
+    },
+    {
+      "name": "长序列 OU 随机统计",
+      "status": "passed",
+      "detail": "20000 s / 400000 点；方差 0.99301，ACF 最大差 0.00934。"
+    },
+    {
+      "name": "1600 / 3200 / 6400 Hz 数值收敛",
+      "status": "passed",
+      "detail": "3200 对 6400 Hz 斜距差 RMS 0.002107 mm，门槛 1 mm。"
+    },
+    {
+      "name": "自动化测试套件",
+      "status": "passed",
+      "detail": "133 通过，0 失败，0 错误，0 跳过。"
+    },
+    {
+      "name": "导航位姿与关键产出可视化",
+      "status": "passed",
+      "detail": "真值/估计逐帧对照；必需图表 13/13 完整。"
+    },
+    {
+      "name": "MATLAB 独立导航/几何接口",
+      "status": "passed",
+      "detail": "MATLAB独立检查双航次采样、姿态、杆臂与波束，含4个水平反馈解析回归；未运行SAR回波或成像。"
+    }
+  ],
+  "metrics": {
+    "sar_samples": 88001,
+    "navigation_samples": 11001,
+    "range_rms_display": "0.00211 mm",
+    "tests_display": "133 / 133 passed"
+  },
+  "data_directory": "${PROJECT_ROOT}\\main\\gui_outputs\\all_acceptance_20261111_195103_385879\\chains\\rotorpy\\artifacts\\validate_20261111_195106_584299",
+  "message": "rotorpy 双航次、全量测试、长OU统计、全时长收敛、MATLAB独立几何接口；不含SAR回波/成像。",
+  "status": "passed"
+}

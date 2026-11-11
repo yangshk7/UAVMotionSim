@@ -1,0 +1,24 @@
+{
+  "hex_x12_high_accel_20261107.yaml": {
+    "controller_changes": {
+      "max_horizontal_acceleration_mps2": 6.0,
+      "max_vertical_acceleration_mps2": 4.0
+    },
+    "validated": true,
+    "rotor_thrust_N": 42.0
+  },
+  "hex_x12_high_dynamic_20261107.yaml": {
+    "controller_changes": {
+      "max_horizontal_acceleration_mps2": 6.0,
+      "max_vertical_acceleration_mps2": 4.0,
+      "max_body_rate_radps": 3.0,
+      "max_torque_Nm": [
+        24.0,
+        24.0,
+        2.0
+      ]
+    },
+    "validated": true,
+    "rotor_thrust_N": 42.0
+  }
+}

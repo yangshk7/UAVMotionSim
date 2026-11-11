@@ -15,7 +15,7 @@ resolution-markers = [
 
 [[package]]
 name = "airborne-sar-uav-motion-sim-open-source"
-version = "1.0.0"
+version = "1.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "h5py" },

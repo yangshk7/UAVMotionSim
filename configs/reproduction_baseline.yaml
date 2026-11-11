@@ -1,0 +1,10 @@
+extends: hex_x_12kg.yaml
+simulation:
+  duration_mode: fixed
+  pre_stabilization_s: 1.0
+  acquisition_duration_s: 2.0
+trajectory:
+  route_length_m: 20.0
+runtime:
+  backend: rotorpy
+  max_workers: 1

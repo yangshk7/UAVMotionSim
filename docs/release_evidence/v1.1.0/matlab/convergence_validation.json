@@ -1,0 +1,43 @@
+{
+  "rates_hz": [
+    1600,
+    3200,
+    6400
+  ],
+  "input_grid_hz": 6400,
+  "seed": 98231,
+  "target_sar_m": [
+    0.0,
+    251.729889353184,
+    0.0
+  ],
+  "duration_s": 110.0,
+  "wavelength_m": 0.24982704833333333,
+  "stimulus": "FRD y force std 2 N; roll torque std 0.1 N*m; same continuous OU splines",
+  "comparisons_to_6400_hz": {
+    "1600": {
+      "position_N_m_rms": 7.72605317100749e-06,
+      "velocity_N_mps_rms": 9.176532211661794e-06,
+      "acceleration_N_mps2_rms": 1.661967015081786e-05,
+      "omega_B_radps_rms": 7.613686215506441e-06,
+      "apc_position_sar_m_rms": 7.957035984893195e-06,
+      "attitude_geodesic_rms_rad": 2.9338061723470443e-06,
+      "slant_range_rms_m": 7.502892008459734e-06,
+      "slant_range_max_m": 2.072544089060102e-05,
+      "two_way_phase_rms_rad": 0.00037739757278811335
+    },
+    "3200": {
+      "position_N_m_rms": 2.1464970289609508e-06,
+      "velocity_N_mps_rms": 2.65366094488821e-06,
+      "acceleration_N_mps2_rms": 4.80029064010593e-06,
+      "omega_B_radps_rms": 2.156574244373315e-06,
+      "apc_position_sar_m_rms": 2.2133846492827523e-06,
+      "attitude_geodesic_rms_rad": 8.47385583812252e-07,
+      "slant_range_rms_m": 2.1066580239726797e-06,
+      "slant_range_max_m": 6.075103726743691e-06,
+      "two_way_phase_rms_rad": 0.00010596548957994498
+    }
+  },
+  "limit_slant_range_rms_m": 0.001,
+  "passed": true
+}

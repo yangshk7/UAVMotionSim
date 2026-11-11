@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import sys
 import traceback
 from pathlib import Path
 
@@ -21,9 +22,12 @@ def event(value: dict) -> None:
 
 
 def main(argv=None) -> int:
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser()
     parser.add_argument("--job-dir", required=True, type=Path)
-    parser.add_argument("--mode", choices=["simulate", "acceptance"], required=True)
+    parser.add_argument("--mode", choices=["simulate", "acceptance", "all_acceptance", "scientific"], required=True)
     parser.add_argument("--passes", type=int, choices=[1, 2], default=2)
     parser.add_argument("--matlab", choices=["auto", "required", "skip"], default="auto")
     parser.add_argument("--matlab-exe", default="")
@@ -33,6 +37,21 @@ def main(argv=None) -> int:
     config = load_config(root / "input_config.yaml")
     os.environ["UAVSIM_GUI_PROGRESS"] = "1"
     try:
+        if args.mode in ("all_acceptance", "scientific"):
+            from all_chain_acceptance import run_all_chains, run_internal_scientific
+
+            runner = run_all_chains if args.mode == "all_acceptance" else run_internal_scientific
+            payload = runner(root, config, args.matlab_exe)
+            write_json(root / "result.json", payload)
+            event(payload)
+            return payload["returncode"]
+        if config.runtime.backend in ("sitl", "px4"):
+            from external_job import run_external_job
+
+            payload = run_external_job(root, config, args.passes, args.mode)
+            write_json(root / "result.json", payload)
+            event(payload)
+            return payload["returncode"]
         if args.mode == "acceptance":
             from run import main as acceptance_main
 
@@ -74,6 +93,8 @@ def main(argv=None) -> int:
             )
             matches = list((root / "artifacts").glob("run_*"))
             if len(matches) != 1:
+                if code:
+                    raise RuntimeError("核心仿真失败，未生成结果；具体原因请查看本任务日志中前面的 Error 信息。")
                 raise RuntimeError("仿真输出目录不唯一或未生成")
             data_root = matches[0]
             metadata = json.loads((data_root / "metadata.json").read_text(encoding="utf-8"))

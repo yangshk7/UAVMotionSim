@@ -65,7 +65,8 @@ def align(directory: Path, output: Path) -> dict:
     truth_time = start + np.arange((count - 1) * 10 + 1, dtype=np.float64) / 1000
 
     gazebo_time = gazebo["sim_time_s"]
-    truth_index = np.searchsorted(gazebo_time, truth_time)
+    # Equivalent 1 ms timestamps can differ by a few float64 ULPs.
+    truth_index = np.searchsorted(gazebo_time, truth_time - 1e-8)
     if (np.any(truth_index >= len(gazebo_time))
             or np.max(np.abs(gazebo_time[truth_index] - truth_time)) > 1e-8):
         raise ValueError("Gazebo 1000 Hz truth has missing simulation-time samples")

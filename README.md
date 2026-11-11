@@ -1,6 +1,12 @@
 # UAV Motion Sim
 
-> 最终版v1.0.0：日常上位机默认1000 m、10 m/s、10 s裕量，输出110 s；六轴small。`main/run.cmd`仍是固定20.48 s标准接口验收。最终参数和结果以[发布说明](docs/FINAL_RELEASE.md)为准。
+新机器按[复现与部署说明](docs/REPRODUCIBILITY.md)安装固定Python与外部环境；正式验收配置和精简证据随仓库保存。
+
+顶部新增“全链路验收”：串行执行RotorPy、MATLAB、内置CPU、SITL、PX4双航次及各自适用的完整检查，生成总览、子报告和交叉指标；不包含暂缓的SAR成像端到端。详见[上位机使用说明](main/docs/CONTROL_PANEL_USER_GUIDE.md#新增全链路验收)。
+
+> 当前版v1.1.0：日常上位机默认1000 m、10 m/s、10 s裕量，输出110 s；六轴small。`main/run.cmd`仍是固定20.48 s标准接口验收。最终参数和结果以[发布说明](docs/FINAL_RELEASE.md)为准。
+
+上位机“仿真链路”现可统一选择`rotorpy`、`matlab`、`sitl`、`px4`，保留`cpu/auto`兼容选项。外部入口真实启动本机已部署的WSL平台，按上位机直线航线参数飞行、严格对时，统一导出高频真值和100 Hz导航；同时保留原始日志、飞控导航和统一误差模型导航。外部A/B扰动等尚未统一注入，完整验收范围也有所区别，使用前见[上位机详细说明](main/docs/CONTROL_PANEL_USER_GUIDE.md)。本次接入不包含全新电脑上的WSL环境自动部署验证。
 
 **本目录是独立的 OpenSource 版本。** 默认实际调用已安装的 RotorPy 3.0.0 多旋翼动力学，保持 12 kg Hex-X。集成范围、验证和后续阶段见 [开源集成状态](OPEN_SOURCE_INTEGRATION.md)。原 `UAV_Motion_Sim` 未修改。
 
@@ -14,7 +20,7 @@ ArduPilot SITL 与 XTDrone2/ROS2/Gazebo/PX4 已在独立 WSL 中部署，两个�
 
 运行生成的 `results/`、`main/outputs/` 和 `main/gui_outputs/` 不纳入 GitHub。当前机器的历史运行数据已保存在项目旁的 `UAVMotionSim_Archive_20261102/`；两份最终上位机验收页面仍留在本机 `main/gui_outputs/`。克隆仓库后按下文命令可重新生成结果。
 
-独立的 12 kg Hex-X 六旋翼六自由度运动仿真工程。Python 负责运动，MATLAB 继续负责原有 SAR 回波和成像。所有项目文件与目录采用英文命名，说明和关键算法注释使用中文。
+独立的 12 kg Hex-X 六旋翼六自由度运动仿真工程。运动物理核心可选RotorPy、MATLAB或外部飞控平台，导航误差与导出使用统一适配接口；SAR回波和成像仍在后续端到端流程中验证。所有项目文件与目录采用英文命名，说明和关键算法注释使用中文。
 
 从配置、仿真到导航输出及验收的完整步骤见 [项目工作流程](WORKFLOW.md)。
 

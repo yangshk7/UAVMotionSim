@@ -95,6 +95,20 @@ def _simulate(config, pass_seed: int, pass_index: int) -> dict:
                 (torque[2 * index], torque[2 * index + 1], torque[2 * index + 2]),
             )
     report_progress(pass_index=pass_index, fraction=1.0)
+    return assemble_pass(
+        config, time, states, accelerations, angular_accelerations, motor_commands,
+        allocation_residuals, reference, inputs, baseline, pass_seed, pass_index,
+        start, controller.update_counts,
+    )
+
+
+def assemble_pass(
+    config, time, states, accelerations, angular_accelerations, motor_commands,
+    allocation_residuals, reference, inputs, baseline, pass_seed, pass_index,
+    start, update_counts, backend_metadata=None,
+):
+    """Build the common truth, navigation, antenna and SAR contract for all backends."""
+    s = config.simulation
     truth_full = {
         "time_s": time,
         "position_N_m": states[:, :3],
@@ -161,17 +175,25 @@ def _simulate(config, pass_seed: int, pass_index: int) -> dict:
         "reference": sar_reference,
         "disturbance_inputs": inputs.export(truth["time_s"]),
         "metadata": {
+            "physical_backend": config.runtime.backend,
+            **(backend_metadata or {}),
             "pass_seed": pass_seed,
             "pass_index": pass_index + 1,
             "elapsed_s": perf_counter() - start,
             "peak_working_set_bytes": peak_working_set_bytes(),
             "nominal_baseline_sar_m": baseline,
-            "controller_update_counts": controller.update_counts,
+            "controller_update_counts": update_counts,
         },
     }
 
 
 def simulate_pass(config, pass_seed: int, pass_index: int = 0) -> dict:
     """单航次入口；float64，预分配，限制 BLAS 线程以避免多进程过量争用。"""
+    if config.runtime.backend in ("sitl", "px4"):
+        raise ValueError("SITL/PX4 请从上位机运行；外部链路具有独立原生时钟与数据适配流程，不能使用内置积分器。")
     with threadpool_limits(limits=config.runtime.blas_threads_per_worker):
+        if config.runtime.backend == "matlab":
+            from .matlab_backend import simulate_matlab_pass
+
+            return simulate_matlab_pass(config, pass_seed, pass_index)
         return _simulate(config, pass_seed, pass_index)

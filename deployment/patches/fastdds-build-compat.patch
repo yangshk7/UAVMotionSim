@@ -1,0 +1,42 @@
+diff --git a/src/cpp/CMakeLists.txt b/src/cpp/CMakeLists.txt
+index f6f064504..080efa3e4 100644
+--- a/src/cpp/CMakeLists.txt
++++ b/src/cpp/CMakeLists.txt
+@@ -1,6 +1,6 @@
+ # Copyright 2019 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+ #
+-# Licensed under the Apache License, Version 2.0 (the "License");
++# Licensed under the Apache License, Version 2.0 (the "License")
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+@@ -444,7 +444,7 @@ configure_file(${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}/config.h.in
+ add_library(${PROJECT_NAME} ${${PROJECT_NAME}_source_files})
+ set_target_properties(${PROJECT_NAME} PROPERTIES
+     VERSION ${PROJECT_VERSION}
+-    SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
++    SOVERSION ${PROJECT_VERSION}
+     )
+ 
+ option(INTERNAL_DEBUG "Activate developer debug messages" OFF)
+@@ -523,9 +523,9 @@ if(MSVC OR MSVC_IDE)
+         execute_process( COMMAND PowerShell -NoLogo -Command "&{ param([string]$original)
+         if ($original -notmatch '\\d+$')
+             { $res = $original.Substring(0,$original.length-1) + '.' +
+-            ([int]$original[$original.length-1]-[int][char]'a'+1); }
++            ([int]$original[$original.length-1]-[int][char]'a'+1) }
+             else { while(($original -split '\\.').count -le 3)
+-            { $original += '.0'; } $res = $original; } $res }" -original ${OPENSSL_VERSION}
++            { $original += '.0' } $res = $original } $res }" -original ${OPENSSL_VERSION}
+             OUTPUT_VARIABLE OPENSSL_CANONICAL_VERSION
+             )
+         string(STRIP ${OPENSSL_CANONICAL_VERSION} OPENSSL_CANONICAL_VERSION)
+@@ -575,7 +575,7 @@ elseif(BUILD_SHARED_LIBS)
+     set(VERSION_SCRIPT_SUPPORT_FLAGS -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libfastrtps.version)
+     set(OLD_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
+     set(CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS} ${VERSION_SCRIPT_SUPPORT_FLAGS})
+-    CHECK_CXX_SOURCE_COMPILES("int main(int, char**){return 0;}" HAS_VERSION_SCRIPT_SUPPORT)
++    CHECK_CXX_SOURCE_COMPILES("int main(int, char**){return 0}" HAS_VERSION_SCRIPT_SUPPORT)
+     set(CMAKE_REQUIRED_FLAGS ${OLD_CMAKE_REQUIRED_FLAGS})
+     unset(OLD_CMAKE_REQUIRED_FLAGS)
+     if(HAS_VERSION_SCRIPT_SUPPORT)

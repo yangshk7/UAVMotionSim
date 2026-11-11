@@ -13,6 +13,8 @@ def plan_resources(config, passes: int, hardware: dict | None = None) -> dict:
     inputs = round((s.pre_stabilization_s + s.acquisition_duration_s) * config.disturbances.input_rate_hz) + 1
     retained = full * 8 * 150 + inputs * 8 * 12
     working = full * 8 * 120 + inputs * 8 * 40 + 256 * 1024**2
+    if config.runtime.backend == "matlab":
+        working += 1024**3
     available = hw.get("memory_available_bytes")
     note = ""
     if available is None:
@@ -43,6 +45,14 @@ def plan_resources(config, passes: int, hardware: dict | None = None) -> dict:
         note = "Short workload: serial execution avoids process startup and transfer overhead"
     if available is None:
         workers = 1
+    if config.runtime.backend == "matlab":
+        workers = 1
+        note = "MATLAB backend executes passes serially with a 1 GiB native-process reserve"
+    backend = {"rotorpy": "rotorpy_cpu", "matlab": "matlab_cpu"}.get(config.runtime.backend, "cpu")
+    reason = {
+        "rotorpy": "RotorPy 3.0 multirotor RHS with Hex-X adapter; float64 CPU. ",
+        "matlab": "Vendored MATLAB legacy physical core; float64 CPU, serial native sessions. ",
+    }.get(config.runtime.backend, "19-state sequential feedback RK4 uses float64 CPU. ")
     return {
         "hardware": hw,
         "workers": workers,
@@ -51,12 +61,8 @@ def plan_resources(config, passes: int, hardware: dict | None = None) -> dict:
         "estimated_retained_bytes_per_pass": retained,
         "estimated_working_bytes_per_worker": working,
         "estimated_peak_bytes": parent + workers * (working + retained),
-        "backend": "rotorpy_cpu" if config.runtime.backend == "rotorpy" else "cpu",
+        "backend": backend,
         "gpu_used": False,
-        "backend_reason": (
-            "RotorPy 3.0 multirotor RHS with Hex-X adapter; float64 CPU. "
-            if config.runtime.backend == "rotorpy"
-            else "19-state sequential feedback RK4 uses float64 CPU. "
-        ) + "Independent passes can run in processes; GPU memory is detected but not used.",
+        "backend_reason": reason + "GPU memory is detected; computation uses CPU.",
         "note": note,
     }

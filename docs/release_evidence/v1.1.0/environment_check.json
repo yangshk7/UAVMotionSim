@@ -1,0 +1,112 @@
+{
+  "release": "1.1.0",
+  "passed": true,
+  "checks": [
+    {
+      "name": "PX4",
+      "passed": true,
+      "detail": "99c40407ffd7ac184e2d7b4b293f36f10fe561ef"
+    },
+    {
+      "name": "XTDrone2",
+      "passed": true,
+      "detail": "15b2ef6eb9fd8c2631f931a27064f323d26a9ed3"
+    },
+    {
+      "name": "px4_msgs",
+      "passed": true,
+      "detail": "18cbccedb6c304b180bca8e81a4a601758fc9de9"
+    },
+    {
+      "name": "Micro-XRCE-DDS-Agent",
+      "passed": true,
+      "detail": "57d086216d01ec43121845d385894a25987f8a2c"
+    },
+    {
+      "name": "Fast-DDS",
+      "passed": true,
+      "detail": "092848725b8425e4f05a8ccf7b3b8d513fabf733"
+    },
+    {
+      "name": "agent-fastdds-pin.patch",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "fastdds-cstdint.patch",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "fastdds-build-compat.patch",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "xtdrone-stop-offboard-on-land.patch",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "SITL binary",
+      "passed": true,
+      "detail": "caed35e4cb796ec06cac40b09566a18251771486b1cbac5e2bf16b7a5ed5045d"
+    },
+    {
+      "name": "Gazebo",
+      "passed": true,
+      "detail": "8.15.0"
+    },
+    {
+      "name": "python3-colcon-common-extensions",
+      "passed": true,
+      "detail": "0.3.0-100"
+    },
+    {
+      "name": "ros-jazzy-gz-sim-vendor",
+      "passed": true,
+      "detail": "0.0.13-1noble.20260905.073557"
+    },
+    {
+      "name": "ros-jazzy-ros-base",
+      "passed": true,
+      "detail": "0.11.0-1noble.20261006.035407"
+    },
+    {
+      "name": "ros-jazzy-ros-gz",
+      "passed": true,
+      "detail": "1.0.24-1noble.20261006.041805"
+    },
+    {
+      "name": "ros-jazzy-tf-transformations",
+      "passed": true,
+      "detail": "1.1.1-1noble.20260225.142630"
+    },
+    {
+      "name": "/opt/uav_motion/px4_venv/bin/python",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "/opt/uav_motion/sitl/4.7.2/venv/bin/python",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "/opt/uav_motion/PX4-Autopilot/build/px4_sitl_default/bin/px4",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "/usr/local/bin/MicroXRCEAgent",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "/opt/uav_motion/xtdrone_ws/install/setup.bash",
+      "passed": true,
+      "detail": ""
+    }
+  ],
+  "scope": "Environment pins and prerequisites only; actual flight acceptance must run separately"
+}

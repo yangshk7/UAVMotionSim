@@ -15,7 +15,7 @@ EVENT_PREFIX = "UAVSIM_GUI_EVENT "
 
 
 def create_job(project: Path, config, mode: str) -> Path:
-    if mode not in ("simulate", "acceptance"):
+    if mode not in ("simulate", "acceptance", "all_acceptance", "scientific"):
         raise ValueError("Unknown run mode")
     stamp = datetime.now(ZoneInfo("Asia/Shanghai")).strftime("%Y%m%d_%H%M%S_%f")
     root = project / "main" / "gui_outputs" / f"{mode}_{stamp}"
@@ -38,7 +38,7 @@ def launch_job(
 ) -> subprocess.Popen:
     if (
         passes not in (1, 2)
-        or mode not in ("simulate", "acceptance")
+        or mode not in ("simulate", "acceptance", "all_acceptance", "scientific")
         or matlab not in ("auto", "required", "skip")
     ):
         raise ValueError("Invalid run options")
@@ -69,7 +69,7 @@ def launch_job(
         if os.name == "nt"
         else {"start_new_session": True}
     )
-    return subprocess.Popen(
+    process = subprocess.Popen(
         command,
         cwd=project,
         stdout=subprocess.PIPE,
@@ -81,12 +81,22 @@ def launch_job(
         env=environment,
         **options,
     )
+    process.uavsim_job_root = root
+    return process
 
 
 def stop_job(process: subprocess.Popen) -> None:
     """仅终止本程序启动且仍存活的任务树；不删除任何部分输出。"""
     if process.poll() is not None:
         return
+    root = getattr(process, "uavsim_job_root", None)
+    if root is not None and (root / "external_owner.heartbeat").exists():
+        (root / "cancel.request").touch()
+        try:
+            process.wait(timeout=15)
+            return
+        except subprocess.TimeoutExpired:
+            pass
     if os.name == "nt":
         result = subprocess.run(
             ["taskkill", "/PID", str(process.pid), "/T", "/F"],

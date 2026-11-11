@@ -7,7 +7,7 @@ expected=caed35e4cb796ec06cac40b09566a18251771486b1cbac5e2bf16b7a5ed5045d
 if [[ ! -f "$target/bin/arducopter" ]]; then
     download="$(mktemp)"
     trap 'rm -f "$download"' EXIT
-    curl -fL --max-time 180 https://firmware.ardupilot.org/Copter/stable/SITL_x86_64_linux_gnu/arducopter -o "$download"
+    curl -fL --max-time 180 https://firmware.ardupilot.org/Copter/stable-4.7.2/SITL_x86_64_linux_gnu/arducopter -o "$download"
     printf '%s  %s\n' "$expected" "$download" | sha256sum -c -
     install -m 755 "$download" "$target/bin/arducopter"
 fi

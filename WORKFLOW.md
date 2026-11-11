@@ -1,6 +1,6 @@
 # UAV Motion Sim 工作流程
 
-> 最终版v1.0.0：日常上位机默认1000 m、10 m/s、10 s裕量，输出110 s；六轴small。`main/run.cmd`仍是固定20.48 s标准接口验收。最终参数和结果以[发布说明](docs/FINAL_RELEASE.md)为准。
+> 当前版v1.1.0：日常上位机默认1000 m、10 m/s、10 s裕量，输出110 s；六轴small。`main/run.cmd`仍是固定20.48 s标准接口验收。最终参数和结果以[发布说明](docs/FINAL_RELEASE.md)为准。
 
 **OpenSource 版本说明：** 本目录默认调用 RotorPy 3.0.0 的多旋翼动力学 RHS；以下通用流程中“六旋翼动力学”的具体后端由 `runtime.backend` 选择。集成范围见 [开源集成状态](OPEN_SOURCE_INTEGRATION.md)。
 

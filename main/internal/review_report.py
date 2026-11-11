@@ -78,6 +78,8 @@ def create_report(root: Path, summary: dict, result: dict | None = None) -> Path
     ]
     cards = []
     for title, filename, description in images:
+        if summary.get("supported_figures") is not None and filename not in summary["supported_figures"]:
+            continue
         image_path = data_dir / filename if data_dir else None
         if image_path is not None and image_path.exists():
             body = f'<a href="{escape(relative)}/{filename}" target="_blank"><img loading="lazy" src="{escape(relative)}/{filename}" alt="{escape(title)}"></a>'
@@ -173,6 +175,82 @@ slider.addEventListener('input',draw);pass.addEventListener('change',()=>{slider
     }
     for key, value in substitutions.items():
         page = page.replace(key, value)
+    cross = summary.get("external_comparison")
+    if cross:
+        details = '<p>' + escape(cross.get('detail', '')) + '</p>'
+        comparison = cross.get('comparison')
+        if comparison:
+            rows = []
+            for title, key, unit in [
+                ('真值横向 RMS', 'truth_y_rms_m', 'm'),
+                ('真值平均高度', 'truth_height_mean_m', 'm'),
+                ('真值高度误差 RMS', 'truth_height_error_rms_m', 'm'),
+                ('前向速度误差 RMS', 'truth_along_speed_error_rms_mps', 'm/s'),
+                ('轨迹管道 D95', 'tube_d95_m', 'm'),
+                ('原生时钟航段时长', 'aligned_native_duration_s', 's'),
+            ]:
+                rows.append(f'<tr><td>{title} ({unit})</td><td>{comparison["sitl"][key]:.4f}</td>'
+                            f'<td>{comparison["px4"][key]:.4f}</td></tr>')
+            details += '<table><thead><tr><th>指标</th><th>SITL</th><th>PX4/Gazebo</th></tr></thead><tbody>'
+            details += ''.join(rows) + '</tbody></table>'
+            details += '<p>共同任务、原生时钟和数据完整性检查通过。平台间差异按数值报告，尚未设定等价性门槛。</p>'
+            details += (f'<p>跨平台横向 / 高度差 RMS 为 '
+                        f'{comparison["cross_platform_yz_rms_m"][0]:.4f} / '
+                        f'{comparison["cross_platform_yz_rms_m"][1]:.4f} m，姿态差 RMS 为 '
+                        f'{comparison["cross_platform_attitude_angle_rms_deg"]:.4f}°。</p>')
+        if (root / 'external_comparison/result.json').is_file():
+            details += '<a href="external_comparison/result.json">本次交叉对照记录与日志索引</a>'
+        for step in cross.get('steps', []):
+            log_name = escape(step['log'])
+            details += f' <a href="external_comparison/{log_name}">{escape(step["name"])} 日志</a>'
+        section = '<section class="panel" id="external-comparison"><h2>SITL / PX4 交叉对照</h2>' + details + '</section>'
+        page = page.replace('<section id="figures">', section + '<section id="figures">')
+    native = summary.get('matlab_motion_comparison')
+    if native:
+        rows = []
+        for case in native.get('cases', []):
+            position = ' / '.join(f'{v:.6g}' for v in case['position_xyz_rms_m'])
+            velocity = ' / '.join(f'{v:.6g}' for v in case['velocity_xyz_rms_mps'])
+            rows.append(f'<tr><td>{escape(case["case"])}</td><td>{position}</td><td>{velocity}</td>'
+                        f'<td>{case["attitude_angle_rms_deg"]:.6g}</td></tr>')
+        section = ('<section class="panel"><h2>MATLAB UAV / RotorPy 同工况对照</h2><p>'
+                   + escape(native.get('detail', '')) + '</p><table><thead><tr><th>工况</th>'
+                   '<th>位置 XYZ 差 RMS (m)</th><th>速度 XYZ 差 RMS (m/s)</th>'
+                   '<th>姿态角差 RMS (°)</th></tr></thead><tbody>' + ''.join(rows)
+                   + '</tbody></table><p>统一参数后的独立核心实现对照，数值差异按实测报告。</p>')
+        if (root / 'matlab_motion_comparison/result.json').is_file():
+            section += '<a href="matlab_motion_comparison/result.json">MATLAB UAV 比较记录</a>'
+        section += '</section>'
+        page = page.replace('<section id="figures">', section + '<section id="figures">')
+    page = page.replace('尚未完成实机标定或 ArduPilot/Simscape 交叉验证',
+                        '尚未完成实机标定；外部飞控与 MATLAB UAV 对照范围以本次验收记录为准')
+    if summary.get("chain_acceptance"):
+        chain_rows = []
+        for chain in summary["chain_acceptance"]:
+            report_link = chain.get("report")
+            title = escape(chain["backend"])
+            if report_link and (root / report_link).is_file():
+                title = f'<a href="{escape(report_link)}">{title} · 打开子报告</a>'
+            details = "；".join(escape(stage["name"])+":"+escape(stage["status"])+" "+escape(stage.get("detail", ""))
+                               for stage in chain.get("stages", []))
+            chain_rows.append(f'<tr><td>{title}</td><td>{escape(chain["status"])}</td><td>{details}</td></tr>')
+        section = ('<section class="panel"><h2>全链路验收总览</h2>'
+                   '<p>五套独立实现各执行双航次；auto等同cpu。各子报告保留适用范围、配置与完整日志。下方主图默认显示首个可用内部链路，其他航迹请打开对应子报告。</p>'
+                   '<table><thead><tr><th>链路</th><th>状态</th><th>适用检查</th></tr></thead><tbody>'
+                   + ''.join(chain_rows) + '</tbody></table></section>')
+        metrics = summary.get("cross_chain_metrics")
+        if metrics:
+            rows = []
+            for pair in metrics.get("pairs", []):
+                p = " / ".join(f"{v:.6g}" for v in pair["position_xyz_rms_m"])
+                v = " / ".join(f"{value:.6g}" for value in pair["velocity_xyz_rms_mps"])
+                rows.append(f'<tr><td>{escape(pair["pass"])}</td><td>{escape(pair["left"])} / {escape(pair["right"])}</td>'
+                            f'<td>{p}</td><td>{v}</td><td>{pair["attitude_angle_rms_deg"]:.6g}</td></tr>')
+            section += ('<section class="panel"><h2>五链路双航次差异指标</h2><p>'
+                        + escape(metrics["limitations"]) + '</p><table><thead><tr><th>航次</th><th>链路对</th>'
+                        '<th>位置XYZ RMS (m)</th><th>速度XYZ RMS (m/s)</th><th>姿态角RMS (°)</th></tr></thead><tbody>'
+                        + ''.join(rows) + '</tbody></table><a href="cross_chain_metrics.json">完整交叉指标 JSON</a></section>')
+        page = page.replace('<section id="figures">', section+'<section id="figures">')
     path = root / "index.html"
     path.write_text(page, encoding="utf-8")
     return path
